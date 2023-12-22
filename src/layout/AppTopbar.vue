@@ -126,7 +126,7 @@ const isOutsideClicked = (event) => {
                 <span>Profile</span>
             </button> -->
             <button @click="onConfigButtonClick()" class="p-link layout-topbar-button">
-                <i class="pi pi-cog"></i>
+                <i class="fa-solid fa-palette"></i>
                 <span>Settings</span>
             </button>
         </div>
