@@ -14,6 +14,12 @@ const model = ref([
             { label: 'Release', icon: 'fa-solid fa-calendar-days fa-fw', to: '/release' },
             { label: 'Tag', icon: 'fa-solid fa-tag fa-fw', to: '/tag' }
         ]
+    },
+    {
+        label: 'User',
+        items: [
+            {label: 'Logout', icon: 'fa-solid fa-right-from-bracket fa-fw', to: '/logout'}
+        ]
     }
 ]);
 </script>

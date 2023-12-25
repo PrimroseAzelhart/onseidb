@@ -1,10 +1,10 @@
-import Home from '@/views/Home.vue'
-import About from '@/views/About.vue'
+import home from '@/views/home.vue'
 import search from '@/views/search.vue'
 import cv from '@/views/cv.vue'
 import circle from '@/views/circle.vue'
 import release from '@/views/release.vue'
 import tag from '@/views/tag.vue'
+import login from '@/views/login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '@/layout/AppLayout.vue';
 
@@ -15,8 +15,8 @@ const routes = [
         children: [
             {
                 path: '/',
-                name: 'Home',
-                component: Home
+                name: 'home',
+                component: home
             },
             {
                 path: '/search',
@@ -46,9 +46,18 @@ const routes = [
         ]
     },
     {
-        path: '/about',
-        name: 'About',
-        component: About
+        path: '/login',
+        name: 'Login',
+        component: login
+    },
+    {
+        path: '/logout',
+        name: 'Logout',
+        component: login
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/'
     }
 ]
 
