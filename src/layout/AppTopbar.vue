@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 
 import RadioButton from 'primevue/radiobutton';
 import Button from 'primevue/button';
@@ -12,7 +12,7 @@ const { changeThemeSettings, setScale, layoutConfig, onMenuToggle } = useLayout(
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
-const router = useRouter();
+// const router = useRouter();
 
 const scales = ref([12, 13, 14, 15, 16]);
 const visible = ref(false);
@@ -35,12 +35,27 @@ onBeforeUnmount(() => {
 const onConfigButtonClick = () => {
     visible.value = !visible.value;
 };
-const onChangeTheme = (theme, mode) => {
+
+const onChangeTheme = (theme, color, dark) => {
     const elementId = 'theme-css';
     const linkElement = document.getElementById(elementId);
     const cloneLinkElement = linkElement.cloneNode(true);
     const themeUrl = linkElement.getAttribute('href');
-    const newThemeUrl = '/themes/' + theme + '/theme.css';
+    var newThemeUrl = '';
+
+    if (dark === undefined) {
+        dark = layoutConfig.darkTheme.value;
+        const style = dark ? 'dark' : 'light';
+        newThemeUrl = `/themes/${theme}-${style}-${color}/theme.css`;
+        changeThemeSettings(theme, color);
+    } else {
+        if (dark) {
+            newThemeUrl = themeUrl.replace('light', 'dark');
+        } else {
+            newThemeUrl = themeUrl.replace('dark', 'light');
+        }
+    }
+
     if (themeUrl.localeCompare(newThemeUrl) === 0) {
         return;
     }
@@ -49,24 +64,31 @@ const onChangeTheme = (theme, mode) => {
     cloneLinkElement.addEventListener('load', () => {
         linkElement.remove();
         cloneLinkElement.setAttribute('id', elementId);
-        changeThemeSettings(theme, mode === 'dark');
     });
     linkElement.parentNode.insertBefore(cloneLinkElement, linkElement.nextSibling);
 };
+
+const onDarkTheme = (value) => {
+    onChangeTheme(undefined, undefined, value);
+};
+
 const decrementScale = () => {
     setScale(layoutConfig.scale.value - 1);
     applyScale();
 };
+
 const incrementScale = () => {
     setScale(layoutConfig.scale.value + 1);
     applyScale();
 };
+
 const applyScale = () => {
     document.documentElement.style.fontSize = layoutConfig.scale.value + 'px';
 };
 
 const logoUrl = computed(() => {
-    return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+    // return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
+    return 'onseidb-logo.svg';
 });
 
 const onTopBarMenuButton = () => {
@@ -106,9 +128,10 @@ const isOutsideClicked = (event) => {
 </script>
 
 <template>
+
     <div class="layout-topbar">
         <router-link to="/" class="layout-topbar-logo">
-            <!-- <img :src="logoUrl" alt="logo" /> -->
+            <img :src="logoUrl" alt="logo" />
             <span>OnseiDB</span>
         </router-link>
 
@@ -162,45 +185,38 @@ const isOutsideClicked = (event) => {
         </template>
 
         <template v-if="!simple">
-            <h5>Input Style</h5>
-            <div class="flex">
-                <div class="field-radiobutton flex-1">
-                    <RadioButton name="inputStyle" value="outlined" v-model="layoutConfig.inputStyle.value" inputId="outlined_input"></RadioButton>
-                    <label for="outlined_input">Outlined</label>
-                </div>
-                <div class="field-radiobutton flex-1">
-                    <RadioButton name="inputStyle" value="filled" v-model="layoutConfig.inputStyle.value" inputId="filled_input"></RadioButton>
-                    <label for="filled_input">Filled</label>
-                </div>
-            </div>
-
-            <h5>Ripple Effect</h5>
-            <InputSwitch v-model="layoutConfig.ripple.value" inputId="ripple"></InputSwitch>
+            <h5>Dark Theme</h5>
+            <InputSwitch v-model="layoutConfig.darkTheme.value" @input="onDarkTheme" inputId="dark"></InputSwitch>
         </template>
 
         <h5>Bootstrap</h5>
         <div class="grid">
             <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4-light-blue', 'light')">
+                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4', 'blue')">
                     <img src="/layout/images/themes/bootstrap4-light-blue.svg" class="w-2rem h-2rem" alt="Bootstrap Light Blue" />
                 </button>
             </div>
             <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4-light-purple', 'light')">
+                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4', 'purple')">
                     <img src="/layout/images/themes/bootstrap4-light-purple.svg" class="w-2rem h-2rem" alt="Bootstrap Light Purple" />
                 </button>
             </div>
+        </div>
+
+        <h5>Lara</h5>
+        <div class="grid">
             <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4-dark-blue', 'dark')">
-                    <img src="/layout/images/themes/bootstrap4-dark-blue.svg" class="w-2rem h-2rem" alt="Bootstrap Dark Blue" />
+                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('lara', 'blue')">
+                    <img src="/layout/images/themes/lara-light-blue.png" class="w-2rem h-2rem" alt="Lara Light Blue" />
                 </button>
             </div>
             <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4-dark-purple', 'dark')">
-                    <img src="/layout/images/themes/bootstrap4-dark-purple.svg" class="w-2rem h-2rem" alt="Bootstrap Dark Purple" />
+                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('lara', 'teal')">
+                    <img src="/layout/images/themes/lara-light-teal.png" class="w-2rem h-2rem" alt="Lara Light Teal" />
                 </button>
             </div>
         </div>
+
     </Sidebar>
 </template>
 

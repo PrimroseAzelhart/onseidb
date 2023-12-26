@@ -5,7 +5,8 @@ const layoutConfig = reactive({
     darkTheme: false,
     inputStyle: 'outlined',
     menuMode: 'static',
-    theme: 'lara-light-indigo',
+    theme: 'bootstrap4',
+    color: 'blue',
     scale: 14,
     activeMenuItem: null
 });
@@ -20,9 +21,9 @@ const layoutState = reactive({
 });
 
 export function useLayout() {
-    const changeThemeSettings = (theme, darkTheme) => {
-        layoutConfig.darkTheme = darkTheme;
+    const changeThemeSettings = (theme, color) => {
         layoutConfig.theme = theme;
+        layoutConfig.color = color;
     };
 
     const setScale = (scale) => {

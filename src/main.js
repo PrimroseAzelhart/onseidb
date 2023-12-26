@@ -103,10 +103,14 @@ import VirtualScroller from 'primevue/virtualscroller';
 import '@/assets/styles.scss'
 import PrimeVue from 'primevue/config'
 
+import VueCookies from "vue-cookies";
+
 const app = createApp(App)
 
 app.use(PrimeVue, {ripple: true})
 app.use(router)
+
+app.use(VueCookies)
 
 app.component('Accordion', Accordion);
 app.component('AccordionTab', AccordionTab);

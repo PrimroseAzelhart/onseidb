@@ -1,11 +1,12 @@
-import home from '@/views/home.vue'
-import search from '@/views/search.vue'
-import cv from '@/views/cv.vue'
-import circle from '@/views/circle.vue'
-import release from '@/views/release.vue'
-import tag from '@/views/tag.vue'
-import login from '@/views/login.vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import home from '@/views/home.vue';
+import search from '@/views/search.vue';
+import cv from '@/views/cv.vue';
+import circle from '@/views/circle.vue';
+import release from '@/views/release.vue';
+import tag from '@/views/tag.vue';
+import login from '@/views/login.vue';
+
+import { createRouter, createWebHistory } from 'vue-router';
 import AppLayout from '@/layout/AppLayout.vue';
 
 const routes = [
@@ -59,11 +60,24 @@ const routes = [
         path: '/:pathMatch(.*)*',
         redirect: '/'
     }
-]
+];
 
 const router = createRouter({
     history: createWebHistory(),
     routes
-})
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+    const isLogin = $cookies.get('token');
+    if (isLogin) {
+        next();
+    } else {
+        if (to.path !== '/login') {
+            next('/login');
+        } else {
+            next();
+        }
+    }
+});
+
+export default router;
