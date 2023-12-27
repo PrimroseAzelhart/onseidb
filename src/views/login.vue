@@ -1,9 +1,7 @@
 <script setup>
 import router from '@/router'
-import { useLayout } from '@/layout/composables/layout';
-import { ref, computed, inject } from 'vue';
+import { ref, inject } from 'vue';
 
-const { layoutConfig } = useLayout();
 const message = ref([]);
 const auth = ref('');
 const password = ref('');
@@ -17,19 +15,13 @@ const addMessage = (type) => {
 };
 
 const onLoginButtonClick = () => {
-    const user = document.getElementById('auth').value;
-    const pwd = document.getElementById('password').value;
-    if (user === 'admin' && pwd === 'admin') {
+    if (auth.value === 'admin' && password.value === 'admin') {
         $cookies.set('token', 'logedin');
         router.push('/');
     } else {
         addMessage('error');
     }
 }
-
-// const logoUrl = computed(() => {
-//     return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
-// });
 
 </script>
 
@@ -67,7 +59,7 @@ const onLoginButtonClick = () => {
             </div>
         </div>
     </div>
-    <!-- <AppConfig simple /> -->
+
 </template>
 
 <style scoped>

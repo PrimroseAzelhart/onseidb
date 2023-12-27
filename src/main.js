@@ -202,4 +202,6 @@ app.component('TreeTable', TreeTable);
 app.component('TriStateCheckbox', TriStateCheckbox);
 app.component('VirtualScroller', VirtualScroller);
 
+app.directive('tooltip', Tooltip);
+
 app.mount('#app')

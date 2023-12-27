@@ -1,21 +1,19 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+
+import { ref, computed, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
-// import { useRouter } from 'vue-router';
 
-import RadioButton from 'primevue/radiobutton';
-import Button from 'primevue/button';
-import InputSwitch from 'primevue/inputswitch';
-import Sidebar from 'primevue/sidebar';
+const $cookies = inject('$cookies');
 
-const { changeThemeSettings, setScale, layoutConfig, onMenuToggle } = useLayout();
+const { changeTheme, setScale, layoutConfig, onMenuToggle } = useLayout();
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
-// const router = useRouter();
 
 const scales = ref([12, 13, 14, 15, 16]);
 const visible = ref(false);
+
+var themeSetting = $cookies.get('onseidb_theme');
 
 defineProps({
     simple: {
@@ -36,40 +34,14 @@ const onConfigButtonClick = () => {
     visible.value = !visible.value;
 };
 
-const onChangeTheme = (theme, color, dark) => {
-    const elementId = 'theme-css';
-    const linkElement = document.getElementById(elementId);
-    const cloneLinkElement = linkElement.cloneNode(true);
-    const themeUrl = linkElement.getAttribute('href');
-    var newThemeUrl = '';
-
-    if (dark === undefined) {
-        dark = layoutConfig.darkTheme.value;
-        const style = dark ? 'dark' : 'light';
-        newThemeUrl = `/themes/${theme}-${style}-${color}/theme.css`;
-        changeThemeSettings(theme, color);
-    } else {
-        if (dark) {
-            newThemeUrl = themeUrl.replace('light', 'dark');
-        } else {
-            newThemeUrl = themeUrl.replace('dark', 'light');
-        }
+const onChangeTheme = (theme, color, dark = undefined) => {
+    changeTheme(theme, color, dark);
+    themeSetting.theme = theme ? theme : themeSetting.theme;
+    themeSetting.color = color ? color : themeSetting.color;
+    if (dark !== undefined) {
+        themeSetting.dark = dark;
     }
-
-    if (themeUrl.localeCompare(newThemeUrl) === 0) {
-        return;
-    }
-    cloneLinkElement.setAttribute('id', elementId + '-clone');
-    cloneLinkElement.setAttribute('href', newThemeUrl);
-    cloneLinkElement.addEventListener('load', () => {
-        linkElement.remove();
-        cloneLinkElement.setAttribute('id', elementId);
-    });
-    linkElement.parentNode.insertBefore(cloneLinkElement, linkElement.nextSibling);
-};
-
-const onDarkTheme = (value) => {
-    onChangeTheme(undefined, undefined, value);
+    $cookies.set('onseidb_theme', themeSetting);
 };
 
 const decrementScale = () => {
@@ -84,15 +56,6 @@ const incrementScale = () => {
 
 const applyScale = () => {
     document.documentElement.style.fontSize = layoutConfig.scale.value + 'px';
-};
-
-const logoUrl = computed(() => {
-    // return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
-    return 'onseidb-logo.svg';
-});
-
-const onTopBarMenuButton = () => {
-    topbarMenuActive.value = !topbarMenuActive.value;
 };
 
 const topbarMenuClasses = computed(() => {
@@ -111,12 +74,14 @@ const bindOutsideClickListener = () => {
         document.addEventListener('click', outsideClickListener.value);
     }
 };
+
 const unbindOutsideClickListener = () => {
     if (outsideClickListener.value) {
         document.removeEventListener('click', outsideClickListener);
         outsideClickListener.value = null;
     }
 };
+
 const isOutsideClicked = (event) => {
     if (!topbarMenuActive.value) return;
 
@@ -125,13 +90,16 @@ const isOutsideClicked = (event) => {
 
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 };
+
+// onChangeTheme(themeSetting.theme, themeSetting.color, themeSetting.dark);
+
 </script>
 
 <template>
 
     <div class="layout-topbar">
         <router-link to="/" class="layout-topbar-logo">
-            <img :src="logoUrl" alt="logo" />
+            <img :src="'onseidb-logo.svg'" alt="logo" />
             <span>OnseiDB</span>
         </router-link>
 
@@ -139,9 +107,9 @@ const isOutsideClicked = (event) => {
             <i class="pi pi-bars"></i>
         </button>
 
-        <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
+        <!-- <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>
-        </button>
+        </button> -->
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <!-- <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
@@ -154,7 +122,7 @@ const isOutsideClicked = (event) => {
             </button> -->
             <button @click="onConfigButtonClick()" class="p-link layout-topbar-button">
                 <i class="fa-solid fa-palette"></i>
-                <span>Settings</span>
+                <span>Theme</span>
             </button>
         </div>
     </div>
@@ -169,7 +137,7 @@ const isOutsideClicked = (event) => {
             <Button icon="pi pi-plus" type="button" pButton @click="incrementScale()" class="p-button-text p-button-rounded w-2rem h-2rem ml-2" :disabled="layoutConfig.scale.value === scales[scales.length - 1]"></Button>
         </div>
 
-        <template v-if="!simple">
+
             <h5>Menu Type</h5>
             <div class="flex">
                 <div class="field-radiobutton flex-1">
@@ -182,12 +150,9 @@ const isOutsideClicked = (event) => {
                     <label for="mode2">Overlay</label>
                 </div>
             </div>
-        </template>
 
-        <template v-if="!simple">
             <h5>Dark Theme</h5>
-            <InputSwitch v-model="layoutConfig.darkTheme.value" @input="onDarkTheme" inputId="dark"></InputSwitch>
-        </template>
+            <InputSwitch v-model="layoutConfig.darkTheme.value" @input="onChangeTheme(undefined, undefined, layoutConfig.darkTheme.value)" inputId="dark"></InputSwitch>
 
         <h5>Bootstrap</h5>
         <div class="grid">
@@ -216,8 +181,8 @@ const isOutsideClicked = (event) => {
                 </button>
             </div>
         </div>
-
     </Sidebar>
+
 </template>
 
 <style lang="scss" scoped></style>

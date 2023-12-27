@@ -21,9 +21,34 @@ const layoutState = reactive({
 });
 
 export function useLayout() {
-    const changeThemeSettings = (theme, color) => {
+    const changeTheme = (theme, color, dark) => {
+        const elementId = 'theme-css';
+        const linkElement = document.getElementById(elementId);
+        const cloneLinkElement = linkElement.cloneNode(true);
+        const themeUrl = linkElement.getAttribute('href');
+        var newThemeUrl = '';
+
+        theme = theme ? theme : layoutConfig.theme;
+        color = color ? color : layoutConfig.color;
+        dark = (dark !== undefined) ? dark : layoutConfig.darkTheme;
+        const style = dark ? 'dark' : 'light';
+        newThemeUrl = `/themes/${theme}-${style}-${color}/theme.css`;
+
+        if (themeUrl.localeCompare(newThemeUrl) === 0) {
+            return;
+        }
+
         layoutConfig.theme = theme;
         layoutConfig.color = color;
+        layoutConfig.darkTheme = dark;
+
+        cloneLinkElement.setAttribute('id', elementId + '-clone');
+        cloneLinkElement.setAttribute('href', newThemeUrl);
+        cloneLinkElement.addEventListener('load', () => {
+            linkElement.remove();
+            cloneLinkElement.setAttribute('id', elementId);
+        });
+        linkElement.parentNode.insertBefore(cloneLinkElement, linkElement.nextSibling);
     };
 
     const setScale = (scale) => {
@@ -50,5 +75,5 @@ export function useLayout() {
 
     const isDarkTheme = computed(() => layoutConfig.darkTheme);
 
-    return { layoutConfig: toRefs(layoutConfig), layoutState: toRefs(layoutState), changeThemeSettings, setScale, onMenuToggle, isSidebarActive, isDarkTheme, setActiveMenuItem };
+    return { layoutConfig: toRefs(layoutConfig), layoutState: toRefs(layoutState), changeTheme, setScale, onMenuToggle, isSidebarActive, isDarkTheme, setActiveMenuItem };
 }
