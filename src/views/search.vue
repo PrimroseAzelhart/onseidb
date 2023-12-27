@@ -3,7 +3,8 @@
 import { ref, onMounted } from 'vue';
 import { cvService, circleService } from '@/service/search.js'
 
-const iRJ = ref('');
+const pre = ref('RJ');
+const iCode = ref(null);
 const iTitle = ref('');
 const iCircle = ref('');
 const sCircle = ref([]);
@@ -18,7 +19,13 @@ const circleSearch = new circleService();
 onMounted(() => {
     cvSearch.getCV().then((name) => (aCV.value = name));
     circleSearch.getCircle().then((name) => (aCircle.value = name));
-})
+});
+
+const codeLabel = [
+    {label: 'RJ', command: () => {pre.value = 'RJ'}},
+    {label: 'BJ', command: () => {pre.value = 'BJ'}},
+    {label: 'VJ', command: () => {pre.value = 'VJ'}}
+];
 
 const searchCircle = (event) => {
     setTimeout(() => {
@@ -52,8 +59,11 @@ const searchCV = (event) => {
         <div class="grid p-fluid">
 
             <div class="field col-12 md:col-4">
-                <label for="rj">RJ</label>
-                <InputText type="text" id="rj" v-model="iRJ" v-tooltip.bottom="'Either numeric or with RJ is OK'" />
+                <label for="wcode">Code</label>
+                <div class="p-inputgroup">
+                    <SplitButton :label="pre" :model="codeLabel"></SplitButton>
+                    <InputMask type="text" id="wcode" v-model="iCode" mask="99999999" slotChar="" placeholder="Number only" />
+                </div>
             </div>
 
             <div class="field col-12 md:col-4">
@@ -75,3 +85,15 @@ const searchCV = (event) => {
 
 </Panel>
 </template>
+
+<style lang="scss">
+
+.p-tieredmenu {
+    width: auto;
+}
+
+.p-autocomplete-empty-message {
+    padding: 0rem 1rem;
+}
+
+</style>
