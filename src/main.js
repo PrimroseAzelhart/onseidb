@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 
 import App from './App.vue'
-import router from '@/router'
 
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
@@ -102,15 +101,20 @@ import VirtualScroller from 'primevue/virtualscroller';
 
 import '@/assets/styles.scss'
 import PrimeVue from 'primevue/config'
-
 import VueCookies from "vue-cookies";
+
+// import axios from 'axios';
+
+import router from '@/router'
 
 const app = createApp(App)
 
-app.use(PrimeVue, {ripple: true})
-app.use(router)
+// app.use(axios);
 
-app.use(VueCookies)
+app.use(PrimeVue, {ripple: true});
+app.use(VueCookies);
+
+app.use(router);
 
 app.component('Accordion', Accordion);
 app.component('AccordionTab', AccordionTab);
