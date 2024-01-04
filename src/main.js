@@ -103,15 +103,12 @@ import '@/assets/styles.scss'
 import PrimeVue from 'primevue/config'
 import VueCookies from "vue-cookies";
 
-// import axios from 'axios';
-
 import router from '@/router'
 
 const app = createApp(App)
 
-// app.use(axios);
-
 app.use(PrimeVue, {ripple: true});
+app.use(ToastService);
 app.use(VueCookies);
 
 app.use(router);

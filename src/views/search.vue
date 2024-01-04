@@ -1,6 +1,7 @@
 <script setup>
 
 import { ref, onMounted } from 'vue';
+import { useToast } from 'primevue/usetoast';
 import axios from 'axios'
 import { cvService, circleService } from '@/service/search.js'
 
@@ -13,15 +14,22 @@ const aCircle = ref('');
 const iCV = ref('');
 const sCV = ref([]);
 const aCV = ref('');
+const releaseDate = ref(null);
+const releaseAfter = ref(null);
+const releaseBefore = ref(null);
+const releaseDateDisable = ref(false);
+const releasePeriodDisable = ref(false);
 
 const results = ref([]);
 const resultText = ref('No results found');
-const tableVisible = ref(false);
+const advOptions = ref(true);
 
 const cvSearch = new cvService();
 const circleSearch = new circleService();
 
-axios.defaults.headers["Content-Type"] = "application/x-www-form-urlencoded";
+const toast = useToast();
+
+axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 onMounted(() => {
     cvSearch.getCV().then((name) => (aCV.value = name));
@@ -65,6 +73,10 @@ const searchCV = (event) => {
     }, 250)
 };
 
+const responseError = (code, message) => {
+    toast.add({ severity: 'error', summary: `${code}`, detail: `${message}`, life: 5000 });
+};
+
 const onSubmit = () => {
     axios.post('http://api.onsei.fans/search', {
             option: 'code'
@@ -81,14 +93,31 @@ const onSubmit = () => {
         })
         .catch(function (error) {
             console.log(error);
+            responseError(error.code, error.message);
         });
 };
+
+const onAdvOpt = () => {
+    advOptions.value = !advOptions.value;
+};
+
+const onReleaseDateInput = (value) => {
+    releasePeriodDisable.value = value === null ? false : true;
+}
+
+const onReleasePeriodInput = (value) => {
+    releaseDateDisable.value = value === null ? false : true;
+}
+
+const debug = (value) => {
+    console.log(value);
+}
 
 </script>
 
 <template>
     <div class="card">
-        <Panel header="Search Options" toggleable>
+        <Panel header="Search Options" :toggleable="true">
 
             <div class="grid p-fluid">
 
@@ -116,18 +145,38 @@ const onSubmit = () => {
                 </div>
 
             </div>
-            <br />
-            <div class="flex justify-content-end">
+            <div class="flex justify-content-between flex-wrap">
+                <Button label="Advanced Options" @click="onAdvOpt"></Button>
+                <Toast />
                 <Button label="Submit" @click="onSubmit"></Button>
+            </div>
+
+            <br />
+            <div v-show="advOptions">
+                <div class="grid p-fluid">
+                    <div class="field col-12 md:col-4">
+                        <label for="releaseDate">Release Date</label>
+                        <Calendar :showIcon="true" :showButtonBar="true" inputId="releaseDate" v-model="releaseDate" @update:modelValue="onReleaseDateInput" :disabled="releaseDateDisable" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="releaseAfter">Release After</label>
+                        <Calendar :showIcon="true" :showButtonBar="true" inputId="releaseAfter" v-model="releaseAfter" @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="releaseBefore">Release Before</label>
+                        <Calendar :showIcon="true" :showButtonBar="true" inputId="releaseBefore" v-model="releaseBefore" @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
+                    </div>
+
+                </div>
             </div>
 
         </Panel>
     </div>
 
     <div class="card">
-        <Panel header="Search Results" toggleable>
-            {{ resultText }}
-            <DataTable :value="results" v-model:visible="tableVisible">
+        <Panel header="Search Results" :toggleable="true">
+            <DataTable :value="results" tableStyle="min-width: 80rem">
+                <template #header> {{ resultText }} </template>
                 <Column v-for="col of cols" :key="col.field" :field="col.field" :header="col.header"></Column>
             </DataTable>
         </Panel>
