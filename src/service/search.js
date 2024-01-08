@@ -14,4 +14,12 @@ class circleService {
     }
 };
 
-export { cvService, circleService };
+class tagService {
+    getTag() {
+        return fetch('data/tag.json')
+        .then((res) => res.json())
+        .then((n) => n.tags);
+    }
+}
+
+export { cvService, circleService, tagService };

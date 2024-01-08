@@ -1,0 +1,8 @@
+{
+    "tags": [
+        {"label": "Hello", "code": "H"},
+        {"label": "World", "code": "W"},
+        {"label": "Thank", "code": "T"},
+        {"label": "You", "code": "Y"}
+    ]
+}

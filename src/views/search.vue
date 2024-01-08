@@ -3,7 +3,7 @@
 import { ref, onMounted } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios'
-import { cvService, circleService } from '@/service/search.js'
+import { cvService, circleService, tagService } from '@/service/search.js'
 
 const pre = ref('RJ');
 const iCode = ref(null);
@@ -19,6 +19,8 @@ const releaseAfter = ref(null);
 const releaseBefore = ref(null);
 const releaseDateDisable = ref(false);
 const releasePeriodDisable = ref(false);
+const selectedTags = ref([]);
+const suggestedTags = ref([]);
 
 const results = ref([]);
 const resultText = ref('No results found');
@@ -26,6 +28,7 @@ const advOptions = ref(true);
 
 const cvSearch = new cvService();
 const circleSearch = new circleService();
+const tagSearch = new tagService();
 
 const toast = useToast();
 
@@ -34,6 +37,7 @@ axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 onMounted(() => {
     cvSearch.getCV().then((name) => (aCV.value = name));
     circleSearch.getCircle().then((name) => (aCircle.value = name));
+    tagSearch.getTag().then((tags) => (suggestedTags.value = tags));
 });
 
 const codeLabel = [
@@ -48,6 +52,10 @@ const cols = [
     {field: 'cv', header: 'CV'},
     {field: 'circle', header: 'Circle'}
 ]
+
+const tagsOptions = {
+    itemSize: 40
+}
 
 const searchCircle = (event) => {
     setTimeout(() => {
@@ -97,6 +105,7 @@ const onSubmit = () => {
         });
 };
 
+// Toggle extra options
 const onAdvOpt = () => {
     advOptions.value = !advOptions.value;
 };
@@ -125,7 +134,8 @@ const debug = (value) => {
                     <label for="wcode">Code</label>
                     <div class="p-inputgroup">
                         <SplitButton :label="pre" :model="codeLabel"></SplitButton>
-                        <InputMask type="text" id="wcode" v-model="iCode" mask="99999999" slotChar="" placeholder="Number only" />
+                        <InputMask type="text" id="wcode" v-model="iCode" mask="99999999"
+                            slotChar="" placeholder="Number only" />
                     </div>
                 </div>
 
@@ -136,12 +146,14 @@ const debug = (value) => {
 
                 <div class="field col-12 md:col-4">
                     <label for="circle">Circle</label>
-                    <AutoComplete type="text" inputId="circle" v-model="iCircle" :suggestions="sCircle" dropdown @complete="searchCircle" />
+                    <AutoComplete type="text" inputId="circle" v-model="iCircle" :suggestions="sCircle"
+                        dropdown @complete="searchCircle" />
                 </div>
 
                 <div class="field col-12 ">
                     <label for="cv">CV</label>
-                    <AutoComplete type="text" inputId="cv" v-model="iCV" :suggestions="sCV" :multiple="true" dropdown @complete="searchCV" />
+                    <AutoComplete type="text" inputId="cv" v-model="iCV" :suggestions="sCV" :multiple="true"
+                        dropdown @complete="searchCV" />
                 </div>
 
             </div>
@@ -155,16 +167,26 @@ const debug = (value) => {
             <div v-show="advOptions">
                 <div class="grid p-fluid">
                     <div class="field col-12 md:col-4">
-                        <label for="releaseDate">Release Date</label>
-                        <Calendar :showIcon="true" :showButtonBar="true" inputId="releaseDate" v-model="releaseDate" @update:modelValue="onReleaseDateInput" :disabled="releaseDateDisable" />
+                        <label for="rDate">Release Date</label>
+                        <Calendar :showIcon="true" :showButtonBar="true" inputId="rDate" v-model="releaseDate"
+                            @update:modelValue="onReleaseDateInput" :disabled="releaseDateDisable" />
                     </div>
                     <div class="field col-12 md:col-4">
-                        <label for="releaseAfter">Release After</label>
-                        <Calendar :showIcon="true" :showButtonBar="true" inputId="releaseAfter" v-model="releaseAfter" @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
+                        <label for="rAfter">Release After</label>
+                        <Calendar :showIcon="true" :showButtonBar="true" inputId="rAfter" v-model="releaseAfter"
+                            @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
                     </div>
                     <div class="field col-12 md:col-4">
-                        <label for="releaseBefore">Release Before</label>
-                        <Calendar :showIcon="true" :showButtonBar="true" inputId="releaseBefore" v-model="releaseBefore" @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
+                        <label for="rBefore">Release Before</label>
+                        <Calendar :showIcon="true" :showButtonBar="true" inputId="rBefore" v-model="releaseBefore"
+                            @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
+                    </div>
+
+                    <div class="field col-12">
+                        <label for="tags">Tags</label>
+                        <MultiSelect inputId="tags" v-model="selectedTags" :showToggleAll="false"
+                            :options="suggestedTags" display="chip" optionLabel="label" optionValue="code"
+                            :virtualScrollerOptions="tagsOptions" @update:modelValue="" />
                     </div>
 
                 </div>
