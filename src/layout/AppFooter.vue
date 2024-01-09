@@ -10,8 +10,12 @@ const logoUrl = computed(() => {
 </script>
 
 <template>
-    <div class="layout-footer">
-
+    <div class="layout-footer" style="user-select: none">
+        <img :src="'onseidb-logo.svg'" alt="logo" height="20" class="mr-2" />
+        by miku39 using primevue
     </div>
 </template>
-<style lang="scss" scoped></style>
+
+<style lang="scss" scoped>
+
+</style>

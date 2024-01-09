@@ -10,17 +10,18 @@ const iCode = ref(null);
 const iTitle = ref('');
 const iCircle = ref('');
 const sCircle = ref([]);
-const aCircle = ref('');
-const iCV = ref('');
+const aCircle = ref([]);
+const iCV = ref([]);
 const sCV = ref([]);
-const aCV = ref('');
+const iAge = ref([]);
+
 const releaseDate = ref(null);
 const releaseAfter = ref(null);
 const releaseBefore = ref(null);
 const releaseDateDisable = ref(false);
 const releasePeriodDisable = ref(false);
-const selectedTags = ref([]);
-const suggestedTags = ref([]);
+const iTags = ref([]);
+const sTags = ref([]);
 
 const results = ref([]);
 const resultText = ref('No results found');
@@ -35,9 +36,9 @@ const toast = useToast();
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 onMounted(() => {
-    cvSearch.getCV().then((name) => (aCV.value = name));
+    cvSearch.getCV().then((name) => (sCV.value = name));
     circleSearch.getCircle().then((name) => (aCircle.value = name));
-    tagSearch.getTag().then((tags) => (suggestedTags.value = tags));
+    tagSearch.getTag().then((tags) => (sTags.value = tags));
 });
 
 const codeLabel = [
@@ -46,6 +47,12 @@ const codeLabel = [
     {label: 'VJ', command: () => {pre.value = 'VJ'}}
 ];
 
+const ageOpts = ref([
+    { option: 'A', value: 1 },
+    { option: 'B', value: 2 },
+    { option: 'C', value: 3 }
+]);
+
 const cols = [
     {field: 'code', header: 'Code'},
     {field: 'title', header: 'Title'},
@@ -53,7 +60,7 @@ const cols = [
     {field: 'circle', header: 'Circle'}
 ]
 
-const tagsOptions = {
+const tagsPanelOpts = {
     itemSize: 40
 }
 
@@ -63,18 +70,6 @@ const searchCircle = (event) => {
             sCircle.value = [...aCircle.value];
         } else {
             sCircle.value = aCircle.value.filter((name) => {
-                return name.toLowerCase().includes(event.query.toLowerCase());
-            })
-        }
-    }, 250)
-};
-
-const searchCV = (event) => {
-    setTimeout(() => {
-        if(!event.query.trim().length) {
-            sCV.value = [...aCV.value];
-        } else {
-            sCV.value = aCV.value.filter((name) => {
                 return name.toLowerCase().includes(event.query.toLowerCase());
             })
         }
@@ -126,7 +121,7 @@ const debug = (value) => {
 
 <template>
     <div class="card">
-        <Panel header="Search Options" :toggleable="true">
+        <Panel header="Search Options" toggleable>
 
             <div class="grid p-fluid">
 
@@ -141,63 +136,98 @@ const debug = (value) => {
 
                 <div class="field col-12 md:col-4">
                     <label for="title">Title</label>
-                    <InputText type="text" id="title" v-model="iTitle" />
+                    <InputText type="text" id="title" v-model="iTitle" placeholder="Input title"/>
                 </div>
 
                 <div class="field col-12 md:col-4">
                     <label for="circle">Circle</label>
-                    <AutoComplete type="text" inputId="circle" v-model="iCircle" :suggestions="sCircle"
-                        dropdown @complete="searchCircle" />
+                    <AutoComplete type="text" inputId="circle" placeholder="Select circle"
+                        v-model="iCircle" :suggestions="sCircle"
+                        dropdown forceSelection @complete="searchCircle" />
                 </div>
 
-                <div class="field col-12 ">
+                <div class="field col-12 md:col-6">
                     <label for="cv">CV</label>
-                    <AutoComplete type="text" inputId="cv" v-model="iCV" :suggestions="sCV" :multiple="true"
-                        dropdown @complete="searchCV" />
+                    <MultiSelect inputId="cv" placeholder="Select CV" v-model="iCV" showToggleAll
+                        :options="sCV" display="chip" filter :selectionLimit="3"
+                        :virtualScrollerOptions="tagsPanelOpts" @update:modelValue="">
+                    </MultiSelect>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label>Age</label>
+                        <SelectButton v-model="iAge" :options="ageOpts"
+                            optionLabel="option" optionValue="value" multiple />
                 </div>
 
-            </div>
-            <div class="flex justify-content-between flex-wrap">
-                <Button label="Advanced Options" @click="onAdvOpt"></Button>
-                <Toast />
-                <Button label="Submit" @click="onSubmit"></Button>
-            </div>
-
-            <br />
-            <div v-show="advOptions">
-                <div class="grid p-fluid">
+                <template v-if="advOptions">
                     <div class="field col-12 md:col-4">
                         <label for="rDate">Release Date</label>
-                        <Calendar :showIcon="true" :showButtonBar="true" inputId="rDate" v-model="releaseDate"
+                        <Calendar showIcon showButtonBar inputId="rDate" v-model="releaseDate"
                             @update:modelValue="onReleaseDateInput" :disabled="releaseDateDisable" />
                     </div>
                     <div class="field col-12 md:col-4">
                         <label for="rAfter">Release After</label>
-                        <Calendar :showIcon="true" :showButtonBar="true" inputId="rAfter" v-model="releaseAfter"
+                        <Calendar showIcon showButtonBar inputId="rAfter" v-model="releaseAfter"
                             @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
                     </div>
                     <div class="field col-12 md:col-4">
                         <label for="rBefore">Release Before</label>
-                        <Calendar :showIcon="true" :showButtonBar="true" inputId="rBefore" v-model="releaseBefore"
+                        <Calendar showIcon showButtonBar inputId="rBefore" v-model="releaseBefore"
                             @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
                     </div>
 
                     <div class="field col-12">
                         <label for="tags">Tags</label>
-                        <MultiSelect inputId="tags" v-model="selectedTags" :showToggleAll="false"
-                            :options="suggestedTags" display="chip" optionLabel="label" optionValue="code"
-                            :virtualScrollerOptions="tagsOptions" @update:modelValue="" />
+                        <MultiSelect inputId="tags" placeholder="Select tag" v-model="iTags" showToggleAll
+                            filter :options="sTags" display="chip" optionLabel="label" optionValue="code"
+                            :virtualScrollerOptions="tagsPanelOpts" :selectionLimit="5">
+                        </MultiSelect>
                     </div>
 
+                    <div class="field col-12 md:col-4">
+                        <label for="series">Series</label>
+                        <AutoComplete type="text" inputId="series" placeholder="Select series"
+                            v-model="iCircle" :suggestions="sCircle"
+                            dropdown forceSelection @complete="searchCircle" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="author">Author</label>
+                        <AutoComplete type="text" inputId="author" placeholder="Select author"
+                            v-model="iCircle" :suggestions="sCircle"
+                            dropdown forceSelection @complete="searchCircle" />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="illustrator">Illustrator</label>
+                        <AutoComplete type="text" inputId="illustrator" placeholder="Select illustrator"
+                            v-model="iCircle" :suggestions="sCircle"
+                            dropdown forceSelection @complete="searchCircle" />
+                    </div>
+                </template>
+
+                <div class="field col-12 md:col-6">
+                    <div class="flex md:justify-content-start">
+                        <Button label="Advanced Options" @click="onAdvOpt" class="md:w-max" iconPos="right"
+                            :icon="advOptions?'fa-solid fa-angles-up fa-xl':'fa-solid fa-angles-down fa-xl'" />
+                    </div>
                 </div>
+                <div class="field col-12 md:col-6">
+                    <Toast />
+                    <div class="flex justify-content-between md:justify-content-end gap-3">
+                        <Button label="Clear" icon="fa-regular fa-circle-xmark fa-xl" iconPos="right"
+                            class="w-max" />
+                        <Button label="Submit" icon="fa-regular fa-circle-check fa-xl" iconPos="right"
+                            @click="onSubmit" class="w-max" />
+                    </div>
+                </div>
+
             </div>
 
         </Panel>
     </div>
 
     <div class="card">
-        <Panel header="Search Results" :toggleable="true">
-            <DataTable :value="results" tableStyle="min-width: 80rem">
+        <Panel header="Search Results" toggleable>
+            <DataTable :value="results" tableStyle="min-width: 60rem">
                 <template #header> {{ resultText }} </template>
                 <Column v-for="col of cols" :key="col.field" :field="col.field" :header="col.header"></Column>
             </DataTable>
@@ -214,6 +244,10 @@ const debug = (value) => {
 
 .p-autocomplete-empty-message {
     padding: 0rem 1rem;
+}
+
+.field {
+    margin-bottom: 0.5rem;
 }
 
 </style>
