@@ -34,6 +34,10 @@ const onConfigButtonClick = () => {
     visible.value = !visible.value;
 };
 
+const onTopBarMenuButton = () => {
+    topbarMenuActive.value = !topbarMenuActive.value;
+};
+
 const onChangeTheme = (theme, color, dark = undefined) => {
     changeTheme(theme, color, dark);
     themeSetting.theme = theme ? theme : themeSetting.theme;
@@ -107,9 +111,9 @@ const isOutsideClicked = (event) => {
             <i class="pi pi-bars"></i>
         </button>
 
-        <!-- <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
+        <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>
-        </button> -->
+        </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <!-- <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">

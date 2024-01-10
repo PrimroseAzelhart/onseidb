@@ -7,25 +7,28 @@ import { cvService, circleService, tagService } from '@/service/search.js'
 
 const pre = ref('RJ');
 const iCode = ref(null);
-const iTitle = ref('');
-const iCircle = ref('');
-const sCircle = ref([]);
-const aCircle = ref([]);
-const iCV = ref([]);
-const sCV = ref([]);
-const iAge = ref([]);
+const iTitle = ref(null);
+const iCircle = ref(null);
+const sCircle = ref(null);
+const aCircle = ref(null);
+const iCV = ref(null);
+const sCV = ref(null);
+const iAge = ref(null);
 
 const releaseDate = ref(null);
 const releaseAfter = ref(null);
 const releaseBefore = ref(null);
 const releaseDateDisable = ref(false);
 const releasePeriodDisable = ref(false);
-const iTags = ref([]);
-const sTags = ref([]);
+const iTags = ref(null);
+const sTags = ref(null);
+
+const inputGroup = [iCode, iTitle, iCircle, iCV, iAge, releaseDate, releaseAfter, releaseBefore, iTags]
 
 const results = ref([]);
 const resultText = ref('No results found');
-const advOptions = ref(true);
+const advOptions = ref(false);
+const worksPerPage = ref(10);
 
 const cvSearch = new cvService();
 const circleSearch = new circleService();
@@ -74,6 +77,12 @@ const searchCircle = (event) => {
             })
         }
     }, 250)
+};
+
+const onClear = () => {
+    inputGroup.forEach(item => {
+        item.value = null;
+    });
 };
 
 const responseError = (code, message) => {
@@ -214,7 +223,7 @@ const debug = (value) => {
                     <Toast />
                     <div class="flex justify-content-between md:justify-content-end gap-3">
                         <Button label="Clear" icon="fa-regular fa-circle-xmark fa-xl" iconPos="right"
-                            class="w-max" />
+                            @click="onClear" class="w-max" />
                         <Button label="Submit" icon="fa-regular fa-circle-check fa-xl" iconPos="right"
                             @click="onSubmit" class="w-max" />
                     </div>
@@ -227,10 +236,32 @@ const debug = (value) => {
 
     <div class="card">
         <Panel header="Search Results" toggleable>
-            <DataTable :value="results" tableStyle="min-width: 60rem">
-                <template #header> {{ resultText }} </template>
-                <Column v-for="col of cols" :key="col.field" :field="col.field" :header="col.header"></Column>
-            </DataTable>
+
+            <DataView :value="results" paginator :rows="worksPerPage">
+                <template #list="slotProps">
+                    <div class="col-12">
+                        <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-10rem">
+                            <Image src="onseidb-logo.svg" alt="Image" preview />
+                                <div class="flex flex-row justify-content-between align-items-start w-full h-full">
+                                    <div class="flex flex-column justify-content-between h-full flex-grow-1">
+                                        <div class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden">{{ slotProps.data.title }}</div>
+                                        <div>{{ slotProps.data.circle }}</div>
+                                        <div>{{ slotProps.data.cv }}</div>
+                                        <div class="flex gap-2">
+                                            <Tag v-for="item in slotProps.data.tag" :value="item" rounded />
+                                        </div>
+
+                                    </div>
+                                    <div class="flex flex-column justify-content-end h-full min-w-max">
+                                        <!-- <div>{{ slotProps.data.circle }}</div> -->
+                                        <div>{{ slotProps.data.date[0] }}-{{ slotProps.data.date[1] }}-{{ slotProps.data.date[2] }}</div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </template>
+            </DataView>
+
         </Panel>
     </div>
 
@@ -248,6 +279,10 @@ const debug = (value) => {
 
 .field {
     margin-bottom: 0.5rem;
+}
+
+.p-paginator {
+    border-width: 0rem;
 }
 
 </style>
