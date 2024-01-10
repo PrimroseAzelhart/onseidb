@@ -13,7 +13,7 @@ const sCircle = ref(null);
 const aCircle = ref(null);
 const iCV = ref(null);
 const sCV = ref(null);
-const iAge = ref(null);
+const iAge = ref([]);
 
 const releaseDate = ref(null);
 const releaseAfter = ref(null);
@@ -29,6 +29,12 @@ const results = ref([]);
 const resultText = ref('No results found');
 const advOptions = ref(false);
 const worksPerPage = ref(10);
+
+const submitLoading = ref(false);
+
+const sortKey = ref();
+const sortAscend = ref(false);
+const sortField = ref();
 
 const cvSearch = new cvService();
 const circleSearch = new circleService();
@@ -56,12 +62,10 @@ const ageOpts = ref([
     { option: 'C', value: 3 }
 ]);
 
-const cols = [
-    {field: 'code', header: 'Code'},
-    {field: 'title', header: 'Title'},
-    {field: 'cv', header: 'CV'},
-    {field: 'circle', header: 'Circle'}
-]
+const sortOptions = ref([
+    // {label: 'Release date', value: 'date'},
+    {label: 'Price', value: 'price'},
+]);
 
 const tagsPanelOpts = {
     itemSize: 40
@@ -79,10 +83,23 @@ const searchCircle = (event) => {
     }, 250)
 };
 
+const ageButtonToggle = (value) => {
+    if (iAge.value.includes(value)) {
+        iAge.value.splice(iAge.value.indexOf(value), 1);
+    } else {
+        iAge.value.push(value);
+    }
+}
+
+const ageStyle = (value) => {
+    return iAge.value.includes(value);
+}
+
 const onClear = () => {
     inputGroup.forEach(item => {
         item.value = null;
     });
+    iAge.value = [];
 };
 
 const responseError = (code, message) => {
@@ -90,6 +107,7 @@ const responseError = (code, message) => {
 };
 
 const onSubmit = () => {
+    submitLoading.value = true;
     axios.post('http://api.onsei.fans/search', {
             option: 'code'
         })
@@ -102,10 +120,12 @@ const onSubmit = () => {
             } else {
                 resultText.value = `Found ${count} result(s)`;
             }
+            submitLoading.value = false;
         })
         .catch(function (error) {
             console.log(error);
             responseError(error.code, error.message);
+            submitLoading.value = false;
         });
 };
 
@@ -122,6 +142,15 @@ const onReleasePeriodInput = (value) => {
     releaseDateDisable.value = value === null ? false : true;
 }
 
+const onChangeSortOrder = (event) => {
+    sortField.value = event.value.value;
+    sortKey.value = event.value;
+}
+
+const sortFunc = (a, b) => {
+    return 0;
+}
+
 const debug = (value) => {
     console.log(value);
 }
@@ -131,7 +160,6 @@ const debug = (value) => {
 <template>
     <div class="card">
         <Panel header="Search Options" toggleable>
-
             <div class="grid p-fluid">
 
                 <div class="field col-12 md:col-4">
@@ -164,8 +192,11 @@ const debug = (value) => {
                 </div>
                 <div class="field col-12 md:col-6">
                     <label>Age</label>
-                        <SelectButton v-model="iAge" :options="ageOpts"
-                            optionLabel="option" optionValue="value" multiple />
+                        <span class="p-buttonset">
+                            <Button v-for="item in ageOpts" :label="item.option" @click="ageButtonToggle(item.value)"
+                            :text="!ageStyle(item.value)"
+                            :icon="ageStyle(item.value)?'fa-regular fa-square-check fa-lg':'fa-regular fa-square fa-lg'" />
+                        </span>
                 </div>
 
                 <template v-if="advOptions">
@@ -225,43 +256,48 @@ const debug = (value) => {
                         <Button label="Clear" icon="fa-regular fa-circle-xmark fa-xl" iconPos="right"
                             @click="onClear" class="w-max" />
                         <Button label="Submit" icon="fa-regular fa-circle-check fa-xl" iconPos="right"
-                            @click="onSubmit" class="w-max" />
+                            @click="onSubmit" class="w-max" :loading="submitLoading" />
                     </div>
                 </div>
 
             </div>
-
         </Panel>
     </div>
 
     <div class="card">
         <Panel header="Search Results" toggleable>
+            <DataView :value="results" paginator :rows="worksPerPage" :sortOrder="sortAscend?-1:1" :sortField="sortField">
+                <template #header>
+                    <div class="flex gap-3">
+                        <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" @change="onChangeSortOrder($event)"
+                            placeholder="Sort by..." class="w-12rem" />
+                        <Button @click="() => sortAscend = !sortAscend" rounded
+                            :icon="sortAscend?'fa-solid fa-arrow-down-wide-short':'fa-solid fa-arrow-up-wide-short'" />
+                    </div>
 
-            <DataView :value="results" paginator :rows="worksPerPage">
+                </template>
                 <template #list="slotProps">
                     <div class="col-12">
                         <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-10rem">
                             <Image src="onseidb-logo.svg" alt="Image" preview />
-                                <div class="flex flex-row justify-content-between align-items-start w-full h-full">
-                                    <div class="flex flex-column justify-content-between h-full flex-grow-1">
-                                        <div class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden">{{ slotProps.data.title }}</div>
-                                        <div>{{ slotProps.data.circle }}</div>
-                                        <div>{{ slotProps.data.cv }}</div>
-                                        <div class="flex gap-2">
-                                            <Tag v-for="item in slotProps.data.tag" :value="item" rounded />
-                                        </div>
-
-                                    </div>
-                                    <div class="flex flex-column justify-content-end h-full min-w-max">
-                                        <!-- <div>{{ slotProps.data.circle }}</div> -->
-                                        <div>{{ slotProps.data.date[0] }}-{{ slotProps.data.date[1] }}-{{ slotProps.data.date[2] }}</div>
+                            <div class="flex flex-row justify-content-between align-items-start w-full h-full">
+                                <div class="flex flex-column justify-content-between h-full flex-grow-1">
+                                    <div class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden">{{ slotProps.data.title }}</div>
+                                    <div>{{ slotProps.data.circle }}</div>
+                                    <div>{{ slotProps.data.cv }}</div>
+                                    <div class="flex gap-2">
+                                        <Tag v-for="item in slotProps.data.tag" :value="item" rounded />
                                     </div>
                                 </div>
+                                <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
+                                    <span class="text-2xl font-semibold">￥{{ slotProps.data.price }}</span>
+                                    <div>{{ slotProps.data.date[0] }}-{{ slotProps.data.date[1] }}-{{ slotProps.data.date[2] }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </template>
             </DataView>
-
         </Panel>
     </div>
 

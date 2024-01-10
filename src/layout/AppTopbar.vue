@@ -95,8 +95,6 @@ const isOutsideClicked = (event) => {
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 };
 
-// onChangeTheme(themeSetting.theme, themeSetting.color, themeSetting.dark);
-
 </script>
 
 <template>
@@ -116,14 +114,6 @@ const isOutsideClicked = (event) => {
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <!-- <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i class="pi pi-calendar"></i>
-                <span>Calendar</span>
-            </button>
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i class="pi pi-user"></i>
-                <span>Profile</span>
-            </button> -->
             <button @click="onConfigButtonClick()" class="p-link layout-topbar-button">
                 <i class="fa-solid fa-palette"></i>
                 <span>Theme</span>
@@ -141,22 +131,21 @@ const isOutsideClicked = (event) => {
             <Button icon="pi pi-plus" type="button" pButton @click="incrementScale()" class="p-button-text p-button-rounded w-2rem h-2rem ml-2" :disabled="layoutConfig.scale.value === scales[scales.length - 1]"></Button>
         </div>
 
-
-            <h5>Menu Type</h5>
-            <div class="flex">
-                <div class="field-radiobutton flex-1">
-                    <RadioButton name="menuMode" value="static" v-model="layoutConfig.menuMode.value" inputId="mode1"></RadioButton>
-                    <label for="mode1">Static</label>
-                </div>
-
-                <div class="field-radiobutton flex-1">
-                    <RadioButton name="menuMode" value="overlay" v-model="layoutConfig.menuMode.value" inputId="mode2"></RadioButton>
-                    <label for="mode2">Overlay</label>
-                </div>
+        <h5>Menu Type</h5>
+        <div class="flex">
+            <div class="field-radiobutton flex-1">
+                <RadioButton name="menuMode" value="static" v-model="layoutConfig.menuMode.value" inputId="mode1"></RadioButton>
+                <label for="mode1">Static</label>
             </div>
 
-            <h5>Dark Theme</h5>
-            <InputSwitch v-model="layoutConfig.darkTheme.value" @input="onChangeTheme(undefined, undefined, layoutConfig.darkTheme.value)" inputId="dark"></InputSwitch>
+            <div class="field-radiobutton flex-1">
+                <RadioButton name="menuMode" value="overlay" v-model="layoutConfig.menuMode.value" inputId="mode2"></RadioButton>
+                <label for="mode2">Overlay</label>
+            </div>
+        </div>
+
+        <h5>Dark Theme</h5>
+        <InputSwitch v-model="layoutConfig.darkTheme.value" @input="onChangeTheme(undefined, undefined, layoutConfig.darkTheme.value)" inputId="dark"></InputSwitch>
 
         <h5>Bootstrap</h5>
         <div class="grid">
