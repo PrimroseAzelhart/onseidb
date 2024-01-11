@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, isRuntimeOnly } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios'
 import { cvService, circleService, tagService } from '@/service/search.js'
@@ -26,7 +26,6 @@ const sTags = ref(null);
 const inputGroup = [iCode, iTitle, iCircle, iCV, iAge, releaseDate, releaseAfter, releaseBefore, iTags]
 
 const results = ref([]);
-const resultText = ref('No results found');
 const advOptions = ref(false);
 const worksPerPage = ref(10);
 
@@ -34,7 +33,6 @@ const submitLoading = ref(false);
 
 const sortKey = ref();
 const sortAscend = ref(false);
-const sortField = ref();
 
 const cvSearch = new cvService();
 const circleSearch = new circleService();
@@ -63,7 +61,7 @@ const ageOpts = ref([
 ]);
 
 const sortOptions = ref([
-    // {label: 'Release date', value: 'date'},
+    {label: 'Release date', value: 'date'},
     {label: 'Price', value: 'price'},
 ]);
 
@@ -112,15 +110,16 @@ const onSubmit = () => {
             option: 'code'
         })
         .then(function (response) {
-            console.log(response.data.list);
             results.value = response.data.list;
-            const count = response.data.list.length
-            if (count === 0) {
-                resultText.value = 'No results found';
-            } else {
-                resultText.value = `Found ${count} result(s)`;
-            }
+            // const count = response.data.list.length
+            results.value.forEach((item) => {
+                item.year = parseInt(item.date / 10000);
+                item.month = parseInt(item.date % 10000 / 100);
+                item.day = item.date % 100;
+            });
+            sortResults();
             submitLoading.value = false;
+            console.log(results.value);
         })
         .catch(function (error) {
             console.log(error);
@@ -142,13 +141,30 @@ const onReleasePeriodInput = (value) => {
     releaseDateDisable.value = value === null ? false : true;
 }
 
-const onChangeSortOrder = (event) => {
-    sortField.value = event.value.value;
-    sortKey.value = event.value;
+const compareResults = (a, b) => {
+    return (sortAscend.value ? (a-b) : (b-a));
 }
 
 const sortFunc = (a, b) => {
-    return 0;
+    var res = 0;
+    switch (sortKey.value) {
+        case 'price':
+            res = compareResults(a.price, b.price);
+            break;
+        case 'date':
+            res = compareResults(a.date, b.date);
+            break;
+        default:
+            res = 0;
+    }
+    return res;
+}
+
+const sortResults = (toggle) => {
+    if (toggle) {
+        sortAscend.value = !sortAscend.value;
+    }
+    results.value.sort(sortFunc);
 }
 
 const debug = (value) => {
@@ -165,7 +181,7 @@ const debug = (value) => {
                 <div class="field col-12 md:col-4">
                     <label for="wcode">Code</label>
                     <div class="p-inputgroup">
-                        <SplitButton :label="pre" :model="codeLabel"></SplitButton>
+                        <SplitButton :label="pre" :model="codeLabel" />
                         <InputMask type="text" id="wcode" v-model="iCode" mask="99999999"
                             slotChar="" placeholder="Number only" />
                     </div>
@@ -193,9 +209,8 @@ const debug = (value) => {
                 <div class="field col-12 md:col-6">
                     <label>Age</label>
                         <span class="p-buttonset">
-                            <Button v-for="item in ageOpts" :label="item.option" @click="ageButtonToggle(item.value)"
-                            :text="!ageStyle(item.value)"
-                            :icon="ageStyle(item.value)?'fa-regular fa-square-check fa-lg':'fa-regular fa-square fa-lg'" />
+                            <Button v-for="item in ageOpts" :label="item.option" @click="ageButtonToggle(item.value)" :text="!ageStyle(item.value)"
+                                :icon="ageStyle(item.value)?'fa-regular fa-square-check fa-lg':'fa-regular fa-square fa-lg'" />
                         </span>
                 </div>
 
@@ -266,32 +281,32 @@ const debug = (value) => {
 
     <div class="card">
         <Panel header="Search Results" toggleable>
-            <DataView :value="results" paginator :rows="worksPerPage" :sortOrder="sortAscend?-1:1" :sortField="sortField">
+            <!-- <DataView :value="results" paginator :rows="worksPerPage" :sortOrder="sortAscend?-1:1" :sortField="sortField"> -->
+            <DataView :value="results" paginator :rows="worksPerPage">
                 <template #header>
                     <div class="flex gap-3">
-                        <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" @change="onChangeSortOrder($event)"
-                            placeholder="Sort by..." class="w-12rem" />
-                        <Button @click="() => sortAscend = !sortAscend" rounded
-                            :icon="sortAscend?'fa-solid fa-arrow-down-wide-short':'fa-solid fa-arrow-up-wide-short'" />
+                        <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" optionValue="value"
+                            @change="sortResults" placeholder="Sort by..." class="w-12rem" />
+                        <Button @click="sortResults(true)" rounded
+                            :icon="sortAscend?'fa-solid fa-arrow-up-wide-short':'fa-solid fa-arrow-down-wide-short'" />
                     </div>
-
                 </template>
                 <template #list="slotProps">
                     <div class="col-12">
                         <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-10rem">
                             <Image src="onseidb-logo.svg" alt="Image" preview />
-                            <div class="flex flex-row justify-content-between align-items-start w-full h-full">
-                                <div class="flex flex-column justify-content-between h-full flex-grow-1">
-                                    <div class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden">{{ slotProps.data.title }}</div>
-                                    <div>{{ slotProps.data.circle }}</div>
+                            <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
+                                <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
+                                    <div class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
+                                    <div class="white-space-nowrap">{{ slotProps.data.circle }}</div>
                                     <div>{{ slotProps.data.cv }}</div>
                                     <div class="flex gap-2">
                                         <Tag v-for="item in slotProps.data.tag" :value="item" rounded />
                                     </div>
                                 </div>
                                 <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
-                                    <span class="text-2xl font-semibold">￥{{ slotProps.data.price }}</span>
-                                    <div>{{ slotProps.data.date[0] }}-{{ slotProps.data.date[1] }}-{{ slotProps.data.date[2] }}</div>
+                                    <div class="text-2xl font-semibold">￥{{ slotProps.data.price }}</div>
+                                    <div>{{ slotProps.data.year }}-{{ slotProps.data.month }}-{{ slotProps.data.day }}</div>
                                 </div>
                             </div>
                         </div>
