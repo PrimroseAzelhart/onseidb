@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, onMounted, computed, isRuntimeOnly } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios'
 import { cvService, circleService, tagService } from '@/service/search.js'
@@ -43,9 +43,9 @@ const toast = useToast();
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 onMounted(() => {
-    cvSearch.getCV().then((name) => (sCV.value = name));
-    circleSearch.getCircle().then((name) => (aCircle.value = name));
-    tagSearch.getTag().then((tags) => (sTags.value = tags));
+    cvSearch.getCV().then((list) => (sCV.value = list));
+    circleSearch.getCircle().then((list) => (aCircle.value = list));
+    tagSearch.getTag().then((list) => (sTags.value = list));
 });
 
 const codeLabel = [
@@ -192,7 +192,7 @@ const debug = (value) => {
                 <div class="field col-12 md:col-4">
                     <label for="circle">Circle</label>
                     <AutoComplete type="text" inputId="circle" placeholder="Select circle"
-                        v-model="iCircle" :suggestions="sCircle"
+                        v-model="iCircle" :suggestions="sCircle" optionLabel="name"
                         dropdown forceSelection @complete="searchCircle" />
                 </div>
 
@@ -200,6 +200,7 @@ const debug = (value) => {
                     <label for="cv">CV</label>
                     <MultiSelect inputId="cv" placeholder="Select CV" v-model="iCV" showToggleAll
                         :options="sCV" display="chip" filter :selectionLimit="3"
+                        optionLabel="name" optionValue="id"
                         :virtualScrollerOptions="tagsPanelOpts" @update:modelValue="">
                     </MultiSelect>
                 </div>
@@ -231,7 +232,7 @@ const debug = (value) => {
                     <div class="field col-12">
                         <label for="tags">Tags</label>
                         <MultiSelect inputId="tags" placeholder="Select tag" v-model="iTags" showToggleAll
-                            filter :options="sTags" display="chip" optionLabel="label" optionValue="code"
+                            filter :options="sTags" display="chip" optionLabel="value" optionValue="id"
                             :virtualScrollerOptions="tagsPanelOpts" :selectionLimit="5">
                         </MultiSelect>
                     </div>
@@ -291,14 +292,14 @@ const debug = (value) => {
                 </template>
                 <template #list="slotProps">
                     <div class="col-12">
-                        <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-10rem">
-                            <Image src="onseidb-logo.svg" alt="Image" preview />
+                        <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem">
+                            <Image src="onseidb-logo.svg" alt="Image" preview class="w-14rem"/>
                             <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
                                 <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
                                     <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
                                     <div class="white-space-nowrap">{{ slotProps.data.circle }}</div>
-                                    <div class="flex gap-2">
-                                        <Chip v-for="item in slotProps.data.cv" :label="item" class="bg-pink-300" />
+                                    <div class="flex gap-2 h-2rem">
+                                        <Chip v-for="item in slotProps.data.cv" :label="item" class="bg-primary" />
                                     </div>
                                     <div class="flex gap-2">
                                         <Tag v-for="item in slotProps.data.tag" :value="item" rounded />

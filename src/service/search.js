@@ -1,24 +1,24 @@
 class cvService {
     getCV() {
-        return fetch('data/cv.json')
+        return fetch('http://api.onsei.fans/list/cv')
         .then((res) => res.json())
-        .then((n) => n.name);
+        .then((n) => n.list);
     }
 };
 
 class circleService {
     getCircle() {
-        return fetch('data/circle.json')
+        return fetch('http://api.onsei.fans/list/circle')
         .then((res) => res.json())
-        .then((n) => n.name);
+        .then((n) => n.list);
     }
 };
 
 class tagService {
     getTag() {
-        return fetch('data/tag.json')
+        return fetch('http://api.onsei.fans/list/tag')
         .then((res) => res.json())
-        .then((n) => n.tags);
+        .then((n) => n.list);
     }
 }
 
