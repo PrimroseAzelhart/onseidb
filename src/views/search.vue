@@ -23,7 +23,7 @@ const releasePeriodDisable = ref(false);
 const iTags = ref(null);
 const sTags = ref(null);
 
-const inputGroup = [iCode, iTitle, iCircle, iCV, iAge, releaseDate, releaseAfter, releaseBefore, iTags]
+const inputGroup = [iCode, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iTags]
 
 const results = ref([]);
 const advOptions = ref(false);
@@ -116,17 +116,18 @@ const responseError = (code, message) => {
 
 const onSubmit = () => {
     submitLoading.value = true;
-    axios.post('http://api.onsei.fans/search', {
-            option: 'code'
-        })
+    axios.post('http://api.onsei.fans/search')
         .then(function (response) {
-            results.value = response.data.list;
+            results.value = response.data;
             // const count = response.data.list.length
             results.value.forEach((item) => {
-                item.year = parseInt(item.date / 10000);
-                item.month = parseInt(item.date % 10000 / 100);
-                item.day = item.date % 100;
+                const d = new Date(item.release_date);
+                item.date = d.getTime() / 1000;
+                item.year = d.getFullYear();
+                item.month = d.getMonth() + 1;
+                item.day = d.getDate();
             });
+
             sortResults();
             submitLoading.value = false;
             console.log(results.value);
@@ -200,7 +201,7 @@ const debug = (value) => {
                     <label for="cv">CV</label>
                     <MultiSelect inputId="cv" placeholder="Select CV" v-model="iCV" showToggleAll
                         :options="sCV" display="chip" filter :selectionLimit="3"
-                        optionLabel="name" optionValue="id"
+                        optionLabel="name" optionValue="name"
                         :virtualScrollerOptions="tagsPanelOpts" @update:modelValue="">
                     </MultiSelect>
                 </div>
@@ -232,7 +233,7 @@ const debug = (value) => {
                     <div class="field col-12">
                         <label for="tags">Tags</label>
                         <MultiSelect inputId="tags" placeholder="Select tag" v-model="iTags" showToggleAll
-                            filter :options="sTags" display="chip" optionLabel="value" optionValue="id"
+                            filter :options="sTags" display="chip" optionLabel="value" optionValue="value"
                             :virtualScrollerOptions="tagsPanelOpts" :selectionLimit="5">
                         </MultiSelect>
                     </div>
