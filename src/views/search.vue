@@ -67,17 +67,17 @@ const sortOptions = ref([
 
 const tagsPanelOpts = {
     itemSize: 40
-}
+};
 
 const resultsPerPageOpts = [10, 20];
 
 const sortOrderIcon = computed(() => {
     return sortAscend.value ? 'fa-solid fa-arrow-up-wide-short' : 'fa-solid fa-arrow-down-wide-short';
-})
+});
 
 const ageIcon = (value) => {
     return ageChecked(value) ? 'fa-regular fa-square-check fa-lg' : 'fa-regular fa-square fa-lg';
-}
+};
 
 const searchCircle = (event) => {
     setTimeout(() => {
@@ -85,10 +85,10 @@ const searchCircle = (event) => {
             sCircle.value = [...aCircle.value];
         } else {
             sCircle.value = aCircle.value.filter((name) => {
-                return name.toLowerCase().includes(event.query.toLowerCase());
+                return name.name.toLowerCase().includes(event.query.toLowerCase());
             })
         }
-    }, 250)
+    }, 250);
 };
 
 const ageButtonToggle = (value) => {
@@ -97,11 +97,11 @@ const ageButtonToggle = (value) => {
     } else {
         iAge.value.push(value);
     }
-}
+};
 
 const ageChecked = (value) => {
     return iAge.value.includes(value);
-}
+};
 
 const onClear = () => {
     inputGroup.forEach(item => {
@@ -114,7 +114,19 @@ const responseError = (code, message) => {
     toast.add({ severity: 'error', summary: `${code}`, detail: `${message}`, life: 5000 });
 };
 
+const isEmpty = (item) => {
+    if (Array.isArray(item.value)) {
+        return item.value.length === 0;
+    } else {
+        return !item.value;
+    }
+};
+
 const onSubmit = () => {
+    if (inputGroup.every(isEmpty)) {
+        responseError("Empty options", "Please fill at least 1 field");
+        return;
+    }
     submitLoading.value = true;
     axios.post('http://api.onsei.fans/search')
         .then(function (response) {
@@ -146,28 +158,28 @@ const onAdvOpt = () => {
 
 const onReleaseDateInput = (value) => {
     releasePeriodDisable.value = value === null ? false : true;
-}
+};
 
 const onReleasePeriodInput = (value) => {
     releaseDateDisable.value = value === null ? false : true;
-}
+};
 
 const sortFunc = (a, b) => {
     const na = a[sortKey.value];
     const nb = b[sortKey.value];
     return (sortAscend.value ? (na-nb) : (nb-na));
-}
+};
 
 const sortResults = (toggle) => {
     if (toggle) {
         sortAscend.value = !sortAscend.value;
     }
     results.value.sort(sortFunc);
-}
+};
 
 const debug = (value) => {
     console.log(value);
-}
+};
 
 </script>
 
