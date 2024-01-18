@@ -128,7 +128,7 @@ const onSubmit = () => {
         return;
     }
     submitLoading.value = true;
-    axios.post('http://api.onsei.fans/search')
+    axios.post('https://api.onsei.fans/search')
         .then(function (response) {
             results.value = response.data;
             // const count = response.data.list.length
