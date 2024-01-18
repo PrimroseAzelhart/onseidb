@@ -1,0 +1,17 @@
+{
+    "_id": "auto",
+    "code": "RJXXXXXXXX",
+    "title": "",
+    "circle": "",
+    "release_date": "datetime.datetime",
+    "price": 0,
+    "cv": [],
+    "tag": [],
+    "age": "",
+    "series": "",
+    "author": [],
+    "illustrator": [],
+    "language": [],
+    "format": [],
+    "size": ""
+}
