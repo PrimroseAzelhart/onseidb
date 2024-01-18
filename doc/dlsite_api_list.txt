@@ -1,0 +1,8 @@
+tags&search options:
+https://www.dlsite.com/maniax/fs/=/api_access/1
+
+bought works
+https://www.dlsite.com/maniax/load/bought/product?_=[cookies:uhashjp]
+
+meta data exclude primary info
+https://www.dlsite.com/maniax/product/info/ajax?product_id=[code[,...]]
