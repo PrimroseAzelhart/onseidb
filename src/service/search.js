@@ -1,25 +1,16 @@
-class cvService {
-    getCV() {
-        return fetch('https://api.onsei.fans/list/cv')
+class searchService {
+    get(item) {
+        return fetch('https://api.onsei.fans/list/' + item)
         .then((res) => res.json())
-        .then((n) => n);
+        .then((data) => {
+            localStorage.setItem(item, JSON.stringify(data));
+            data;
+        });
     }
-};
 
-class circleService {
-    getCircle() {
-        return fetch('https://api.onsei.fans/list/circle')
-        .then((res) => res.json())
-        .then((n) => n);
-    }
-};
-
-class tagService {
-    getTag() {
-        return fetch('https://api.onsei.fans/list/tag')
-        .then((res) => res.json())
-        .then((n) => n);
+    retrieve(item) {
+        return localStorage.getItem(item);
     }
 }
 
-export { cvService, circleService, tagService };
+export { searchService };

@@ -3,7 +3,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios'
-import { cvService, circleService, tagService } from '@/service/search.js'
+import { searchService } from '@/service/search.js'
 
 const pre = ref('RJ');
 const iCode = ref(null);
@@ -24,6 +24,8 @@ const iTags = ref(null);
 const sTags = ref(null);
 
 const inputGroup = [iCode, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iTags]
+const selectionGroup = [aCircle, sCV, sTags]
+const selectionKey = ['circle', 'cv', 'tag']
 
 const results = ref([]);
 const advOptions = ref(false);
@@ -34,18 +36,21 @@ const submitLoading = ref(false);
 const sortKey = ref('date');
 const sortAscend = ref(false);
 
-const cvSearch = new cvService();
-const circleSearch = new circleService();
-const tagSearch = new tagService();
+const search = new searchService();
 
 const toast = useToast();
 
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 onMounted(() => {
-    cvSearch.getCV().then((list) => (sCV.value = list));
-    circleSearch.getCircle().then((list) => (aCircle.value = list));
-    tagSearch.getTag().then((list) => (sTags.value = list));
+    for (var i = 0; i < selectionKey.length; i++) {
+        const res = search.retrieve(selectionKey[i]);
+        if (res) {
+            selectionGroup[i].value = JSON.parse(res);
+        } else {
+            search.get(selectionKey[i]).then((data) => (selectionGroup[i].value = data));
+        }
+    }
 });
 
 const codeLabel = [
