@@ -1,26 +1,60 @@
 <script setup>
 import router from '@/router'
-import { ref, inject } from 'vue';
+import { ref, inject, onMounted } from 'vue';
+import axios from 'axios'
 
 const message = ref([]);
 const auth = ref('');
 const password = ref('');
 const checked = ref(false);
+const loginLoading = ref(false);
+
 const $cookies = inject('$cookies');
 
-const addMessage = (type) => {
-    if (type === 'error') {
-        message.value = [{ severity: 'error', content: 'Authorization failed'}];
-    }
+const msgText = {
+    'failed': 'Authorization failed!',
+    'empty': 'Username and password cannot be empty!',
+    'error': 'Server has encountered internal error!',
+    'success': 'Login successfully, redirecting to homepage...'
+};
+
+axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+
+onMounted(() => {
+    $cookies.remove('token');
+});
+
+const addMessage = (type, level) => {
+    message.value = [{ severity: level, content: msgText[type]}];
 };
 
 const onLoginButtonClick = () => {
-    if (auth.value === 'admin' && password.value === 'admin') {
-        $cookies.set('token', 'logedin');
-        router.push('/');
-    } else {
-        addMessage('error');
+    if (!auth.value || !password.value) {
+        addMessage('empty', 'error');
+        return;
     }
+    message.value = [];
+    loginLoading.value = true;
+    axios.post('https://api.onsei.fans/login', {
+        username: auth.value,
+        password: password.value
+    })
+    .then(function (response) {
+        const res = response.data;
+        if (res.code !== 0) {
+            addMessage('failed', 'error');
+        } else {
+            addMessage('success', 'success')
+            $cookies.set('token', res.id)
+            setTimeout(() => {
+                router.push('/')
+            }, 1000);
+        }
+    })
+    .catch(function (error) {
+        addMessage('error', 'error')
+    });
+    loginLoading.value = false;
 }
 
 </script>
@@ -51,7 +85,7 @@ const onLoginButtonClick = () => {
                         <!-- <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Forgot password?</a> -->
                     </div>
 
-                    <Button label="Sign In" class="w-full p-3 text-xl" @click="onLoginButtonClick()"></Button>
+                    <Button label="Sign In" class="w-full p-3 text-xl" @click="onLoginButtonClick()" :loading="loginLoading" />
                     <transition-group name="p-message" tag="div">
                         <Message v-for="msg of message" :severity="msg.severity" :key="msg.content" :closable="false">{{ msg.content }}</Message>
                     </transition-group>
@@ -62,14 +96,4 @@ const onLoginButtonClick = () => {
 
 </template>
 
-<style scoped>
-.pi-eye {
-    transform: scale(1.6);
-    margin-right: 1rem;
-}
-
-.pi-eye-slash {
-    transform: scale(1.6);
-    margin-right: 1rem;
-}
-</style>
+<style scoped></style>
