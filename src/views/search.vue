@@ -5,6 +5,10 @@ import { useToast } from 'primevue/usetoast';
 import axios from 'axios'
 import { searchService } from '@/service/search.js'
 
+import AutoComplete from 'primevue/autocomplete';
+import Calendar from 'primevue/calendar';
+import DataView from 'primevue/dataview';
+
 const pre = ref('RJ');
 const iCode = ref(null);
 const iTitle = ref(null);

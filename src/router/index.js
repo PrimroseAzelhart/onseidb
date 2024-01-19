@@ -1,13 +1,13 @@
-import home from '@/views/home.vue';
-import search from '@/views/search.vue';
-import cv from '@/views/cv.vue';
-import circle from '@/views/circle.vue';
-import release from '@/views/release.vue';
-import tag from '@/views/tag.vue';
-import login from '@/views/login.vue';
-
 import { createRouter, createWebHistory } from 'vue-router';
 import AppLayout from '@/layout/AppLayout.vue';
+
+const home = () => import('@/views/home.vue');
+const search = () => import('@/views/search.vue');
+const cv = () => import('@/views/cv.vue');
+const circle = () => import('@/views/circle.vue');
+const release = () => import('@/views/release.vue');
+const tag = () => import('@/views/tag.vue');
+const login = () => import('@/views/login.vue');
 
 const routes = [
     {

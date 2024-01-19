@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { visualizer } from "rollup-plugin-visualizer";
 
 import path from 'path'
 
@@ -10,5 +11,10 @@ export default defineConfig({
       '@' : path.resolve(__dirname, './src')
     },
   },
-  plugins: [vue()],
+  build: {
+    rollupOptions: {
+      plugins: [visualizer({ open: true })],
+    },
+  },
+  plugins: [vue()]
 })

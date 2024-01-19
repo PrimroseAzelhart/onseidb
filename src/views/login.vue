@@ -3,10 +3,11 @@ import router from '@/router'
 import { ref, inject, onMounted } from 'vue';
 import axios from 'axios'
 
+import Password from 'primevue/password';
+
 const message = ref([]);
 const auth = ref('');
 const password = ref('');
-const checked = ref(false);
 const loginLoading = ref(false);
 
 const $cookies = inject('$cookies');
@@ -76,14 +77,6 @@ const onLoginButtonClick = () => {
 
                     <label for="password" class="block text-900 font-medium text-xl mb-2">Password</label>
                     <Password inputId="password" v-model="password" :toggleMask="true" class="w-full mb-3" inputClass="w-full" :inputStyle="{ padding: '1rem' }" :feedback="false"></Password>
-
-                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
-                        <div class="flex align-items-center">
-                            <Checkbox v-model="checked" inputId="rememberme" binary class="mr-2"></Checkbox>
-                            <label for="rememberme">Remember me</label>
-                        </div>
-                        <!-- <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Forgot password?</a> -->
-                    </div>
 
                     <Button label="Sign In" class="w-full p-3 text-xl" @click="onLoginButtonClick()" :loading="loginLoading" />
                     <transition-group name="p-message" tag="div">

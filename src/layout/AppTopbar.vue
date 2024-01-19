@@ -3,6 +3,8 @@
 import { ref, computed, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 
+import Sidebar from 'primevue/sidebar';
+
 const $cookies = inject('$cookies');
 
 const { changeTheme, setScale, layoutConfig, onMenuToggle } = useLayout();
