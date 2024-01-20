@@ -156,21 +156,7 @@ const isOutsideClicked = (event) => {
         <h5>Dark Theme</h5>
         <InputSwitch v-model="layoutConfig.darkTheme.value" @input="onChangeTheme(undefined, undefined, layoutConfig.darkTheme.value)" inputId="dark"></InputSwitch>
 
-        <h5>Bootstrap</h5>
-        <div class="grid">
-            <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4', 'blue')">
-                    <img src="/layout/images/themes/bootstrap4-light-blue.svg" class="w-2rem h-2rem" alt="Bootstrap Light Blue" />
-                </button>
-            </div>
-            <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('bootstrap4', 'purple')">
-                    <img src="/layout/images/themes/bootstrap4-light-purple.svg" class="w-2rem h-2rem" alt="Bootstrap Light Purple" />
-                </button>
-            </div>
-        </div>
-
-        <h5>Lara</h5>
+        <h5>Color</h5>
         <div class="grid">
             <div class="col-3">
                 <button class="p-link w-2rem h-2rem" @click="onChangeTheme('lara', 'blue')">
