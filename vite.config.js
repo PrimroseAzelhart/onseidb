@@ -11,7 +11,11 @@ export default defineConfig({
       '@' : path.resolve(__dirname, './src')
     },
   },
+  // css: {
+  //   transformer: 'lightningcss'
+  // },
   build: {
+    // cssMinify: 'lightningcss',
     rollupOptions: {
       plugins: [visualizer({ open: true })],
     },
