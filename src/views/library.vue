@@ -7,6 +7,17 @@ const refreshDis = ref(true);
 const uhashjp = ref('');
 const results = ref();
 
+const submit = () => {
+    url = '' + uhashjp.value;
+    axios.get(url)
+    .then(function (response) {
+        console.log(response);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+};
+
 </script>
 
 <template>
@@ -19,10 +30,10 @@ const results = ref();
                 </span>
             </div>
             <div class="col-2">
-                <Button label="Refresh" class="w-full" :disabled="refreshDis" />
+                <Button label="Refresh" class="w-full" icon="fa-solid fa-arrows-rotate fa-spin" :disabled="refreshDis" />
             </div>
             <div class="col-2">
-                <Button label="Submit" class="w-full" :disabled="!uhashjp" />
+                <Button label="Submit" class="w-full" :disabled="!uhashjp" @click="submit" />
             </div>
         </div>
     </div>

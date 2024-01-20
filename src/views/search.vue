@@ -282,15 +282,15 @@ const debug = (value) => {
                 <div class="field col-12 md:col-6">
                     <div class="flex md:justify-content-start">
                         <Button label="Advanced Options" @click="onAdvOpt" class="md:w-max" iconPos="right"
-                            :icon="advOptions?'fa-solid fa-angles-up fa-xl':'fa-solid fa-angles-down fa-xl'" />
+                            :icon="advOptions?'fa-solid fa-angles-up fa-lg':'fa-solid fa-angles-down fa-lg'" />
                     </div>
                 </div>
                 <div class="field col-12 md:col-6">
                     <Toast />
                     <div class="flex justify-content-between md:justify-content-end gap-3">
-                        <Button label="Clear" icon="fa-regular fa-circle-xmark fa-xl" iconPos="right"
+                        <Button label="Clear" icon="fa-regular fa-circle-xmark fa-lg" iconPos="right"
                             @click="onClear" class="w-max" />
-                        <Button label="Submit" icon="fa-regular fa-circle-check fa-xl" iconPos="right"
+                        <Button label="Submit" icon="fa-regular fa-circle-check fa-lg" iconPos="right"
                             @click="onSubmit" class="w-max" :loading="submitLoading" />
                     </div>
                 </div>
