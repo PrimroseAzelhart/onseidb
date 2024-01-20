@@ -8,6 +8,7 @@ const circle = () => import('@/views/circle.vue');
 const release = () => import('@/views/release.vue');
 const tag = () => import('@/views/tag.vue');
 const login = () => import('@/views/login.vue');
+const library = () => import('@/views/library.vue');
 
 const routes = [
     {
@@ -44,6 +45,11 @@ const routes = [
                 name: 'Tag',
                 component: tag
             },
+            {
+                path: '/library',
+                name: 'Library',
+                component: library
+            }
         ]
     },
     {

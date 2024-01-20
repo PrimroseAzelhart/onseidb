@@ -18,6 +18,7 @@ const model = ref([
     {
         label: 'User',
         items: [
+            {label: 'Library', icon: 'fa-solid fa-headphones fa-fw', to: '/library'},
             {label: 'Logout', icon: 'fa-solid fa-right-from-bracket fa-fw', to: '/logout'}
         ]
     }
