@@ -65,7 +65,7 @@ const updateDB = () => {
         .then((resp) => {
             if (++updated === needUpdate.value.length) {
                 needUpdate.value = [];
-                localLastUpdate.value = Date.now() / 1000;
+                localLastUpdate.value = parseInt(Date.now() / 1000);
                 localStorage.setItem('update', localLastUpdate.value.toString());
                 addMessage('updated');
                 updateButtonDisabled.value = true;
