@@ -16,11 +16,12 @@ const msg = {
     'none': {'severity': 'info', 'text': 'No local database found'},
     'outdated': {'severity': 'warn', 'text': 'Local database is outdated, update available'},
     'error': {'severity': 'error', 'text': 'Unable to check for updates from server'},
-    'updated': {'severity': 'success', 'text': 'Local database is updated'}
+    'updated': {'severity': 'success', 'text': 'Local database is updated'},
+    'updating': {'severity': 'info', 'text': 'Updating'}
 };
 
 onMounted(() => {
-    localLastUpdate.value = localStorage.getItem('update');
+    localLastUpdate.value = parseInt(localStorage.getItem('update'));
     if (localLastUpdate.value) {
         db.checkUpdate()
         .then((data) => {
@@ -32,9 +33,10 @@ onMounted(() => {
             }
             if (needUpdate.value.length === 0) {
                 addMessage('updated');
-                return;
+            } else {
+                updateButtonDisabled.value = false;
+                addMessage('outdated');
             }
-            updateButtonDisabled.value = false;
         })
         .catch((error) => {
             addMessage('error');
@@ -55,13 +57,21 @@ const addMessage = (type) => {
 };
 
 const updateDB = () => {
+    var updated = 0;
+    updateButtonDisabled.value = true;
+    addMessage('updating');
     for (var key of needUpdate.value) {
-        db.get(key);
+        db.get(key)
+        .then((resp) => {
+            if (++updated === needUpdate.value.length) {
+                needUpdate.value = [];
+                localLastUpdate.value = Date.now() / 1000;
+                localStorage.setItem('update', localLastUpdate.value.toString());
+                addMessage('updated');
+                updateButtonDisabled.value = true;
+            }
+        });
     }
-    needUpdate.value = [];
-    localLastUpdate.value = Date.now() / 1000;
-    localStorage.setItem('update', localLastUpdate.value.toString());
-    addMessage('updated');
 };
 
 </script>
