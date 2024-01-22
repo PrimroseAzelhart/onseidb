@@ -3,7 +3,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios'
-import { searchService } from '@/service/search.js'
+import { databaseService } from '@/service/api.js'
 
 import AutoComplete from 'primevue/autocomplete';
 import Calendar from 'primevue/calendar';
@@ -40,7 +40,7 @@ const submitLoading = ref(false);
 const sortKey = ref('date');
 const sortAscend = ref(false);
 
-const search = new searchService();
+const db = new databaseService();
 
 const toast = useToast();
 
@@ -48,11 +48,11 @@ axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 onMounted(() => {
     for (var i = 0; i < selectionKey.length; i++) {
-        const res = search.retrieve(selectionKey[i]);
+        const res = db.retrieve(selectionKey[i]);
         if (res) {
             selectionGroup[i].value = JSON.parse(res);
         } else {
-            search.get(selectionKey[i]).then((data) => (selectionGroup[i].value = data));
+            selectionGroup[i].value = [];
         }
     }
 });
@@ -138,7 +138,7 @@ const onSubmit = () => {
     }
     submitLoading.value = true;
     axios.post('https://api.onsei.fans/search')
-        .then(function (response) {
+        .then((response) => {
             results.value = response.data;
             // const count = response.data.list.length
             results.value.forEach((item) => {
@@ -153,7 +153,7 @@ const onSubmit = () => {
             submitLoading.value = false;
             console.log(results.value);
         })
-        .catch(function (error) {
+        .catch((error) => {
             console.log(error);
             responseError(error.code, error.message);
             submitLoading.value = false;
@@ -198,7 +198,7 @@ const debug = (value) => {
             <div class="grid p-fluid">
 
                 <div class="field col-12 md:col-4">
-                    <label for="wcode">Code</label>
+                    <label for="wcode">ID</label>
                     <div class="p-inputgroup">
                         <SplitButton :label="pre" :model="codeLabel" />
                         <InputMask type="text" id="wcode" v-model="iCode" mask="99999999"

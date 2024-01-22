@@ -9,6 +9,7 @@ const release = () => import('@/views/release.vue');
 const tag = () => import('@/views/tag.vue');
 const login = () => import('@/views/login.vue');
 const library = () => import('@/views/library.vue');
+const database = () => import('@/views/database.vue');
 
 const routes = [
     {
@@ -49,6 +50,11 @@ const routes = [
                 path: '/library',
                 name: 'Library',
                 component: library
+            },
+            {
+                path: '/database',
+                name: 'Database',
+                component: database
             }
         ]
     },

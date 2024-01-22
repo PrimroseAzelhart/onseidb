@@ -21,6 +21,12 @@ const model = ref([
             {label: 'Library', icon: 'fa-solid fa-headphones fa-fw', to: '/library'},
             {label: 'Logout', icon: 'fa-solid fa-right-from-bracket fa-fw', to: '/logout'}
         ]
+    },
+    {
+        label: 'Site',
+        items: [
+            {label: 'Database', icon: 'fa-solid fa-database fa-fw', to: '/database'}
+        ]
     }
 ]);
 </script>

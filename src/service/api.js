@@ -1,0 +1,19 @@
+import axios from 'axios'
+
+class databaseService {
+    get(item) {
+        return axios.get('https://api.onsei.fans/list/' + item)
+                    .then((resp) => localStorage.setItem(item, JSON.stringify(resp)));
+    }
+
+    retrieve(item) {
+        return localStorage.getItem(item);
+    }
+
+    checkUpdate() {
+        return axios.get('https://api.onsei.fans/update')
+                    .then((resp) => resp);
+    }
+}
+
+export { databaseService };
