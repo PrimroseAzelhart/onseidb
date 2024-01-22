@@ -68,7 +68,7 @@ def listTag():
         return jsonify(results)
 
 @application.route("/update")
-def listTag():
+def update():
     with open('/opt/app/update_record.json', 'r') as frecord:
         results = json.load(frecord)
         return jsonify(results)

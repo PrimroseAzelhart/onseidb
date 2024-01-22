@@ -17,10 +17,12 @@ const msg = {
     'outdated': {'severity': 'warn', 'text': 'Local database is outdated, update available'},
     'error': {'severity': 'error', 'text': 'Unable to check for updates from server'},
     'updated': {'severity': 'success', 'text': 'Local database is updated'},
-    'updating': {'severity': 'info', 'text': 'Updating'}
+    'updating': {'severity': 'info', 'text': 'Updating...'},
+    'checking': {'severity': 'info', 'text': 'Checking for update...'}
 };
 
 onMounted(() => {
+    addMessage('checking');
     localLastUpdate.value = parseInt(localStorage.getItem('update'));
     if (localLastUpdate.value) {
         db.checkUpdate()
