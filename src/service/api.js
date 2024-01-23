@@ -12,7 +12,7 @@ class databaseService {
 
     checkUpdate() {
         return axios.get('https://api.onsei.fans/update')
-                    .then((resp) => resp);
+                    .then((resp) => resp.data);
     }
 }
 
