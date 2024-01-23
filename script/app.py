@@ -3,18 +3,16 @@
 # Main backend application
 
 import json
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 import bcrypt
+from flask import Flask, request, jsonify, abort
+from flask_cors import CORS
 
-from db_config import mongoUri
+from func.db_config import db_client
 
 application = Flask(__name__)
 CORS(application)
 
-client = MongoClient(mongoUri, server_api = ServerApi('1'))
+client = db_client()
 
 @application.route("/")
 def index():
@@ -49,29 +47,13 @@ def search():
     ]))
     return jsonify(results)
 
-@application.route("/list/cv")
-def listCV():
-    with open('/opt/app/cv.json', 'r') as fcv:
-        results = json.load(fcv)
-        return jsonify(results)
-
-@application.route("/list/circle")
-def listCircle():
-    with open('/opt/app/circle.json', 'r') as fcv:
-        results = json.load(fcv)
-        return jsonify(results)
-
-@application.route("/list/tag")
-def listTag():
-    with open('/opt/app/tag.json', 'r') as fcv:
-        results = json.load(fcv)
-        return jsonify(results)
-
-@application.route("/update")
-def update():
-    with open('/opt/app/update_record.json', 'r') as frecord:
-        results = json.load(frecord)
-        return jsonify(results)
+@application.route("/list/<key>")
+def get_list(key):
+    try:
+        with open(f'/opt/app/json/{key}.json', 'r') as fp:
+            return jsonify(json.load(fp))
+    except:
+        abort(404)
 
 if __name__ == '__main__':
     application.run()
