@@ -1,4 +1,3 @@
-#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import json
@@ -7,25 +6,7 @@ import datetime
 
 from db_config import db_client
 
-updated = {'$set': {'update': False}}
 dataList = ['cv', 'circle', 'tag']
-config = {
-    'cv': {
-        'update': {'doc': 'cv'},
-        'res': '/opt/app/json/cv.json',
-        'item': {"_id": 0, "name": 1},
-    },
-    'circle': {
-        'update': {'doc': 'circle'},
-        'res': '/opt/app/json/circle.json',
-        'item': {"_id": 0, "name": 1},
-    },
-    'tag': {
-        'update': {'doc': 'tag'},
-        'res': '/opt/app/json/tag.json',
-        'item': {"_id": 0, "value": 1},
-    }
-}
 
 def main():
     client = db_client()
@@ -39,11 +20,16 @@ def main():
         record = json.load(frecord)
 
     for key in dataList:
-        if db['update'].find_one(config[key]['update'])['update']:
-            with open(config[key]['res'], 'w', encoding='utf-8') as fp:
-                results = list(db[key].find({}, config[key]['item']))
+        # If the list need update
+        if db['update'].find_one({'doc': key})['update']:
+            with open(f'/opt/app/json/{key}.json', 'w', encoding='utf-8') as fp:
+                # Exclude the _id field
+                results = list(db[key].find({}, {'_id': False}))
+                # Dump the list to json file
                 json.dump(results, fp)
-                db['update'].update_one(config[key]['update'], updated)
+                # Set the update field to false
+                db['update'].update_one({'doc': key}, {'$set': {'update': False}})
+                # Record the update time
                 record[key] = int(time.time())
 
     with open('/opt/app/json/update.json', 'w', encoding='utf-8') as frecord:
