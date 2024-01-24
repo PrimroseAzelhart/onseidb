@@ -50,7 +50,7 @@ def html_parser(html, fp):
         doc.append({'code': id})
     col.insert_many(doc)
 
-async def scrap(session: aiohttp.ClientSession, fp, page):
+async def fetch(session: aiohttp.ClientSession, fp, page):
     async with sema:
         payloadTmp = copy.deepcopy(payload)
         payloadTmp['page'] = page
@@ -68,8 +68,9 @@ async def scrap(session: aiohttp.ClientSession, fp, page):
 async def main():
     async with aiohttp.ClientSession() as session:
         with open('/opt/app/log/results.txt', 'w') as res:
-            tasks = [asyncio.ensure_future(scrap(session, res, page)) for page in range(1,400)]
+            tasks = [asyncio.ensure_future(fetch(session, res, page)) for page in range(1,400)]
             await asyncio.gather(*tasks)
             await session.close()
 
-asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(main())
