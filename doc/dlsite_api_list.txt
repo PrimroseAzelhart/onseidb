@@ -13,3 +13,6 @@ https://www.dlsite.com/maniax/product/revision/ajax POST
 
 main cover
 https://img.dlsite.jp/modpub/images2/work/doujin/RJXXXXXX/RJXXXXXX_img_main.webp
+
+daily update
+https://www.dlsite.com/maniax/new/=/date/2024-01-24/work_type_category/voice/show_layout/1

@@ -96,7 +96,7 @@ def html_parser(html):
             continue
     return doc
 
-async def fecth(session, id):
+async def fetch(session, id, log):
     async with sema:
         url = f'https://www.dlsite.com/maniax/work/=/product_id/{id}.html'
         try:
@@ -104,9 +104,11 @@ async def fecth(session, id):
                 html = await resp.text()
                 doc = html_parser(html)
                 db['meta'].insert_one(doc)
+                log.write(f'[{datetime.now()}][success] {id}')
                 await asyncio.sleep(1)
         except:
-            pass
+            db['failed'].insert_one({'id': id})
+            log.write(f'[{datetime.now()}][fail] {id}')
 
 def get_id_list():
     idList = []
@@ -116,10 +118,11 @@ def get_id_list():
     return idList
 
 async def main(idList):
-    async with aiohttp.ClientSession() as session:
-        tasks = [asyncio.ensure_future(fecth(session, id)) for id in idList]
-        await asyncio.gather(*tasks)
-        await session.close()
+    with open('/opt/app/log/work', 'a') as log:
+        async with aiohttp.ClientSession() as session:
+            tasks = [asyncio.ensure_future(fetch(session, id, log)) for id in idList]
+            await asyncio.gather(*tasks)
+            await session.close()
 
 if __name__ == '__main__':
     idList = get_id_list()
