@@ -51,8 +51,6 @@ onMounted(() => {
         const res = db.retrieve(selectionKey[i]);
         if (res) {
             selectionGroup[i].value = JSON.parse(res);
-        } else {
-            selectionGroup[i].value = [];
         }
     }
 });
