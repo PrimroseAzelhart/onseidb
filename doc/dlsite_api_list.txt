@@ -6,3 +6,10 @@ https://www.dlsite.com/maniax/load/bought/product?_=[cookies:uhashjp]
 
 meta data exclude primary info
 https://www.dlsite.com/maniax/product/info/ajax?product_id=[code[,...]]
+
+revision history
+https://www.dlsite.com/maniax/product/revision/ajax POST
+{act: show, product_id: id, page: 1}
+
+main cover
+https://img.dlsite.jp/modpub/images2/work/doujin/RJXXXXXX/RJXXXXXX_img_main.webp
