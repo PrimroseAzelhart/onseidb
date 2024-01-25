@@ -8,10 +8,11 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from db_config import db_client
 
-sema = asyncio.Semaphore(10)
+sema = asyncio.Semaphore(20)
 client = db_client()
 db = client['onseidb']
 fileFormat = []
+failed = []
 
 with open("/opt/app/json/option.json", 'r', encoding='utf-8') as fp:
     option = json.load(fp)
@@ -32,7 +33,8 @@ def html_parser(html):
 
     for row in table.find_all('tr'):
         if row.th.text == '販売日':
-            doc['release_date'] = datetime.strptime(row.td.text.strip(), '%Y年%m月%d日')
+            dateStr =  re.search(r'[2].+日', row.td.text.strip()).group()
+            doc['release_date'] = datetime.strptime(dateStr, '%Y年%m月%d日')
             continue
         if row.th.text == '更新情報':
             doc['last_update'] = datetime.strptime(row.td.contents[0].strip(), '%Y年%m月%d日')
@@ -104,11 +106,12 @@ async def fetch(session, id, log):
                 html = await resp.text()
                 doc = html_parser(html)
                 db['meta'].insert_one(doc)
-                log.write(f'[{datetime.now()}][success] {id}')
+                log.write(f'[{datetime.now()}][success] {id}\n')
                 await asyncio.sleep(1)
             else:
-                db['failed'].insert_one({'id': id})
-                log.write(f'[{datetime.now()}][fail] {id}')
+                failed.append({'id': id, 'status': 'failed'})
+                # db['id'].insert_one({'id': id, 'status': 'failed'})
+                log.write(f'[{datetime.now()}][fail:{resp.status}] {id}\n')
 
 def get_id_list():
     idList = []
@@ -118,12 +121,16 @@ def get_id_list():
     return idList
 
 async def main(idList):
-    with open('/opt/app/log/work', 'a') as log:
+    with open('/opt/app/log/work.txt', 'a') as log:
         async with aiohttp.ClientSession() as session:
             tasks = [asyncio.ensure_future(fetch(session, id, log)) for id in idList]
             await asyncio.gather(*tasks)
             await session.close()
+            db['id'].drop()
+            if len(failed) != 0:
+                db['id'].insert_many(failed)
 
 if __name__ == '__main__':
     idList = get_id_list()
-    asyncio.run(main(idList))
+    if len(idList) != 0:
+        asyncio.run(main(idList))

@@ -3,7 +3,7 @@
 import aiohttp
 import asyncio
 import copy
-import datetime
+from datetime import datetime
 from bs4 import BeautifulSoup, NavigableString, Tag
 
 from db_config import db_client
@@ -32,7 +32,7 @@ payload = {
 
 url = 'https://www.dlsite.com/maniax/fs'
 
-sema = asyncio.Semaphore(5)
+sema = asyncio.Semaphore(10)
 client = db_client()
 col = client['onseidb']['id']
 
@@ -54,16 +54,15 @@ async def fetch(session: aiohttp.ClientSession, fp, page):
     async with sema:
         payloadTmp = copy.deepcopy(payload)
         payloadTmp['page'] = page
-        time = str(datetime.datetime.now())
 
         async with session.post(url, data=payloadTmp) as resp:
             if resp.status == 200:
                 html = await resp.text()
                 html_parser(html, fp)
-                fp.write(f'{time} Scrape page {page} done: {resp.status}\n')
+                fp.write(f'{datetime.now()} Scrape page {page} done: {resp.status}\n')
                 await asyncio.sleep(1)
             else:
-                fp.write(f'{time} Scrape page{page} failed\n')
+                fp.write(f'{datetime.now()} Scrape page{page} failed\n')
 
 async def main():
     async with aiohttp.ClientSession() as session:
