@@ -6,7 +6,7 @@ const search = () => import('@/views/search.vue');
 const cv = () => import('@/views/cv.vue');
 const circle = () => import('@/views/circle.vue');
 const release = () => import('@/views/release.vue');
-const tag = () => import('@/views/tag.vue');
+const genre = () => import('@/views/genre.vue');
 const login = () => import('@/views/login.vue');
 const library = () => import('@/views/library.vue');
 const database = () => import('@/views/database.vue');
@@ -42,9 +42,9 @@ const routes = [
                 component: release
             },
             {
-                path: '/tag',
-                name: 'Tag',
-                component: tag
+                path: '/genre',
+                name: 'Genre',
+                component: genre
             },
             {
                 path: '/library',

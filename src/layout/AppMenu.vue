@@ -12,7 +12,7 @@ const model = ref([
             { label: 'CV', icon: 'fa-solid fa-user fa-fw', to: '/cv' },
             { label: 'Circle', icon: 'fa-solid fa-users fa-fw', to: '/circle' },
             { label: 'Release', icon: 'fa-solid fa-calendar-days fa-fw', to: '/release' },
-            { label: 'Tag', icon: 'fa-solid fa-tag fa-fw', to: '/tag' }
+            { label: 'Genre', icon: 'fa-solid fa-tag fa-fw', to: '/genre' }
         ]
     },
     {
