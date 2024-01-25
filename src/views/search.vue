@@ -36,7 +36,7 @@ const iIllustrator = ref(null);
 const sIllustrator = ref(null);
 const aIllustrator = ref(null);
 
-const inputGroup = [iCode, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iGenres]
+const inputGroup = [iCode, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iGenres, iSeries, iScripter, iIllustrator]
 const selectionGroup = [aCircle, sCV, sGenres, aSeries, aScripter, aIllustrator]
 const selectionKey = ['circle', 'cv', 'genre', 'series', 'scripter', 'illustrator']
 
@@ -53,7 +53,8 @@ const db = new databaseService();
 
 const toast = useToast();
 
-axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+const axiosInstance = axios.create()
+axiosInstance.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 onMounted(() => {
     for (var i = 0; i < selectionKey.length; i++) {
@@ -184,7 +185,15 @@ const postProcess = () => {
     });
 
     sortResults();
-}
+};
+
+const generatePostData = () => {
+    var data = {};
+    if (iCode.value) {
+        data['id'] = pre.value + iCode.value;
+        return data;
+    }
+};
 
 const onSubmit = () => {
     if (inputGroup.every(isEmpty)) {
@@ -192,7 +201,7 @@ const onSubmit = () => {
         return;
     }
     submitLoading.value = true;
-    axios.post('https://api.onsei.fans/search')
+    axiosInstance.post('https://api.onsei.fans/query', generatePostData())
         .then((response) => {
             results.value = response.data;
             // const count = response.data.list.length
@@ -302,7 +311,7 @@ const debug = (value) => {
                     <div class="field col-12">
                         <label for="genres">Genres</label>
                         <MultiSelect inputId="genres" placeholder="Select genre" v-model="iGenres" showToggleAll
-                            filter :options="sGenres" display="chip" optionLabel="name" optionValue="value"
+                            filter :options="sGenres" display="chip" optionLabel="value" optionValue="id"
                             :virtualScrollerOptions="tagsPanelOpts" :selectionLimit="5">
                         </MultiSelect>
                     </div>
@@ -378,7 +387,7 @@ const debug = (value) => {
                                     </div>
                                     <div class="h-2rem" >
                                         <div v-if="slotProps.data.genre" class="flex gap-2 h-2rem">
-                                            <Tag v-for="item in slotProps.data.genre" :value="item" rounded />
+                                            <Button v-for="item in slotProps.data.genre" :label="item" outlined size="small" />
                                         </div>
                                     </div>
                                 </div>

@@ -13,16 +13,17 @@ application = Flask(__name__)
 CORS(application)
 
 client = db_client()
+responseField = {'_id': False, 'circle_id': False, 'series_id': False, 'genre_id': False}
 
 @application.route("/")
 def index():
-    return "<p>Hello world!</p>"
+    return '<p>Hello world!</p>'
 
-@application.route("/login", methods=['POST'])
+@application.route('/login', methods=['POST'])
 def login():
     user = request.values.get('username')
     pwd = request.values.get('password').encode(encoding='utf-8')
-    id = ""
+    id = ''
     if ((user == None) or (pwd == None)):
         code = 1
     else:
@@ -37,15 +38,23 @@ def login():
                 code = 0
                 id = str(result['_id'])
 
-    response = {"code": code, "id": id}
+    response = {'code': code, 'id': id}
     return jsonify(response)
 
-@application.route("/search", methods=['POST'])
+@application.route('/query', methods=['POST'])
+def query():
+    id = request.values.get('id')
+    if id:
+        results = list(client['onseidb']['meta'].find({'id': id}, responseField))
+        return jsonify(results)
+    pass
+
+@application.route('/search', methods=['POST'])
 def search():
-    results = list(client['onseidb']['meta'].find({}, {'_id': False}))
+    results = list(client['onseidb']['meta'].find({}, responseField))
     return jsonify(results)
 
-@application.route("/list/<key>")
+@application.route('/list/<key>')
 def get_list(key):
     try:
         with open(f'/opt/app/json/{key}.json', 'r') as fp:
