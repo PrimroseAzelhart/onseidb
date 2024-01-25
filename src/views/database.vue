@@ -3,7 +3,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { databaseService } from '@/service/api.js'
 
-const dbKey = ['circle', 'cv', 'tag']
+const dbKey = ['circle', 'cv', 'genre', 'author', 'scripter', 'illustrator', 'series']
 
 const db = new databaseService();
 const localLastUpdate = ref();

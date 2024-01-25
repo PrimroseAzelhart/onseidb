@@ -110,7 +110,6 @@ async def fetch(session, id, log):
                 await asyncio.sleep(1)
             else:
                 failed.append({'id': id, 'status': 'failed'})
-                # db['id'].insert_one({'id': id, 'status': 'failed'})
                 log.write(f'[{datetime.now()}][fail:{resp.status}] {id}\n')
 
 def get_id_list():

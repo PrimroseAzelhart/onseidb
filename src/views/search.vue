@@ -24,12 +24,12 @@ const releaseAfter = ref(null);
 const releaseBefore = ref(null);
 const releaseDateDisable = ref(false);
 const releasePeriodDisable = ref(false);
-const iTags = ref(null);
-const sTags = ref(null);
+const iGenres = ref(null);
+const sGenres = ref(null);
 
-const inputGroup = [iCode, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iTags]
-const selectionGroup = [aCircle, sCV, sTags]
-const selectionKey = ['circle', 'cv', 'tag']
+const inputGroup = [iCode, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iGenres]
+const selectionGroup = [aCircle, sCV, sGenres]
+const selectionKey = ['circle', 'cv', 'genre']
 
 const results = ref([]);
 const advOptions = ref(false);
@@ -250,9 +250,9 @@ const debug = (value) => {
                     </div>
 
                     <div class="field col-12">
-                        <label for="tags">Tags</label>
-                        <MultiSelect inputId="tags" placeholder="Select tag" v-model="iTags" showToggleAll
-                            filter :options="sTags" display="chip" optionLabel="value" optionValue="value"
+                        <label for="genres">Genres</label>
+                        <MultiSelect inputId="genres" placeholder="Select genre" v-model="iGenres" showToggleAll
+                            filter :options="sGenres" display="chip" optionLabel="name" optionValue="value"
                             :virtualScrollerOptions="tagsPanelOpts" :selectionLimit="5">
                         </MultiSelect>
                     </div>

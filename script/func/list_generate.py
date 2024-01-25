@@ -6,7 +6,7 @@ import datetime
 
 from db_config import db_client
 
-dataList = ['cv', 'circle', 'tag']
+dataList = ['cv', 'circle', 'genre', 'author', 'scripter', 'illustrator', 'series']
 
 def main():
     client = db_client()
@@ -24,7 +24,7 @@ def main():
         if db['update'].find_one({'doc': key})['update']:
             with open(f'/opt/app/json/{key}.json', 'w', encoding='utf-8') as fp:
                 # Exclude the _id field
-                results = list(db[key].find({}, {'_id': False}))
+                results = list(db[key].find({}, {'_id': False, 'work': False}))
                 # Dump the list to json file
                 json.dump(results, fp)
                 # Set the update field to false
