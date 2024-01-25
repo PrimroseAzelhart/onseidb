@@ -3,6 +3,7 @@
 import json
 import time
 import datetime
+# from operator import attrgetter
 
 from db_config import db_client
 
@@ -23,8 +24,13 @@ def main():
         # If the list need update
         if db['update'].find_one({'doc': key})['update']:
             with open(f'/opt/app/json/{key}.json', 'w', encoding='utf-8') as fp:
-                # Exclude the _id field
-                results = list(db[key].find({}, {'_id': False, 'work': False}))
+                # Only include genres that have works
+                if key != 'genre':
+                    results = list(db[key].find({}, {'_id': False, 'work': False}))
+                else:
+                    results = list(db[key].find({'count': {'$exists': True}}, {'_id': False, 'work': False}))
+                # Sort list by works' amount
+                results = sorted(results, key=lambda e:e.__getitem__('count'), reverse=True)
                 # Dump the list to json file
                 json.dump(results, fp)
                 # Set the update field to false

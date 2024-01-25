@@ -21,6 +21,7 @@ def main():
     author = {}
     scripter = {}
     illustrator = {}
+    genre = {}
 
     circleDB = []
     cvDB = []
@@ -71,6 +72,13 @@ def main():
                 else:
                     illustrator[i] = [work['id']]
 
+        if 'genre' in work.keys():
+            for i in work['genre']:
+                if i in genre.keys():
+                    genre[i].append(work['id'])
+                else:
+                    genre[i] = [work['id']]
+
     for key, value in circle.items():
         circleDB.append({'id': key, 'name': value[0], 'work': value[1], 'count': len(value[1])})
 
@@ -88,6 +96,9 @@ def main():
 
     for key, value in illustrator.items():
         illustratorDB.append({'name': key, 'work': value, 'count': len(value)})
+
+    for key, value in genre.items():
+        db['genre'].update_one({'value': key}, {'$set': {'work': value, 'count': len(value)}})
 
     for i in idx:
         db[i].drop()

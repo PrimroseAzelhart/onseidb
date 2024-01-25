@@ -26,10 +26,19 @@ const releaseDateDisable = ref(false);
 const releasePeriodDisable = ref(false);
 const iGenres = ref(null);
 const sGenres = ref(null);
+const iSeries = ref(null);
+const sSeries = ref(null);
+const aSeries = ref(null);
+const iScripter = ref(null);
+const sScripter = ref(null);
+const aScripter = ref(null);
+const iIllustrator = ref(null);
+const sIllustrator = ref(null);
+const aIllustrator = ref(null);
 
 const inputGroup = [iCode, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iGenres]
-const selectionGroup = [aCircle, sCV, sGenres]
-const selectionKey = ['circle', 'cv', 'genre']
+const selectionGroup = [aCircle, sCV, sGenres, aSeries, aScripter, aIllustrator]
+const selectionKey = ['circle', 'cv', 'genre', 'series', 'scripter', 'illustrator']
 
 const results = ref([]);
 const advOptions = ref(false);
@@ -92,6 +101,42 @@ const searchCircle = (event) => {
             sCircle.value = [...aCircle.value];
         } else {
             sCircle.value = aCircle.value.filter((name) => {
+                return name.name.toLowerCase().includes(event.query.toLowerCase());
+            })
+        }
+    }, 250);
+};
+
+const searchSeries = (event) => {
+    setTimeout(() => {
+        if(!event.query.trim().length) {
+            sSeries.value = [...aSeries.value];
+        } else {
+            sSeries.value = aSeries.value.filter((name) => {
+                return name.name.toLowerCase().includes(event.query.toLowerCase());
+            })
+        }
+    }, 250);
+};
+
+const searchScripter = (event) => {
+    setTimeout(() => {
+        if(!event.query.trim().length) {
+            sScripter.value = [...aScripter.value];
+        } else {
+            sScripter.value = aScripter.value.filter((name) => {
+                return name.name.toLowerCase().includes(event.query.toLowerCase());
+            })
+        }
+    }, 250);
+};
+
+const searchIllustrator = (event) => {
+    setTimeout(() => {
+        if(!event.query.trim().length) {
+            sIllustrator.value = [...aIllustrator.value];
+        } else {
+            sIllustrator.value = aIllustrator.value.filter((name) => {
                 return name.name.toLowerCase().includes(event.query.toLowerCase());
             })
         }
@@ -212,7 +257,7 @@ const debug = (value) => {
                 <div class="field col-12 md:col-4">
                     <label for="circle">Circle</label>
                     <AutoComplete type="text" inputId="circle" placeholder="Select circle"
-                        v-model="iCircle" :suggestions="sCircle" optionLabel="name"
+                        v-model="iCircle" :suggestions="sCircle" optionLabel="name" optionValue="id"
                         dropdown forceSelection @complete="searchCircle" />
                 </div>
 
@@ -260,20 +305,20 @@ const debug = (value) => {
                     <div class="field col-12 md:col-4">
                         <label for="series">Series</label>
                         <AutoComplete type="text" inputId="series" placeholder="Select series"
-                            v-model="iCircle" :suggestions="sCircle"
-                            dropdown forceSelection @complete="searchCircle" />
+                            v-model="iSeries" :suggestions="sSeries" optionLabel="name" optionValue="id"
+                            dropdown forceSelection @complete="searchSeries" />
                     </div>
                     <div class="field col-12 md:col-4">
-                        <label for="author">Author</label>
-                        <AutoComplete type="text" inputId="author" placeholder="Select author"
-                            v-model="iCircle" :suggestions="sCircle"
-                            dropdown forceSelection @complete="searchCircle" />
+                        <label for="scripter">Scripter</label>
+                        <AutoComplete type="text" inputId="scripter" placeholder="Select scripter"
+                            v-model="iScripter" :suggestions="sScripter" optionLabel="name"
+                            dropdown forceSelection @complete="searchScripter" />
                     </div>
                     <div class="field col-12 md:col-4">
                         <label for="illustrator">Illustrator</label>
                         <AutoComplete type="text" inputId="illustrator" placeholder="Select illustrator"
-                            v-model="iCircle" :suggestions="sCircle"
-                            dropdown forceSelection @complete="searchCircle" />
+                            v-model="iIllustrator" :suggestions="sIllustrator" optionLabel="name"
+                            dropdown forceSelection @complete="searchIllustrator" />
                     </div>
                 </template>
 
