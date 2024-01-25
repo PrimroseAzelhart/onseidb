@@ -15,7 +15,7 @@ async def main():
     with open('/opt/app/log/daily', 'a') as log:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
-                if resp != 200:
+                if resp.status != 200:
                     print('failed')
                     return
                 html = await resp.text()

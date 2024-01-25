@@ -99,16 +99,16 @@ def html_parser(html):
 async def fetch(session, id, log):
     async with sema:
         url = f'https://www.dlsite.com/maniax/work/=/product_id/{id}.html'
-        try:
-            async with session.get(url) as resp:
+        async with session.get(url) as resp:
+            if resp.status == 200:
                 html = await resp.text()
                 doc = html_parser(html)
                 db['meta'].insert_one(doc)
                 log.write(f'[{datetime.now()}][success] {id}')
                 await asyncio.sleep(1)
-        except:
-            db['failed'].insert_one({'id': id})
-            log.write(f'[{datetime.now()}][fail] {id}')
+            else:
+                db['failed'].insert_one({'id': id})
+                log.write(f'[{datetime.now()}][fail] {id}')
 
 def get_id_list():
     idList = []

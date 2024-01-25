@@ -55,15 +55,15 @@ async def fetch(session: aiohttp.ClientSession, fp, page):
         payloadTmp = copy.deepcopy(payload)
         payloadTmp['page'] = page
         time = str(datetime.datetime.now())
-        try:
-            async with session.post(url, data=payloadTmp) as resp:
-                print("page:", page)
+
+        async with session.post(url, data=payloadTmp) as resp:
+            if resp.status == 200:
                 html = await resp.text()
                 html_parser(html, fp)
                 fp.write(f'{time} Scrape page {page} done: {resp.status}\n')
                 await asyncio.sleep(1)
-        except:
-            fp.write(f'{time} Scrape page{page} failed\n')
+            else:
+                fp.write(f'{time} Scrape page{page} failed\n')
 
 async def main():
     async with aiohttp.ClientSession() as session:
