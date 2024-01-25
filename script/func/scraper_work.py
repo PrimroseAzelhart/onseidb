@@ -89,9 +89,12 @@ def html_parser(html):
             continue
         if row.th.text == 'ジャンル':
             doc['genre'] = []
+            doc['genre_id'] = []
             for tag in row.td.find_all('a'):
-                genre = re.search(r'[0-9]+', tag['href']).group()
+                gid = re.search(r'[0-9]+', tag['href']).group()
+                genre = tag.text.strip()
                 doc['genre'].append(genre)
+                doc['genre_id'].append(gid)
             continue
         if row.th.text == 'ファイル容量':
             doc['size'] = re.search(r'([0-9].+B)', row.td.text.strip()).group()

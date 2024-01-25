@@ -42,9 +42,7 @@ def login():
 
 @application.route("/search", methods=['POST'])
 def search():
-    results = list(client['onseidb']['main'].aggregate([
-        {"$project": {"_id": 0, "title": 1, "release_date": 1, "price": 1, "circle": 1, "cv": 1, "tag": 1}}
-    ]))
+    results = list(client['onseidb']['meta'].find({}, {'_id': False}))
     return jsonify(results)
 
 @application.route("/list/<key>")

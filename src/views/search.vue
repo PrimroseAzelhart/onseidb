@@ -174,6 +174,18 @@ const isEmpty = (item) => {
     }
 };
 
+const postProcess = () => {
+    results.value.forEach((item) => {
+        const d = new Date(item.release_date);
+        item.date = d.getTime() / 1000;
+        item.year = d.getFullYear();
+        item.month = d.getMonth() + 1;
+        item.day = d.getDate();
+    });
+
+    sortResults();
+}
+
 const onSubmit = () => {
     if (inputGroup.every(isEmpty)) {
         responseError("Empty options", "Please fill at least 1 field");
@@ -184,15 +196,8 @@ const onSubmit = () => {
         .then((response) => {
             results.value = response.data;
             // const count = response.data.list.length
-            results.value.forEach((item) => {
-                const d = new Date(item.release_date);
-                item.date = d.getTime() / 1000;
-                item.year = d.getFullYear();
-                item.month = d.getMonth() + 1;
-                item.day = d.getDate();
-            });
+            postProcess()
 
-            sortResults();
             submitLoading.value = false;
             console.log(results.value);
         })
@@ -363,11 +368,18 @@ const debug = (value) => {
                                 <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
                                     <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
                                     <div class="white-space-nowrap">{{ slotProps.data.circle }}</div>
-                                    <div class="flex gap-2 h-2rem">
-                                        <Chip v-for="item in slotProps.data.cv" :label="item" class="bg-primary" />
+                                    <div class="h-2rem">
+                                        <div v-if="slotProps.data.cv" class="flex gap-2 h-2rem">
+                                            <div v-for="(item, index) in slotProps.data.cv" >
+                                                <Chip v-if="index<3" :label="item" class="bg-primary"></Chip>
+                                                <Chip v-if="index==4" label="..." class="bg-primary"></Chip>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="flex gap-2">
-                                        <Tag v-for="item in slotProps.data.tag" :value="item" rounded />
+                                    <div class="h-2rem" >
+                                        <div v-if="slotProps.data.genre" class="flex gap-2 h-2rem">
+                                            <Tag v-for="item in slotProps.data.genre" :value="item" rounded />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">

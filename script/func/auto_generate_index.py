@@ -3,7 +3,7 @@
 from db_config import db_client
 
 
-idx = ['circle', 'cv', 'series', 'author', 'scripter', 'illustrator']
+idx = ['circle', 'cv', 'series', 'author', 'scripter', 'illustrator', 'genre']
 
 client = db_client()
 db = client['onseidb']
@@ -29,6 +29,7 @@ def main():
     authorDB = []
     scripterDB = []
     illustratorDB = []
+    genreDB = []
 
     for work in db['meta'].find():
         i = work['circle_id']
@@ -73,11 +74,11 @@ def main():
                     illustrator[i] = [work['id']]
 
         if 'genre' in work.keys():
-            for i in work['genre']:
-                if i in genre.keys():
-                    genre[i].append(work['id'])
+            for i in range(len(work['genre'])):
+                if work['genre_id'][i] in genre.keys():
+                    genre[work['genre_id'][i]][1].append(work['id'])
                 else:
-                    genre[i] = [work['id']]
+                    genre[work['genre_id'][i]] = [work['genre'][i], [work['id']]]
 
     for key, value in circle.items():
         circleDB.append({'id': key, 'name': value[0], 'work': value[1], 'count': len(value[1])})
@@ -98,7 +99,8 @@ def main():
         illustratorDB.append({'name': key, 'work': value, 'count': len(value)})
 
     for key, value in genre.items():
-        db['genre'].update_one({'value': key}, {'$set': {'work': value, 'count': len(value)}})
+        genreDB.append({'id': key, 'value': value[0], 'work': value[1], 'count': len(value[1])})
+        # db['genre'].update_one({'value': key}, {'$set': {'work': value, 'count': len(value)}})
 
     for i in idx:
         db[i].drop()
@@ -109,6 +111,7 @@ def main():
     db['author'].insert_many(authorDB)
     db['scripter'].insert_many(scripterDB)
     db['illustrator'].insert_many(illustratorDB)
+    db['genre'].insert_many(genreDB)
 
     update('circle', len(circleDB))
     update('cv', len(cvDB))
@@ -116,6 +119,7 @@ def main():
     update('author', len(authorDB))
     update('scripter', len(scripterDB))
     update('illustrator', len(illustratorDB))
+    update('genre', len(genreDB))
 
 if __name__ == '__main__':
     main()
