@@ -16,12 +16,12 @@ CORS(application)
 client = db_client()
 responseField = {'_id': False, 'circle_id': False, 'series_id': False, 'genre_id': False}
 
-postDataField = ['id', 'title', 'circle[id]', 'cv[]', 'age', 'rel_date', 'rel_after', 'rel_before', 'genre[]', 'series[id]', 'scripter[name]', 'illustrator[name]']
+postDataField = ['id', 'title', 'circle[id]', 'cv[]', 'age[]', 'rel_date', 'rel_after', 'rel_before', 'genre[]', 'series[id]', 'scripter[name]', 'illustrator[name]']
 
 def postDataParser(data):
     postData = {}
     for i in postDataField:
-        if i == 'cv[]' or i == 'genre[]':
+        if i == 'cv[]' or i == 'genre[]' or i == 'age[]':
             d = data.getlist(i)
             if len(d) != 0:
                 postData[i] = d
@@ -60,6 +60,8 @@ def login():
 @application.route('/query', methods=['POST'])
 def query():
     data = postDataParser(request.values)
+    if len(data) == 0:
+        abort(400)
     if 'id' in data.keys():
         results = list(client['onseidb']['meta'].find({'id': data['id']}, responseField))
         return jsonify(results)
@@ -72,10 +74,10 @@ def query():
         querySentence['cv'] = {'$in': []}
         for i in data['cv[]']:
             querySentence['cv']['$in'].append(i)
-    if 'age' in data.keys():
+    if 'age[]' in data.keys():
         querySentence['age'] = {'$in': []}
-        for i in data['age']:
-            querySentence['age']['$in'].append(i)
+        for i in data['age[]']:
+            querySentence['age']['$in'].append(int(i))
     if 'rel_date' in data.keys():
         date = datetime.datetime.strptime(data['rel_date'][0:10], '%Y-%m-%d')
         querySentence['release_date'] = date

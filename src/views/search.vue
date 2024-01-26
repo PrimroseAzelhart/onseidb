@@ -36,8 +36,8 @@ const iIllustrator = ref(null);
 const sIllustrator = ref(null);
 const aIllustrator = ref(null);
 
-const inputGroup = [iD, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iGenres, iSeries, iScripter, iIllustrator]
-const keyGroup = ['id', 'title', 'circle', 'cv', 'rel_date', 'rel_after', 'rel_before', 'genre', 'series', 'scripter', 'illustrator']
+const inputGroup = [iD, iTitle, iCircle, iCV, iAge, releaseDate, releaseAfter, releaseBefore, iGenres, iSeries, iScripter, iIllustrator]
+const keyGroup = ['id', 'title', 'circle', 'cv', 'age', 'rel_date', 'rel_after', 'rel_before', 'genre', 'series', 'scripter', 'illustrator']
 const selectionGroup = [aCircle, sCV, sGenres, aSeries, aScripter, aIllustrator]
 const selectionKey = ['circle', 'cv', 'genre', 'series', 'scripter', 'illustrator']
 
@@ -73,9 +73,9 @@ const codeLabel = [
 ];
 
 const ageOpts = ref([
-    { option: 'A', value: 1 },
-    { option: 'B', value: 2 },
-    { option: 'C', value: 3 }
+    { option: 'A', value: 0 },
+    { option: 'B', value: 1 },
+    { option: 'C', value: 2 }
 ]);
 
 const sortOptions = ref([
@@ -257,6 +257,17 @@ const sortResults = (toggle) => {
     results.value.sort(sortFunc);
 };
 
+const getSeverity = (value) => {
+    switch (value) {
+        case 0:
+            return 'success';
+        case 1:
+            return 'warning';
+        case 2:
+            return 'danger';
+    }
+}
+
 const debug = (value) => {
     console.log(value);
 };
@@ -385,14 +396,18 @@ const debug = (value) => {
                 </template>
                 <template #list="slotProps">
                     <div class="col-12 card">
-                        <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem">
-                            <Image src="onseidb-logo.svg" alt="Image" preview class="w-14rem"/>
-                            <div class="flex flex-row justify-content-between align-items-start w-full h-full">
+                        <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem my-2">
+                            <div class="flex w-14rem">
+                                <Image src="onseidb-logo.svg" alt="Image" preview class="w-full"/>
+                                <Tag :value="slotProps.data.age" :severity="getSeverity(slotProps.data.age)" class="absolute mt-2 ml-2"></Tag>
+                            </div>
+
+                            <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
                                 <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
                                     <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
-                                    <div class="white-space-nowrap">{{ slotProps.data.circle }}</div>
-                                    <div class="h-2rem">
-                                        <div v-if="slotProps.data.cv" class="flex gap-2 h-2rem">
+                                    <div class="flex gap-2 h-2rem">
+                                        <div class="white-space-nowrap text-lg my-auto">{{ slotProps.data.circle + ' /' }}</div>
+                                        <div v-if="slotProps.data.cv" class="flex gap-2">
                                             <div v-for="(item, index) in slotProps.data.cv" >
                                                 <Chip v-if="index<3" :label="item" class="bg-primary"></Chip>
                                                 <Chip v-if="index==4" label="..." class="bg-primary"></Chip>
@@ -435,6 +450,10 @@ const debug = (value) => {
 
 .p-paginator {
     border-width: 0rem;
+}
+
+.p-dataview-header {
+    margin-bottom: 1rem;
 }
 
 </style>
