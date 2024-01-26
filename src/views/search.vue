@@ -87,7 +87,7 @@ const tagsPanelOpts = {
     itemSize: 40
 };
 
-const resultsPerPageOpts = [10, 20];
+const resultsPerPageOpts = [10, 20, 50];
 
 const sortOrderIcon = computed(() => {
     return sortAscend.value ? 'fa-solid fa-arrow-up-wide-short' : 'fa-solid fa-arrow-down-wide-short';
@@ -399,30 +399,29 @@ const debug = (value) => {
                         <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem my-2">
                             <div class="flex w-14rem">
                                 <Image src="onseidb-logo.svg" alt="Image" preview class="w-full"/>
-                                <Tag :value="slotProps.data.age" :severity="getSeverity(slotProps.data.age)" class="absolute mt-2 ml-2"></Tag>
+                                <Tag :value="slotProps.data.age" :severity="getSeverity(slotProps.data.age)" class="absolute mt-2 ml-2 opacity-50 text-lg"></Tag>
                             </div>
-
                             <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
                                 <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
                                     <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
+                                    <div>{{ slotProps.data.year }}-{{ slotProps.data.month }}-{{ slotProps.data.day }}</div>
                                     <div class="flex gap-2 h-2rem">
                                         <div class="white-space-nowrap text-lg my-auto">{{ slotProps.data.circle + ' /' }}</div>
-                                        <div v-if="slotProps.data.cv" class="flex gap-2">
-                                            <div v-for="(item, index) in slotProps.data.cv" >
-                                                <Chip v-if="index<3" :label="item" class="bg-primary"></Chip>
-                                                <Chip v-if="index==4" label="..." class="bg-primary"></Chip>
-                                            </div>
+                                        <div v-for="(item, index) in slotProps.data.cv">
+                                            <Chip v-if="index<5" :label="item" class="bg-primary h-full"></Chip>
+                                            <Chip v-if="index==5" label="..." class="bg-primary h-full"></Chip>
                                         </div>
                                     </div>
                                     <div class="h-2rem" >
-                                        <div v-if="slotProps.data.genre" class="flex gap-2 h-2rem">
-                                            <Button v-for="item in slotProps.data.genre" :label="item" outlined />
+                                        <div v-if="slotProps.data.genre" class="flex gap-2">
+                                            <div v-for="(item, index) in slotProps.data.genre" >
+                                                <Button v-if="index<8" :label="item" outlined class="h-2rem" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
                                     <div class="text-2xl font-semibold">￥{{ slotProps.data.price }}</div>
-                                    <div>{{ slotProps.data.year }}-{{ slotProps.data.month }}-{{ slotProps.data.day }}</div>
                                 </div>
                             </div>
                         </div>
@@ -454,6 +453,7 @@ const debug = (value) => {
 
 .p-dataview-header {
     margin-bottom: 1rem;
+    border-width: 0;
 }
 
 </style>
