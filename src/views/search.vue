@@ -10,7 +10,7 @@ import Calendar from 'primevue/calendar';
 import DataView from 'primevue/dataview';
 
 const pre = ref('RJ');
-const iCode = ref(null);
+const iD = ref(null);
 const iTitle = ref(null);
 const iCircle = ref(null);
 const sCircle = ref(null);
@@ -36,7 +36,8 @@ const iIllustrator = ref(null);
 const sIllustrator = ref(null);
 const aIllustrator = ref(null);
 
-const inputGroup = [iCode, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iGenres, iSeries, iScripter, iIllustrator]
+const inputGroup = [iD, iTitle, iCircle, iCV, releaseDate, releaseAfter, releaseBefore, iGenres, iSeries, iScripter, iIllustrator]
+const keyGroup = ['id', 'title', 'circle', 'cv', 'rel_date', 'rel_after', 'rel_before', 'genre', 'series', 'scripter', 'illustrator']
 const selectionGroup = [aCircle, sCV, sGenres, aSeries, aScripter, aIllustrator]
 const selectionKey = ['circle', 'cv', 'genre', 'series', 'scripter', 'illustrator']
 
@@ -189,10 +190,23 @@ const postProcess = () => {
 
 const generatePostData = () => {
     var data = {};
-    if (iCode.value) {
-        data['id'] = pre.value + iCode.value;
+    if (iD.value) {
+        data['id'] = pre.value + iD.value;
         return data;
     }
+    for (var i = 1; i < keyGroup.length; i++) {
+        if (Array.isArray(inputGroup[i].value)) {
+            if (inputGroup[i].value !==0) {
+                data[keyGroup[i]] = inputGroup[i].value;
+            }
+        } else {
+            if (inputGroup[i].value) {
+                data[keyGroup[i]] = inputGroup[i].value;
+            }
+        }
+    }
+    // console.log(data)
+    return data;
 };
 
 const onSubmit = () => {
@@ -258,7 +272,7 @@ const debug = (value) => {
                     <label for="wcode">ID</label>
                     <div class="p-inputgroup">
                         <SplitButton :label="pre" :model="codeLabel" />
-                        <InputMask type="text" id="wcode" v-model="iCode" mask="99999999"
+                        <InputMask type="text" id="wcode" v-model="iD" mask="99999999"
                             slotChar="" placeholder="Number only" />
                     </div>
                 </div>
@@ -271,8 +285,8 @@ const debug = (value) => {
                 <div class="field col-12 md:col-4">
                     <label for="circle">Circle</label>
                     <AutoComplete type="text" inputId="circle" placeholder="Select circle"
-                        v-model="iCircle" :suggestions="sCircle" optionLabel="name" optionValue="id"
-                        dropdown forceSelection @complete="searchCircle" />
+                        v-model="iCircle" :suggestions="sCircle" optionLabel="name" modelValue="id"
+                        dropdown forceSelection @complete="searchCircle" @update:modelValue="debug" />
                 </div>
 
                 <div class="field col-12 md:col-6">
@@ -370,10 +384,10 @@ const debug = (value) => {
                     </div>
                 </template>
                 <template #list="slotProps">
-                    <div class="col-12">
+                    <div class="col-12 card">
                         <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem">
                             <Image src="onseidb-logo.svg" alt="Image" preview class="w-14rem"/>
-                            <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
+                            <div class="flex flex-row justify-content-between align-items-start w-full h-full">
                                 <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
                                     <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
                                     <div class="white-space-nowrap">{{ slotProps.data.circle }}</div>
@@ -387,7 +401,7 @@ const debug = (value) => {
                                     </div>
                                     <div class="h-2rem" >
                                         <div v-if="slotProps.data.genre" class="flex gap-2 h-2rem">
-                                            <Button v-for="item in slotProps.data.genre" :label="item" outlined size="small" />
+                                            <Button v-for="item in slotProps.data.genre" :label="item" outlined />
                                         </div>
                                     </div>
                                 </div>
