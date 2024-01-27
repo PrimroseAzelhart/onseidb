@@ -420,67 +420,65 @@ const debug = (value) => {
                     </div>
                 </template>
                 <template #list="slotProps">
-                    <div class="col-12">
-                        <Fieldset :legend="slotProps.data.id">
-
-
-                        <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem my-2">
-                            <div class="flex h-full">
-                                <Image src="onseidb-logo.svg" alt="Image" preview class="w-10rem" />
-                                <Tag :value="slotProps.data.age" :severity="getSeverity(slotProps.data.age)" class="absolute mt-2 ml-2 opacity-50 text-lg"></Tag>
-                            </div>
-                            <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
-                                <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
-                                    <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap" @click="">
-                                        {{ slotProps.data.title }}
-                                    </div>
-                                    <div class="flex gap-3 h-2rem">
-                                        <div class="my-auto">{{ isoTimeToString(slotProps.data.release_date) }}</div>
-                                        <Chip v-if="slotProps.data.last_update" :label="isoTimeToString(slotProps.data.last_update)" class="h-full bg-primary">
-                                            <template #icon>
-                                                <i class="fa-solid fa-wrench">&nbsp;</i>
-                                            </template>
-                                        </Chip>
-                                    </div>
-                                    <div class="flex gap-2 h-2rem">
-                                        <div class="white-space-nowrap text-lg my-auto">{{ slotProps.data.circle + ' /' }}</div>
-                                        <div v-for="(item, index) in slotProps.data.cv">
-                                            <Chip v-if="index<5" :label="item" class="h-full"></Chip>
-                                            <Chip v-if="index==5" label="..." class="h-full"></Chip>
-                                        </div>
-                                    </div>
-                                    <div class="h-2rem">
-                                        <div v-if="slotProps.data.genre" class="flex gap-2">
-                                            <div v-for="item in slotProps.data.genre" >
-                                                <!-- <Button :label="item" outlined class="h-2rem button-tag" /> -->
-                                                <Tag :value="item" class="text-sm" rounded />
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
+                        <Fieldset :legend="item.id">
+                            <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem my-2">
+                                <div class="flex h-full">
+                                    <Image src="onseidb-logo.svg" alt="Image" preview class="w-10rem" />
+                                    <Tag :value="item.age" :severity="getSeverity(item.age)" class="absolute mt-2 ml-2 opacity-50 text-lg"></Tag>
                                 </div>
-                                <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
-                                    <div class="flex flex-column">
-                                        <div v-if="slotProps.data.rank_first">
-                                            <div class="flex gap-3 h-2rem justify-content-end">
-                                                <div v-for="item in slotProps.data.rank_first.voice">
-                                                    <i class="fa-solid fa-medal fa-xl fa-fw" :class="getTrophyStyle(item)"></i>
-                                                </div>
+                                <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
+                                    <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
+                                        <div :title="item.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap" @click="">
+                                            {{ item.title }}
+                                        </div>
+                                        <div class="flex gap-3 h-2rem">
+                                            <div class="my-auto">{{ isoTimeToString(item.release_date) }}</div>
+                                            <Chip v-if="item.last_update" :label="isoTimeToString(item.last_update)" class="h-full bg-primary">
+                                                <template #icon>
+                                                    <i class="fa-solid fa-wrench">&nbsp;</i>
+                                                </template>
+                                            </Chip>
+                                        </div>
+                                        <div class="flex gap-2 h-2rem">
+                                            <div class="white-space-nowrap text-lg my-auto">{{ item.circle + ' /' }}</div>
+                                            <div v-for="(cv, idx) in item.cv">
+                                                <Chip v-if="idx<5" :label="cv" class="h-full"></Chip>
+                                                <Chip v-if="idx==5" label="..." class="h-full"></Chip>
                                             </div>
-                                            <div class="flex gap-3 h-2rem justify-content-end">
-                                                <div v-for="item in slotProps.data.rank_first.all">
-                                                    <i class="fa-solid fa-trophy fa-xl fa-fw" :class="getTrophyStyle(item)"></i>
+                                        </div>
+                                        <div class="h-2rem">
+                                            <div v-if="item.genre" class="flex gap-2">
+                                                <div v-for="genre in item.genre" >
+                                                    <!-- <Button :label="item" outlined class="h-2rem button-tag" /> -->
+                                                    <Tag :value="genre" class="text-sm" rounded />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="flex align-items-end flex-column">
-                                        <div v-if="isDiscount(slotProps.data)" class="text-sm line-through">￥{{ slotProps.data.price }}</div>
-                                        <div class="text-2xl font-semibold">￥{{ slotProps.data.price_current }}</div>
+                                    <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
+                                        <div class="flex flex-column">
+                                            <div v-if="item.rank_first">
+                                                <div class="flex gap-3 h-2rem justify-content-end">
+                                                    <div v-for="i in item.rank_first.voice">
+                                                        <i class="fa-solid fa-medal fa-xl fa-fw" :class="getTrophyStyle(i)"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex gap-3 h-2rem justify-content-end">
+                                                    <div v-for="i in item.rank_first.all">
+                                                        <i class="fa-solid fa-trophy fa-xl fa-fw" :class="getTrophyStyle(i)"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex align-items-end flex-column">
+                                            <div v-if="isDiscount(item)" class="text-sm line-through">￥{{ item.price }}</div>
+                                            <div class="text-2xl font-semibold">￥{{ item.price_current }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </Fieldset>
+                        </Fieldset>
                     </div>
                 </template>
             </DataView>
@@ -493,6 +491,7 @@ const debug = (value) => {
 
 .p-tieredmenu {
     width: auto;
+    min-width: auto;
 }
 
 .p-autocomplete-empty-message {
@@ -512,8 +511,12 @@ const debug = (value) => {
     border-width: 0;
 }
 
-.button-tag {
-    padding: 0.5rem 1rem;
+.p-dataview-emptymessage {
+    display: none;
 }
+
+// .button-tag {
+//     padding: 0.5rem 1rem;
+// }
 
 </style>
