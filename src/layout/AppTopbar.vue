@@ -7,7 +7,7 @@ import Sidebar from 'primevue/sidebar';
 
 const $cookies = inject('$cookies');
 
-const { changeTheme, setScale, layoutConfig, onMenuToggle } = useLayout();
+const { changeColor, darkToggle, setScale, layoutConfig, onMenuToggle } = useLayout();
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
@@ -40,15 +40,15 @@ const onTopBarMenuButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
 };
 
-const onChangeTheme = (theme, color, dark = undefined) => {
-    changeTheme(theme, color, dark);
-    themeSetting.theme = theme ? theme : themeSetting.theme;
-    themeSetting.color = color ? color : themeSetting.color;
-    if (dark !== undefined) {
-        themeSetting.dark = dark;
-    }
-    $cookies.set('onseidb_theme', themeSetting);
-};
+// const onChangeTheme = (theme, color, dark = undefined) => {
+//     changeTheme(theme, color, dark);
+//     themeSetting.theme = theme ? theme : themeSetting.theme;
+//     themeSetting.color = color ? color : themeSetting.color;
+//     if (dark !== undefined) {
+//         themeSetting.dark = dark;
+//     }
+//     $cookies.set('onseidb_theme', themeSetting);
+// };
 
 const decrementScale = () => {
     setScale(layoutConfig.scale.value - 1);
@@ -154,18 +154,18 @@ const isOutsideClicked = (event) => {
         </div>
 
         <h5>Dark Theme</h5>
-        <InputSwitch v-model="layoutConfig.darkTheme.value" @input="onChangeTheme(undefined, undefined, layoutConfig.darkTheme.value)" inputId="dark"></InputSwitch>
+        <InputSwitch v-model="layoutConfig.darkTheme.value" @input="darkToggle()" inputId="dark"></InputSwitch>
 
         <h5>Color</h5>
         <div class="grid">
             <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('lara', 'blue')">
-                    <img src="/layout/images/themes/lara-light-blue.png" class="w-2rem h-2rem" alt="Lara Light Blue" />
+                <button class="p-link w-2rem h-2rem" @click="changeColor('aura', 'blue')">
+                    <img src="/layout/images/themes/lara-light-blue.png" class="w-2rem h-2rem" alt="Aura Blue" />
                 </button>
             </div>
             <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="onChangeTheme('lara', 'teal')">
-                    <img src="/layout/images/themes/lara-light-teal.png" class="w-2rem h-2rem" alt="Lara Light Teal" />
+                <button class="p-link w-2rem h-2rem" @click="changeColor('aura', 'teal')">
+                    <img src="/layout/images/themes/lara-light-teal.png" class="w-2rem h-2rem" alt="Aura Teal" />
                 </button>
             </div>
         </div>

@@ -8,6 +8,7 @@ import { databaseService } from '@/service/api.js'
 import AutoComplete from 'primevue/autocomplete';
 import Calendar from 'primevue/calendar';
 import DataView from 'primevue/dataview';
+import Fieldset from 'primevue/fieldset';
 
 const pre = ref('RJ');
 const iD = ref(null);
@@ -407,7 +408,7 @@ const debug = (value) => {
 
     <div class="card">
         <Panel header="Search Results">
-            <DataView :value="results" paginator :rows="resultsPerPage">
+            <DataView :value="results" paginator paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown" :rows="resultsPerPage">
                 <template #header>
                     <div class="flex justify-content-between">
                         <div class="flex gap-3">
@@ -419,7 +420,10 @@ const debug = (value) => {
                     </div>
                 </template>
                 <template #list="slotProps">
-                    <div class="col-12 card">
+                    <div class="col-12">
+                        <Fieldset :legend="slotProps.data.id">
+
+
                         <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem my-2">
                             <div class="flex h-full">
                                 <Image src="onseidb-logo.svg" alt="Image" preview class="w-10rem" />
@@ -427,7 +431,9 @@ const debug = (value) => {
                             </div>
                             <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
                                 <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
-                                    <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
+                                    <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap" @click="">
+                                        {{ slotProps.data.title }}
+                                    </div>
                                     <div class="flex gap-3 h-2rem">
                                         <div class="my-auto">{{ isoTimeToString(slotProps.data.release_date) }}</div>
                                         <Chip v-if="slotProps.data.last_update" :label="isoTimeToString(slotProps.data.last_update)" class="h-full bg-primary">
@@ -474,6 +480,7 @@ const debug = (value) => {
                                 </div>
                             </div>
                         </div>
+                    </Fieldset>
                     </div>
                 </template>
             </DataView>
