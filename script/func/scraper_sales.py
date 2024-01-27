@@ -23,9 +23,23 @@ async def fetch(session, idList, log):
                 html = await resp.text()
                 info = json.loads(html)
                 for id in idList:
-                    price_current = info[id]['price']
-                    # db['meta'].insert_one(doc)
-                    db['meta'].update_one({'id': id}, {'$set': {'price_current': price_current}})
+                    updateJson = {
+                        'price_current': info[id]['price'],
+                        'dl': info[id]['dl_count'],
+                        'wish': info[id]['wishlist_count']
+                    }
+                    if info[id]['rate_average_2dp']:
+                        updateJson['rate'] = info[id]['rate_average_2dp']
+                    if len(info[id]['rank']) != 0:
+                        updateJson['rank'] = info[id]['rank']
+                        rankFirst = {'voice':[], 'all':[]}
+                        for i in info[id]['rank']:
+                            if i['rank'] == 1:
+                                rankFirst[i['category']].append(i['term'])
+                        if len(rankFirst['voice']) != 0 or len(rankFirst['all']) != 0:
+                            updateJson['rank_first'] = rankFirst
+                    
+                    db['meta'].update_one({'id': id}, {'$set': updateJson})
                     log.write(f'[{datetime.now()}][success] {id}\n')
                 await asyncio.sleep(1)
             else:

@@ -14,9 +14,12 @@ application = Flask(__name__)
 CORS(application)
 
 client = db_client()
-responseField = {'_id': False, 'circle_id': False, 'series_id': False, 'genre_id': False}
+responseField = {'_id': False, 'circle_id': False, 'series': False, 'series_id': False, 'genre_id': False,
+                'rank': False, 'author': False, 'scripter': False, 'music': False, 'size': False, 'wish': False,
+                'format': False, 'illustrator': False}
 
-postDataField = ['id', 'title', 'circle[id]', 'cv[]', 'age[]', 'rel_date', 'rel_after', 'rel_before', 'genre[]', 'series[id]', 'scripter[name]', 'illustrator[name]']
+postDataField = ['id', 'title', 'circle[id]', 'cv[]', 'age[]', 'rel_date', 'rel_after', 'rel_before',
+                'genre[]', 'series[id]', 'scripter[name]', 'illustrator[name]']
 
 def postDataParser(data):
     postData = {}

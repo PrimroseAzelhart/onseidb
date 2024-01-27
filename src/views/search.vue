@@ -80,7 +80,7 @@ const ageOpts = ref([
 
 const sortOptions = ref([
     {label: 'Release date', value: 'date'},
-    {label: 'Price', value: 'price'},
+    {label: 'Price', value: 'price_current'},
 ]);
 
 const tagsPanelOpts = {
@@ -180,9 +180,9 @@ const postProcess = () => {
     results.value.forEach((item) => {
         const d = new Date(item.release_date);
         item.date = d.getTime() / 1000;
-        item.year = d.getFullYear();
-        item.month = d.getMonth() + 1;
-        item.day = d.getDate();
+        // item.year = d.getFullYear();
+        // item.month = d.getMonth() + 1;
+        // item.day = d.getDate();
     });
 
     sortResults();
@@ -266,7 +266,17 @@ const getSeverity = (value) => {
         case 2:
             return 'danger';
     }
-}
+};
+
+const isDiscount = (item) => {
+    return item.price !== item.price_current;
+};
+
+const isoTimeToString = (time) => {
+    const date = new Date(time);
+    const dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+    return dateStr;
+};
 
 const debug = (value) => {
     console.log(value);
@@ -382,7 +392,7 @@ const debug = (value) => {
     </div>
 
     <div class="card">
-        <Panel header="Search Results" toggleable>
+        <Panel header="Search Results">
             <DataView :value="results" paginator :rows="resultsPerPage">
                 <template #header>
                     <div class="flex justify-content-between">
@@ -397,31 +407,35 @@ const debug = (value) => {
                 <template #list="slotProps">
                     <div class="col-12 card">
                         <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem my-2">
-                            <div class="flex w-14rem">
-                                <Image src="onseidb-logo.svg" alt="Image" preview class="w-full"/>
+                            <div class="flex h-full">
+                                <Image src="onseidb-logo.svg" alt="Image" preview class="w-10rem" />
                                 <Tag :value="slotProps.data.age" :severity="getSeverity(slotProps.data.age)" class="absolute mt-2 ml-2 opacity-50 text-lg"></Tag>
                             </div>
                             <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
                                 <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
                                     <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
-                                    <div>{{ slotProps.data.year }}-{{ slotProps.data.month }}-{{ slotProps.data.day }}</div>
+                                    <div>{{ isoTimeToString(slotProps.data.release_date) }}</div>
                                     <div class="flex gap-2 h-2rem">
                                         <div class="white-space-nowrap text-lg my-auto">{{ slotProps.data.circle + ' /' }}</div>
                                         <div v-for="(item, index) in slotProps.data.cv">
-                                            <Chip v-if="index<5" :label="item" class="bg-primary h-full"></Chip>
-                                            <Chip v-if="index==5" label="..." class="bg-primary h-full"></Chip>
+                                            <Chip v-if="index<5" :label="item" class="h-full"></Chip>
+                                            <Chip v-if="index==5" label="..." class="h-full"></Chip>
                                         </div>
                                     </div>
                                     <div class="h-2rem" >
                                         <div v-if="slotProps.data.genre" class="flex gap-2">
-                                            <div v-for="(item, index) in slotProps.data.genre" >
-                                                <Button v-if="index<8" :label="item" outlined class="h-2rem" />
+                                            <div v-for="item in slotProps.data.genre" >
+                                                <Button :label="item" outlined class="h-2rem button-tag" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
-                                    <div class="text-2xl font-semibold">￥{{ slotProps.data.price }}</div>
+                                    <div></div>
+                                    <div class="flex align-items-end flex-column">
+                                        <div v-if="isDiscount(slotProps.data)" class="text-sm line-through">￥{{ slotProps.data.price }}</div>
+                                        <div class="text-2xl font-semibold">￥{{ slotProps.data.price_current }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -454,6 +468,10 @@ const debug = (value) => {
 .p-dataview-header {
     margin-bottom: 1rem;
     border-width: 0;
+}
+
+.button-tag {
+    padding: 0.5rem 1rem;
 }
 
 </style>
