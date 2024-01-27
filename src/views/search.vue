@@ -81,6 +81,7 @@ const ageOpts = ref([
 const sortOptions = ref([
     {label: 'Release date', value: 'date'},
     {label: 'Price', value: 'price_current'},
+    {label: 'Sales', value: 'dl'}
 ]);
 
 const tagsPanelOpts = {
@@ -278,6 +279,19 @@ const isoTimeToString = (time) => {
     return dateStr;
 };
 
+const getTrophyStyle = (item) => {
+    switch (item) {
+        case 'day':
+            return 'text-900';
+        case 'week':
+            return 'text-orange-800';
+        case 'month':
+            return 'text-gray-300';
+        case 'year':
+            return 'text-yellow-500';
+    }
+};
+
 const debug = (value) => {
     console.log(value);
 };
@@ -414,7 +428,14 @@ const debug = (value) => {
                             <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
                                 <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
                                     <div :title="slotProps.data.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">{{ slotProps.data.title }}</div>
-                                    <div>{{ isoTimeToString(slotProps.data.release_date) }}</div>
+                                    <div class="flex gap-3 h-2rem">
+                                        <div class="my-auto">{{ isoTimeToString(slotProps.data.release_date) }}</div>
+                                        <Chip v-if="slotProps.data.last_update" :label="isoTimeToString(slotProps.data.last_update)" class="h-full bg-primary">
+                                            <template #icon>
+                                                <i class="fa-solid fa-wrench">&nbsp;</i>
+                                            </template>
+                                        </Chip>
+                                    </div>
                                     <div class="flex gap-2 h-2rem">
                                         <div class="white-space-nowrap text-lg my-auto">{{ slotProps.data.circle + ' /' }}</div>
                                         <div v-for="(item, index) in slotProps.data.cv">
@@ -422,16 +443,30 @@ const debug = (value) => {
                                             <Chip v-if="index==5" label="..." class="h-full"></Chip>
                                         </div>
                                     </div>
-                                    <div class="h-2rem" >
+                                    <div class="h-2rem">
                                         <div v-if="slotProps.data.genre" class="flex gap-2">
                                             <div v-for="item in slotProps.data.genre" >
-                                                <Button :label="item" outlined class="h-2rem button-tag" />
+                                                <!-- <Button :label="item" outlined class="h-2rem button-tag" /> -->
+                                                <Tag :value="item" class="text-sm" rounded />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
-                                    <div></div>
+                                    <div class="flex flex-column">
+                                        <div v-if="slotProps.data.rank_first">
+                                            <div class="flex gap-3 h-2rem justify-content-end">
+                                                <div v-for="item in slotProps.data.rank_first.voice">
+                                                    <i class="fa-solid fa-medal fa-xl fa-fw" :class="getTrophyStyle(item)"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3 h-2rem justify-content-end">
+                                                <div v-for="item in slotProps.data.rank_first.all">
+                                                    <i class="fa-solid fa-trophy fa-xl fa-fw" :class="getTrophyStyle(item)"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="flex align-items-end flex-column">
                                         <div v-if="isDiscount(slotProps.data)" class="text-sm line-through">￥{{ slotProps.data.price }}</div>
                                         <div class="text-2xl font-semibold">￥{{ slotProps.data.price_current }}</div>

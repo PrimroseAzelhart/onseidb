@@ -25,8 +25,8 @@ async def fetch(session, idList, log):
                 for id in idList:
                     updateJson = {
                         'price_current': info[id]['price'],
-                        'dl': info[id]['dl_count'],
-                        'wish': info[id]['wishlist_count']
+                        'dl': int(info[id]['dl_count']),
+                        'wish': int(info[id]['wishlist_count'])
                     }
                     if info[id]['rate_average_2dp']:
                         updateJson['rate'] = info[id]['rate_average_2dp']
@@ -59,7 +59,7 @@ async def main(idGroup):
 def get_id_group():
     idList = []
     idGroup = []
-    meta = db['meta'].find({}, {'_id': False})
+    meta = db['meta'].find({'id': {'$regex': 'RJ'}}, {'_id': False})
     for work in meta:
         idList.append(work['id']) 
     for i in range(0, len(idList), 100):
@@ -68,7 +68,5 @@ def get_id_group():
 
 if __name__ == '__main__':
     idGroup = get_id_group()
-    # print(idGroup)
-    
     if len(idGroup) != 0:
         asyncio.run(main(idGroup))
