@@ -422,7 +422,7 @@ const debug = (value) => {
                 <template #list="slotProps">
                     <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
                         <Fieldset :legend="item.id">
-                            <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem my-2">
+                            <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem">
                                 <div class="flex h-full">
                                     <Image src="onseidb-logo.svg" alt="Image" preview class="w-10rem" />
                                     <Tag :value="item.age" :severity="getSeverity(item.age)" class="absolute mt-2 ml-2 opacity-50 text-lg"></Tag>
