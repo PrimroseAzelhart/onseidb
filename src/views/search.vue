@@ -283,13 +283,13 @@ const isoTimeToString = (time) => {
 const getTrophyStyle = (item) => {
     switch (item) {
         case 'day':
-            return 'text-900';
+            return 'bronze';
         case 'week':
-            return 'text-orange-800';
+            return 'silver';
         case 'month':
-            return 'text-gray-300';
+            return 'gold';
         case 'year':
-            return 'text-yellow-500';
+            return 'diamond';
     }
 };
 
@@ -457,20 +457,21 @@ const debug = (value) => {
                                         </div>
                                     </div>
                                     <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
-                                        <div class="flex flex-column">
-                                            <div v-if="item.rank_first">
-                                                <div class="flex gap-3 h-2rem justify-content-end">
+                                        <div v-if="item.rank_first" class="flex flex-column gap-1">
+                                            <!-- <div v-if="item.rank_first" clas="flex gap-3"> -->
+                                                <div class="flex gap-2 h-2rem justify-content-end">
                                                     <div v-for="i in item.rank_first.voice">
-                                                        <i class="fa-solid fa-medal fa-xl fa-fw" :class="getTrophyStyle(i)"></i>
+                                                        <i class="fa-solid fa-medal fa-fw" :class="getTrophyStyle(i)"></i>
                                                     </div>
                                                 </div>
-                                                <div class="flex gap-3 h-2rem justify-content-end">
+                                                <div class="flex gap-2 h-2rem justify-content-end">
                                                     <div v-for="i in item.rank_first.all">
-                                                        <i class="fa-solid fa-trophy fa-xl fa-fw" :class="getTrophyStyle(i)"></i>
+                                                        <i class="fa-solid fa-trophy fa-fw" :class="getTrophyStyle(i)"></i>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            <!-- </div> -->
                                         </div>
+                                        <div v-else></div>
                                         <div class="flex align-items-end flex-column">
                                             <div v-if="isDiscount(item)" class="text-sm line-through">￥{{ item.price }}</div>
                                             <div class="text-2xl font-semibold">￥{{ item.price_current }}</div>
@@ -515,8 +516,36 @@ const debug = (value) => {
     display: none;
 }
 
-// .button-tag {
-//     padding: 0.5rem 1rem;
-// }
+.bronze {
+    background: linear-gradient(30deg, brown, coral);
+    // -webkit-background-clip: text;
+    background-clip:text;
+    color: transparent;
+    font-size: 1.5rem;
+}
+
+.silver {
+    background: linear-gradient(30deg, silver, snow);
+    // -webkit-background-clip: text;
+    background-clip:text;
+    color: transparent;
+    font-size: 1.5rem;
+}
+
+.gold {
+    background: linear-gradient(30deg, gold, khaki);
+    // -webkit-background-clip: text;
+    background-clip:text;
+    color: transparent;
+    font-size: 1.5rem;
+}
+
+.diamond {
+    background: linear-gradient(30deg, cyan, white);
+    // -webkit-background-clip: text;
+    background-clip:text;
+    color: transparent;
+    font-size: 1.5rem;
+}
 
 </style>
