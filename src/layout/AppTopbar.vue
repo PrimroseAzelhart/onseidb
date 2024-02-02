@@ -4,18 +4,18 @@ import { ref, computed, onMounted, onBeforeUnmount, inject } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 
 import Sidebar from 'primevue/sidebar';
+import { usePrimeVue } from 'primevue/config';
 
-const $cookies = inject('$cookies');
-
-const { changeColor, darkToggle, setScale, layoutConfig, onMenuToggle } = useLayout();
+const PrimeVue = usePrimeVue();
+const { setScale, layoutConfig, onMenuToggle } = useLayout();
 
 const outsideClickListener = ref(null);
 const topbarMenuActive = ref(false);
 
 const scales = ref([12, 13, 14, 15, 16]);
 const visible = ref(false);
-
-var themeSetting = $cookies.get('onseidb_theme');
+const themeDark = ref(false);
+const themeColor = ref('blue')
 
 defineProps({
     simple: {
@@ -26,6 +26,15 @@ defineProps({
 
 onMounted(() => {
     bindOutsideClickListener();
+
+    const localTheme = localStorage.getItem('theme');
+    if (localTheme) {
+        const themeSetting = JSON.parse(localTheme);
+        themeDark.value = themeSetting['dark'];
+        themeColor.value = themeSetting['color'];
+        const style = themeDark.value ? 'dark' : 'light';
+        PrimeVue.changeTheme('aura-light-blue', `aura-${style}-${themeColor.value}`, 'theme-css', () => {});
+    }
 });
 
 onBeforeUnmount(() => {
@@ -39,16 +48,6 @@ const onConfigButtonClick = () => {
 const onTopBarMenuButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
 };
-
-// const onChangeTheme = (theme, color, dark = undefined) => {
-//     changeTheme(theme, color, dark);
-//     themeSetting.theme = theme ? theme : themeSetting.theme;
-//     themeSetting.color = color ? color : themeSetting.color;
-//     if (dark !== undefined) {
-//         themeSetting.dark = dark;
-//     }
-//     $cookies.set('onseidb_theme', themeSetting);
-// };
 
 const decrementScale = () => {
     setScale(layoutConfig.scale.value - 1);
@@ -97,6 +96,24 @@ const isOutsideClicked = (event) => {
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 };
 
+const onChangeColor = (color) => {
+    const style = themeDark.value ? 'dark' : 'light';
+    const oldTheme = `aura-${style}-${themeColor.value}`;
+    const newTheme = `aura-${style}-${color}`;
+    PrimeVue.changeTheme(oldTheme, newTheme, 'theme-css', () => {});
+    themeColor.value = color;
+    localStorage.setItem('theme', JSON.stringify({'color': color, 'dark': themeDark.value}));
+}
+
+const onDarkToggle = () => {
+    const oldStyle = themeDark.value ? 'dark' : 'light';
+    const newStyle = themeDark.value ? 'light' : 'dark';
+    const oldTheme = `aura-${oldStyle}-${themeColor.value}`;
+    const newTheme = `aura-${newStyle}-${themeColor.value}`;
+    PrimeVue.changeTheme(oldTheme, newTheme, 'theme-css', () => {});
+    localStorage.setItem('theme', JSON.stringify({'color': themeColor.value, 'dark': !themeDark.value}));
+}
+
 </script>
 
 <template>
@@ -124,7 +141,7 @@ const isOutsideClicked = (event) => {
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <button @click="onConfigButtonClick()" class="p-link layout-topbar-button">
-                <i class="fa-solid fa-palette"></i>
+                <i class="fa-solid fa-gear"></i>
                 <span>Theme</span>
             </button>
         </div>
@@ -153,18 +170,18 @@ const isOutsideClicked = (event) => {
             </div>
         </div>
 
-        <h5>Dark Theme</h5>
-        <InputSwitch v-model="layoutConfig.darkTheme.value" @input="darkToggle()" inputId="dark"></InputSwitch>
+        <h5>Dark Mode</h5>
+        <InputSwitch v-model="themeDark" @input="onDarkToggle()" inputId="dark"></InputSwitch>
 
         <h5>Color</h5>
         <div class="grid">
             <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="changeColor('aura', 'blue')">
+                <button class="p-link w-2rem h-2rem" @click="onChangeColor('blue')">
                     <img src="/layout/images/themes/lara-light-blue.png" class="w-2rem h-2rem" alt="Aura Blue" />
                 </button>
             </div>
             <div class="col-3">
-                <button class="p-link w-2rem h-2rem" @click="changeColor('aura', 'teal')">
+                <button class="p-link w-2rem h-2rem" @click="onChangeColor('teal')">
                     <img src="/layout/images/themes/lara-light-teal.png" class="w-2rem h-2rem" alt="Aura Teal" />
                 </button>
             </div>
