@@ -51,6 +51,9 @@ const submitLoading = ref(false);
 const sortKey = ref('date');
 const sortAscend = ref(false);
 
+const resultsShow = ref(true);
+const detailShow = ref(false);
+
 const db = new databaseService();
 
 const toast = useToast();
@@ -293,6 +296,20 @@ const getTrophyStyle = (item) => {
     }
 };
 
+const toggleResults = (show) => {
+    if (show) {
+        detailShow.value = false;
+        setTimeout(() => {
+            resultsShow.value = true;
+        }, 500)
+    } else {
+        resultsShow.value = false;
+        setTimeout(() => {
+            detailShow.value = true;
+        }, 500)
+    }
+};
+
 const debug = (value) => {
     console.log(value);
 };
@@ -300,6 +317,7 @@ const debug = (value) => {
 </script>
 
 <template>
+
     <div class="card">
         <Panel header="Search Options" toggleable>
             <div class="grid p-fluid">
@@ -390,6 +408,7 @@ const debug = (value) => {
                     <div class="flex md:justify-content-start">
                         <Button label="Advanced Options" @click="onAdvOpt" class="md:w-max" iconPos="right"
                             :icon="advOptions?'fa-solid fa-angles-up fa-lg':'fa-solid fa-angles-down fa-lg'" />
+                        <!-- <Button label="show" @click="toggleResults(detailShow)"></Button> -->
                     </div>
                 </div>
                 <div class="field col-12 md:col-6">
@@ -406,85 +425,90 @@ const debug = (value) => {
         </Panel>
     </div>
 
-    <div class="card">
-        <Panel header="Search Results">
-            <DataView :value="results" paginator paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown" :rows="resultsPerPage">
-                <template #header>
-                    <div class="flex justify-content-between">
-                        <div class="flex gap-3">
-                            <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" optionValue="value"
-                                @change="sortResults(false)" placeholder="Sort by..." class="w-12rem" />
-                            <Button @click="sortResults(true)" rounded :icon="sortOrderIcon" />
-                        </div>
-                        <Dropdown v-model="resultsPerPage" :options="resultsPerPageOpts" class=""></Dropdown>
-                    </div>
-                </template>
-                <template #list="slotProps">
-                    <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
-                        <Fieldset :legend="item.id">
-                            <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem">
-                                <div class="flex h-full">
-                                    <Image src="onseidb-logo.svg" alt="Image" preview class="w-10rem" />
-                                    <Tag :value="item.age" :severity="getSeverity(item.age)" class="absolute mt-2 ml-2 opacity-50 text-lg"></Tag>
-                                </div>
-                                <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
-                                    <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
-                                        <div :title="item.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap" @click="">
-                                            {{ item.title }}
-                                        </div>
-                                        <div class="flex gap-3 h-2rem">
-                                            <div class="my-auto">{{ isoTimeToString(item.release_date) }}</div>
-                                            <Chip v-if="item.last_update" :label="isoTimeToString(item.last_update)" class="h-full bg-primary">
-                                                <template #icon>
-                                                    <i class="fa-solid fa-wrench">&nbsp;</i>
-                                                </template>
-                                            </Chip>
-                                        </div>
-                                        <div class="flex gap-2 h-2rem">
-                                            <div class="white-space-nowrap text-lg my-auto">{{ item.circle + ' /' }}</div>
-                                            <div v-for="(cv, idx) in item.cv">
-                                                <Chip v-if="idx<5" :label="cv" class="h-full"></Chip>
-                                                <Chip v-if="idx==5" label="..." class="h-full"></Chip>
-                                            </div>
-                                        </div>
-                                        <div class="h-2rem">
-                                            <div v-if="item.genre" class="flex gap-2">
-                                                <div v-for="genre in item.genre" >
-                                                    <!-- <Button :label="item" outlined class="h-2rem button-tag" /> -->
-                                                    <Tag :value="genre" class="text-sm" rounded />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
-                                        <div v-if="item.rank_first" class="flex flex-column gap-1">
-                                            <!-- <div v-if="item.rank_first" clas="flex gap-3"> -->
-                                                <div class="flex gap-2 h-2rem justify-content-end">
-                                                    <div v-for="i in item.rank_first.voice">
-                                                        <i class="fa-solid fa-medal fa-fw" :class="getTrophyStyle(i)"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="flex gap-2 h-2rem justify-content-end">
-                                                    <div v-for="i in item.rank_first.all">
-                                                        <i class="fa-solid fa-trophy fa-fw" :class="getTrophyStyle(i)"></i>
-                                                    </div>
-                                                </div>
-                                            <!-- </div> -->
-                                        </div>
-                                        <div v-else></div>
-                                        <div class="flex align-items-end flex-column">
-                                            <div v-if="isDiscount(item)" class="text-sm line-through">￥{{ item.price }}</div>
-                                            <div class="text-2xl font-semibold">￥{{ item.price_current }}</div>
-                                        </div>
-                                    </div>
-                                </div>
+    <Transition name="slide-results">
+        <div class="card" v-show="resultsShow">
+            <Panel header="Search Results">
+                <DataView :value="results" paginator paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown" :rows="resultsPerPage">
+                    <template #header>
+                        <div class="flex justify-content-between">
+                            <div class="flex gap-3">
+                                <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" optionValue="value"
+                                    @change="sortResults(false)" placeholder="Sort by..." class="w-12rem" />
+                                <Button @click="sortResults(true)" rounded :icon="sortOrderIcon" />
                             </div>
-                        </Fieldset>
-                    </div>
-                </template>
-            </DataView>
-        </Panel>
-    </div>
+                            <Dropdown v-model="resultsPerPage" :options="resultsPerPageOpts" class=""></Dropdown>
+                        </div>
+                    </template>
+                    <template #list="slotProps">
+                        <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index" class="col-12">
+                            <Fieldset :legend="item.id">
+                                <div class="flex flex-row align-items-center justify-content-start p-3 gap-3 w-full h-12rem">
+                                    <div class="flex h-full">
+                                        <Image src="onseidb-logo.svg" alt="Image" preview class="w-10rem" />
+                                        <Tag :value="item.age" :severity="getSeverity(item.age)" class="absolute mt-2 ml-2 opacity-50 text-lg"></Tag>
+                                    </div>
+                                    <div class="flex flex-row justify-content-between align-items-start w-full h-full gap-3">
+                                        <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
+                                            <div :title="item.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap" @click="">
+                                                {{ item.title }}
+                                            </div>
+                                            <div class="flex gap-3 h-2rem">
+                                                <div class="my-auto">{{ isoTimeToString(item.release_date) }}</div>
+                                                <Chip v-if="item.last_update" :label="isoTimeToString(item.last_update)" class="h-full bg-primary">
+                                                    <template #icon>
+                                                        <i class="fa-solid fa-wrench">&nbsp;</i>
+                                                    </template>
+                                                </Chip>
+                                            </div>
+                                            <div class="flex gap-2 h-2rem">
+                                                <div class="white-space-nowrap text-lg my-auto">{{ item.circle + ' /' }}</div>
+                                                <div v-for="(cv, idx) in item.cv">
+                                                    <Chip v-if="idx<5" :label="cv" class="h-full"></Chip>
+                                                    <Chip v-if="idx==5" label="..." class="h-full"></Chip>
+                                                </div>
+                                            </div>
+                                            <div class="h-2rem">
+                                                <div v-if="item.genre" class="flex gap-2">
+                                                    <div v-for="genre in item.genre" >
+                                                        <Tag :value="genre" class="text-sm" rounded />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
+                                            <div v-if="item.rank_first" class="flex flex-column gap-1">
+                                                    <div class="flex gap-2 h-2rem justify-content-end">
+                                                        <div v-for="i in item.rank_first.voice">
+                                                            <i class="fa-solid fa-medal fa-fw" :class="getTrophyStyle(i)"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex gap-2 h-2rem justify-content-end">
+                                                        <div v-for="i in item.rank_first.all">
+                                                            <i class="fa-solid fa-trophy fa-fw" :class="getTrophyStyle(i)"></i>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div v-else></div>
+                                            <div class="flex align-items-end flex-column">
+                                                <div v-if="isDiscount(item)" class="text-sm line-through">￥{{ item.price }}</div>
+                                                <div class="text-2xl font-semibold">￥{{ item.price_current }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Fieldset>
+                        </div>
+                    </template>
+                </DataView>
+            </Panel>
+        </div>
+    </Transition>
+
+    <Transition name="slide-detail">
+        <div class="card" v-show="detailShow">
+
+        </div>
+    </Transition>
 
 </template>
 
@@ -515,6 +539,34 @@ const debug = (value) => {
 .p-dataview-emptymessage {
     display: none;
 }
+
+.p-panel {
+    border: 0;
+}
+
+.slide-detail-enter-active,
+.slide-results-enter-active {
+    transition: all 0.5s ease;
+    transition-delay: 0.6s;
+}
+
+.slide-detail-leave-active,
+.slide-results-leave-active {
+    transition: all 0.3s ease;
+}
+
+.slide-results-enter-from,
+.slide-results-leave-to {
+    transform: translateX(-20px);
+    opacity: 0;
+}
+
+.slide-detail-enter-from,
+.slide-detail-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
+}
+
 
 .bronze {
     background: linear-gradient(30deg, brown, coral);
