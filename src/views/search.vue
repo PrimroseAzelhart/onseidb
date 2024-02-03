@@ -9,7 +9,7 @@ import AutoComplete from 'primevue/autocomplete';
 import Calendar from 'primevue/calendar';
 import DataView from 'primevue/dataview';
 
-import WorkListLayoutItem from '@/layout/WorkListLayoutItem.vue'
+import WorkListLayoutItem from '@/components/WorkListLayoutItem.vue'
 
 const pre = ref('RJ');
 const iD = ref(null);

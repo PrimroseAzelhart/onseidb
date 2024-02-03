@@ -1,6 +1,6 @@
 <script setup>
 import router from '@/router';
-import inject from 'vue';
+import { inject } from 'vue';
 import axios from 'axios';
 
 const $cookies = inject('$cookies');
