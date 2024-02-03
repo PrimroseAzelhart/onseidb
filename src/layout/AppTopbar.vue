@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, computed, onMounted, onBeforeUnmount, inject } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 
 import Sidebar from 'primevue/sidebar';
@@ -15,7 +15,9 @@ const topbarMenuActive = ref(false);
 const scales = ref([12, 13, 14, 15, 16]);
 const visible = ref(false);
 const themeDark = ref(false);
-const themeColor = ref('blue')
+const themeColor = ref('blue');
+
+const colors = ['blue', 'teal'];
 
 defineProps({
     simple: {
@@ -103,7 +105,7 @@ const onChangeColor = (color) => {
     PrimeVue.changeTheme(oldTheme, newTheme, 'theme-css', () => {});
     themeColor.value = color;
     localStorage.setItem('theme', JSON.stringify({'color': color, 'dark': themeDark.value}));
-}
+};
 
 const onDarkToggle = () => {
     const oldStyle = themeDark.value ? 'dark' : 'light';
@@ -112,7 +114,7 @@ const onDarkToggle = () => {
     const newTheme = `aura-${newStyle}-${themeColor.value}`;
     PrimeVue.changeTheme(oldTheme, newTheme, 'theme-css', () => {});
     localStorage.setItem('theme', JSON.stringify({'color': themeColor.value, 'dark': !themeDark.value}));
-}
+};
 
 </script>
 
@@ -163,7 +165,6 @@ const onDarkToggle = () => {
                 <RadioButton name="menuMode" value="static" v-model="layoutConfig.menuMode.value" inputId="mode1"></RadioButton>
                 <label for="mode1">Static</label>
             </div>
-
             <div class="field-radiobutton flex-1">
                 <RadioButton name="menuMode" value="overlay" v-model="layoutConfig.menuMode.value" inputId="mode2"></RadioButton>
                 <label for="mode2">Overlay</label>
@@ -175,6 +176,10 @@ const onDarkToggle = () => {
 
         <h5>Color</h5>
         <div class="grid">
+            <!-- <div v-for="color in colors" class="col-3">
+                <Button v-if="color === themeColor"><i class="fa-solid fa-check"></i></Button>
+                <Button v-else icon="NULL"></Button>
+            </div> -->
             <div class="col-3">
                 <button class="p-link w-2rem h-2rem" @click="onChangeColor('blue')">
                     <img src="/layout/images/themes/lara-light-blue.png" class="w-2rem h-2rem" alt="Aura Blue" />
