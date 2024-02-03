@@ -1,7 +1,7 @@
 <script setup>
-import router from '@/router'
+import router from '@/router';
 import { ref, inject, onMounted } from 'vue';
-import axios from 'axios'
+import axios from 'axios';
 
 import Password from 'primevue/password';
 
@@ -45,10 +45,10 @@ const onLoginButtonClick = () => {
         if (res.code !== 0) {
             addMessage('failed', 'error');
         } else {
-            addMessage('success', 'success')
-            $cookies.set('token', res.id)
+            addMessage('success', 'success');
+            $cookies.set('auth', {'user': res.user, 'token': res.token});
             setTimeout(() => {
-                router.push('/')
+                router.push('/');
             }, 1000);
         }
     })

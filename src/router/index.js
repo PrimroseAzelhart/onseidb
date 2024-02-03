@@ -81,7 +81,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const isLogin = $cookies.get('token');
+    const isLogin = $cookies.get('auth');
     if (isLogin) {
         next();
     } else {

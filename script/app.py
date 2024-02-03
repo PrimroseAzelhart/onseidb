@@ -5,6 +5,7 @@
 import json
 import bcrypt
 import datetime
+import secrets
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 
@@ -42,7 +43,6 @@ def index():
 def login():
     user = request.values.get('username')
     pwd = request.values.get('password').encode(encoding='utf-8')
-    id = ''
     if ((user == None) or (pwd == None)):
         code = 1
     else:
@@ -55,9 +55,16 @@ def login():
                 code = 3
             else:
                 code = 0
-                id = str(result['_id'])
+                token = secrets.token_hex(32)
+                expiration = datetime.datetime.now() + datetime.timedelta(days=30)
+                result['token'].append({token: expiration})
+                client['onseidb']['user'].replace_one({'username': user}, result)
 
-    response = {'code': code, 'id': id}
+    if code != 0:
+        response = {'code': code}
+    else:
+        response = {'code': code, 'user': user, 'token': token}
+
     return jsonify(response)
 
 @application.route('/query', methods=['POST'])

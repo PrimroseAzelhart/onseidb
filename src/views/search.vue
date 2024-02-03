@@ -485,16 +485,16 @@ const debug = (value) => {
                                     </div>
                                     <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
                                         <div v-if="item.rank_first" class="flex flex-column gap-1">
-                                                <div class="flex gap-2 h-2rem justify-content-end">
-                                                    <div v-for="i in item.rank_first.voice">
-                                                        <i class="fa-solid fa-medal fa-fw" :class="getTrophyStyle(i)"></i>
-                                                    </div>
+                                            <div class="flex gap-2 h-2rem justify-content-end">
+                                                <div v-for="i in item.rank_first.voice">
+                                                    <i class="fa-solid fa-medal fa-fw" :class="getTrophyStyle(i)"></i>
                                                 </div>
-                                                <div class="flex gap-2 h-2rem justify-content-end">
-                                                    <div v-for="i in item.rank_first.all">
-                                                        <i class="fa-solid fa-trophy fa-fw" :class="getTrophyStyle(i)"></i>
-                                                    </div>
+                                            </div>
+                                            <div class="flex gap-2 h-2rem justify-content-end">
+                                                <div v-for="i in item.rank_first.all">
+                                                    <i class="fa-solid fa-trophy fa-fw" :class="getTrophyStyle(i)"></i>
                                                 </div>
+                                            </div>
                                         </div>
                                         <div v-else></div>
                                         <div class="flex align-items-end flex-column">
