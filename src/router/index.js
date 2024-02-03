@@ -8,6 +8,7 @@ const circle = () => import('@/views/circle.vue');
 const release = () => import('@/views/release.vue');
 const genre = () => import('@/views/genre.vue');
 const login = () => import('@/views/login.vue');
+const logout = () => import('@/views/logout.vue');
 const library = () => import('@/views/library.vue');
 const database = () => import('@/views/database.vue');
 
@@ -66,7 +67,7 @@ const routes = [
     {
         path: '/logout',
         name: 'Logout',
-        component: login
+        component: logout
     },
     {
         path: '/:pathMatch(.*)*',

@@ -15,7 +15,7 @@ const $cookies = inject('$cookies');
 const msgText = {
     'failed': 'Authorization failed!',
     'empty': 'Username and password cannot be empty!',
-    'error': 'Server has encountered internal error!',
+    'error': 'Server has encountered an internal error!',
     'success': 'Login successfully, redirecting to homepage...'
 };
 
@@ -53,7 +53,7 @@ const onLoginButtonClick = () => {
         }
     })
     .catch(function (error) {
-        addMessage('error', 'error')
+        addMessage('error', 'error');
     });
     loginLoading.value = false;
 }

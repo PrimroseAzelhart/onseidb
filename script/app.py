@@ -56,7 +56,7 @@ def login():
             else:
                 code = 0
                 token = secrets.token_hex(32)
-                expiration = datetime.datetime.now() + datetime.timedelta(days=30)
+                expiration = datetime.datetime.now() + datetime.timedelta(days=1)
                 result['token'].append({token: expiration})
                 client['onseidb']['user'].replace_one({'username': user}, result)
 

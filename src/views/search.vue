@@ -58,8 +58,11 @@ const db = new databaseService();
 
 const toast = useToast();
 
-const axiosInstance = axios.create()
-axiosInstance.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+const axiosInstance = axios.create({
+    headers: {
+        "Content-Type": 'application/x-www-form-urlencoded',
+    }
+});
 
 onMounted(() => {
     for (var i = 0; i < selectionKey.length; i++) {

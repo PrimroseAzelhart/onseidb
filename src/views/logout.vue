@@ -1,10 +1,16 @@
 <script setup>
 import router from '@/router';
-import { ref, inject, onMounted } from 'vue';
+import inject from 'vue';
 import axios from 'axios';
 
-onMounted(() => {
-    $cookies.remove('token');
-});
+const $cookies = inject('$cookies');
+
+axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+// auth = $cookies.get('auth');
+
+$cookies.remove('auth');
+router.push('/login');
 
 </script>
+
+<template></template>
