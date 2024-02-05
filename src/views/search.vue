@@ -42,18 +42,17 @@ const inputGroup = [iD, iTitle, iCircle, iCV, iAge, releaseDate, releaseAfter, r
 const keyGroup = ['id', 'title', 'circle', 'cv', 'age', 'rel_date', 'rel_after', 'rel_before', 'genre', 'series', 'scripter', 'illustrator']
 const selectionGroup = [aCircle, sCV, sGenres, aSeries, aScripter, aIllustrator]
 const selectionKey = ['circle', 'cv', 'genre', 'series', 'scripter', 'illustrator']
-
-const results = ref([]);
 const advOptions = ref(false);
-const resultsPerPage = ref(10);
-
 const submitLoading = ref(false);
 
+const results = ref([]);
 const sortKey = ref('date');
 const sortAscend = ref(false);
-
+const resultsPerPage = ref(10);
 const resultsShow = ref(true);
 const detailShow = ref(false);
+const detailID = ref('');
+const detail = ref();
 
 const db = new databaseService();
 
@@ -225,10 +224,10 @@ const onSubmit = () => {
         .then((response) => {
             results.value = response.data;
             // const count = response.data.list.length
-            postProcess()
-
+            postProcess();
             submitLoading.value = false;
             console.log(results.value);
+            toggleDetail(false);
         })
         .catch((error) => {
             console.log(error);
@@ -263,18 +262,23 @@ const sortResults = (toggle) => {
     results.value.sort(sortFunc);
 };
 
-const toggleResults = (show) => {
+const toggleDetail = (show) => {
     if (show) {
         resultsShow.value = false;
         setTimeout(() => {
             detailShow.value = true;
-        }, 500)
+        }, 500);
     } else {
         detailShow.value = false;
         setTimeout(() => {
             resultsShow.value = true;
-        }, 500)
+        }, 500);
     }
+};
+
+const onDetailClick = (id) => {
+    detailID.value = id;
+    toggleDetail(true);
 };
 
 const debug = (value) => {
@@ -376,7 +380,6 @@ const debug = (value) => {
                     <div class="flex md:justify-content-start">
                         <Button label="Advanced Options" @click="onAdvOpt" class="md:w-max" iconPos="right"
                             :icon="advOptions?'fa-solid fa-angles-up fa-lg':'fa-solid fa-angles-down fa-lg'" />
-                        <!-- <Button label="show" @click="toggleResults(detailShow)"></Button> -->
                     </div>
                 </div>
                 <div class="field col-12 md:col-6">
@@ -409,7 +412,7 @@ const debug = (value) => {
                     </template>
                     <template #list="slotProps">
                         <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index" class="col-12">
-                            <WorkListLayoutItem :item="item" :index="index" :detail_show="toggleResults"></WorkListLayoutItem>
+                            <WorkListLayoutItem :item="item" :index="index" :detail_show="onDetailClick"></WorkListLayoutItem>
                         </div>
                     </template>
                 </DataView>
@@ -419,7 +422,11 @@ const debug = (value) => {
 
     <Transition name="slide-right">
         <div class="card" v-show="detailShow">
-            <Button label="Back to results" @click="toggleResults(false)"></Button>
+            <Panel :header="detailID">
+                <template #icons>
+                    <Button label="Back" @click="toggleDetail(false)" icon="fa-solid fa-circle-chevron-left fa-lg"></Button>
+                </template>
+            </Panel>
         </div>
     </Transition>
 
