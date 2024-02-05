@@ -417,13 +417,15 @@ const debug = (value) => {
                         </div>
                     </template>
                     <template #list="slotProps">
-                        <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index" class="col-12">
+                        <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index">
                             <WorkListLayoutItem :item="item" :index="index" :detail_show="onDetailClick"></WorkListLayoutItem>
                         </div>
                     </template>
                     <template #grid="slotProps">
-                        <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index" class="col-4">
-                            <WorkGridLayoutItem :work="detail" :index="index" :detail_show="onDetailClick"></WorkGridLayoutItem>
+                        <div class="grid">
+                            <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index" class="col-12 xl:col-3 lg:col-4 md:col-6">
+                                <WorkGridLayoutItem :item="item" :index="index" :detail_show="onDetailClick"></WorkGridLayoutItem>
+                            </div>
                         </div>
                     </template>
                 </DataView>
