@@ -265,14 +265,14 @@ const sortResults = (toggle) => {
 
 const toggleResults = (show) => {
     if (show) {
-        detailShow.value = false;
-        setTimeout(() => {
-            resultsShow.value = true;
-        }, 500)
-    } else {
         resultsShow.value = false;
         setTimeout(() => {
             detailShow.value = true;
+        }, 500)
+    } else {
+        detailShow.value = false;
+        setTimeout(() => {
+            resultsShow.value = true;
         }, 500)
     }
 };
@@ -409,7 +409,7 @@ const debug = (value) => {
                     </template>
                     <template #list="slotProps">
                         <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index" class="col-12">
-                            <WorkListLayoutItem :item="item" :index="index"></WorkListLayoutItem>
+                            <WorkListLayoutItem :item="item" :index="index" :detail_show="toggleResults"></WorkListLayoutItem>
                         </div>
                     </template>
                 </DataView>
@@ -419,7 +419,7 @@ const debug = (value) => {
 
     <Transition name="slide-right">
         <div class="card" v-show="detailShow">
-
+            <Button label="Back to results" @click="toggleResults(false)"></Button>
         </div>
     </Transition>
 

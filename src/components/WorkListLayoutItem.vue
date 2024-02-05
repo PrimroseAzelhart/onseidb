@@ -10,6 +10,10 @@ const props = defineProps({
     index: {
         type: Number,
         default: 0
+    },
+    detail_show: {
+        type: Function,
+        default: () => {}
     }
 });
 
@@ -112,8 +116,10 @@ const getSeverity = (value) => {
                 <div class="flex align-items-end flex-column">
                     <div v-if="isDiscount(item)" class="text-sm line-through">￥{{ item.price }}</div>
                     <div class="text-2xl font-semibold">￥{{ item.price_current }}</div>
+                    <Button label="Detail" class="" @click="detail_show(true)"></Button>
                 </div>
             </div>
         </div>
     </Fieldset>
+
 </template>
