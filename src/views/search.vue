@@ -289,28 +289,29 @@ const debug = (value) => {
         <Panel header="Search Options" toggleable>
             <div class="grid p-fluid">
 
-                <div class="field col-12 md:col-4">
+                <div class="field col-12 md:col-4 xl:col-2">
                     <label for="wcode">ID</label>
                     <div class="p-inputgroup">
-                        <SplitButton :label="pre" :model="codeLabel" />
+                        <SplitButton :label="pre" :model="codeLabel"
+                            :pt="{button: {root: {class: 'id-button'}}, menuButton: {root: {class: 'id-drop-button'}}}" />
                         <InputMask type="text" id="wcode" v-model="iD" mask="99999999"
                             slotChar="" placeholder="Number only" />
                     </div>
                 </div>
 
-                <div class="field col-12 md:col-4">
+                <div class="field col-12 md:col-4 xl:col-2">
                     <label for="title">Title</label>
                     <InputText type="text" id="title" v-model="iTitle" placeholder="Input title"/>
                 </div>
 
-                <div class="field col-12 md:col-4">
+                <div class="field col-12 md:col-4 xl:col-2">
                     <label for="circle">Circle</label>
                     <AutoComplete type="text" inputId="circle" placeholder="Select circle"
                         v-model="iCircle" :suggestions="sCircle" optionLabel="name" modelValue="id"
                         dropdown forceSelection @complete="searchCircle" @update:modelValue="debug" />
                 </div>
 
-                <div class="field col-12 md:col-6">
+                <div class="field col-12 md:col-6 xl:col-3">
                     <label for="cv">CV</label>
                     <MultiSelect inputId="cv" placeholder="Select CV" v-model="iCV" showToggleAll
                         :options="sCV" display="chip" filter :selectionLimit="3"
@@ -318,7 +319,7 @@ const debug = (value) => {
                         :virtualScrollerOptions="tagsPanelOpts" @update:modelValue="">
                     </MultiSelect>
                 </div>
-                <div class="field col-12 md:col-6">
+                <div class="field col-12 md:col-6 xl:col-3">
                     <label>Age</label>
                         <span class="p-buttonset">
                             <Button v-for="item in ageOpts" :label="item.option" @click="ageButtonToggle(item.value)"
@@ -327,23 +328,23 @@ const debug = (value) => {
                 </div>
 
                 <template v-if="advOptions">
-                    <div class="field col-12 md:col-4">
+                    <div class="field col-12 md:col-4 xl:col-2">
                         <label for="rDate">Release Date</label>
                         <Calendar showIcon showButtonBar inputId="rDate" v-model="releaseDate"
                             @update:modelValue="onReleaseDateInput" :disabled="releaseDateDisable" />
                     </div>
-                    <div class="field col-12 md:col-4">
+                    <div class="field col-12 md:col-4 xl:col-2">
                         <label for="rAfter">Release After</label>
                         <Calendar showIcon showButtonBar inputId="rAfter" v-model="releaseAfter"
                             @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
                     </div>
-                    <div class="field col-12 md:col-4">
+                    <div class="field col-12 md:col-4 xl:col-2">
                         <label for="rBefore">Release Before</label>
                         <Calendar showIcon showButtonBar inputId="rBefore" v-model="releaseBefore"
                             @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
                     </div>
 
-                    <div class="field col-12">
+                    <div class="field col-12 xl:col-6">
                         <label for="genres">Genres</label>
                         <MultiSelect inputId="genres" placeholder="Select genre" v-model="iGenres" showToggleAll
                             filter :options="sGenres" display="chip" optionLabel="value" optionValue="id"
@@ -424,4 +425,12 @@ const debug = (value) => {
 
 </template>
 
-<style lang="scss"></style>
+<style lang="scss">
+.id-button {
+    padding: 0.5rem 0.75rem 0.5rem 0.25rem;
+}
+
+.id-drop-button {
+    border-radius: 0;
+}
+</style>

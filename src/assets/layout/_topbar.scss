@@ -18,7 +18,7 @@
         color: var(--surface-900);
         font-size: 1.5rem;
         font-weight: 500;
-        width: 300px;
+        width: 260px;
         border-radius: 12px;
 
         svg {
@@ -89,7 +89,7 @@
     }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1460px) {
     .layout-topbar {
         justify-content: space-between;
 
