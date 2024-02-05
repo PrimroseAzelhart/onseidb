@@ -4,7 +4,20 @@
         margin-left: auto !important;
         margin-right: auto !important;
     }
+}
 
+@media (min-width: 1672px) {
+    .layout-wrapper {
+        &.layout-overlay {
+            .layout-main-container {
+                .layout-main {
+                    width: 1616px;
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                }
+            }
+        }
+    }
 }
 
 @media (min-width: 1461px) {

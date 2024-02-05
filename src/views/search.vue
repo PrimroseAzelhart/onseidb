@@ -8,8 +8,10 @@ import { databaseService } from '@/service/api.js'
 import AutoComplete from 'primevue/autocomplete';
 import Calendar from 'primevue/calendar';
 import DataView from 'primevue/dataview';
+import DataViewLayoutOptions  from 'primevue/dataviewlayoutoptions'
 
 import WorkListLayoutItem from '@/components/WorkListLayoutItem.vue'
+import WorkGridLayoutItem from '@/components/WorkGridLayoutItem.vue'
 
 const pre = ref('RJ');
 const iD = ref(null);
@@ -38,10 +40,10 @@ const iIllustrator = ref(null);
 const sIllustrator = ref(null);
 const aIllustrator = ref(null);
 
-const inputGroup = [iD, iTitle, iCircle, iCV, iAge, releaseDate, releaseAfter, releaseBefore, iGenres, iSeries, iScripter, iIllustrator]
-const keyGroup = ['id', 'title', 'circle', 'cv', 'age', 'rel_date', 'rel_after', 'rel_before', 'genre', 'series', 'scripter', 'illustrator']
-const selectionGroup = [aCircle, sCV, sGenres, aSeries, aScripter, aIllustrator]
-const selectionKey = ['circle', 'cv', 'genre', 'series', 'scripter', 'illustrator']
+const inputGroup = [iD, iTitle, iCircle, iCV, iAge, releaseDate, releaseAfter, releaseBefore, iGenres, iSeries, iScripter, iIllustrator];
+const keyGroup = ['id', 'title', 'circle', 'cv', 'age', 'rel_date', 'rel_after', 'rel_before', 'genre', 'series', 'scripter', 'illustrator'];
+const selectionGroup = [aCircle, sCV, sGenres, aSeries, aScripter, aIllustrator];
+const selectionKey = ['circle', 'cv', 'genre', 'series', 'scripter', 'illustrator'];
 const advOptions = ref(false);
 const submitLoading = ref(false);
 
@@ -50,6 +52,7 @@ const sortKey = ref('date');
 const sortAscend = ref(false);
 const resultsPerPage = ref(10);
 const resultsShow = ref(true);
+const resultsLayout = ref('list');
 const detailShow = ref(false);
 const detailID = ref('');
 const detail = ref();
@@ -399,7 +402,7 @@ const debug = (value) => {
     <Transition name="slide-left">
         <div class="card" v-show="resultsShow">
             <Panel header="Search Results">
-                <DataView :value="results" paginator paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown" :rows="resultsPerPage">
+                <DataView :value="results" :layout="resultsLayout" paginator paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown" :rows="resultsPerPage">
                     <template #header>
                         <div class="flex justify-content-between">
                             <div class="flex gap-3">
@@ -407,12 +410,20 @@ const debug = (value) => {
                                     @change="sortResults(false)" placeholder="Sort by..." class="w-12rem" />
                                 <Button @click="sortResults(true)" rounded :icon="sortOrderIcon" />
                             </div>
-                            <Dropdown v-model="resultsPerPage" :options="resultsPerPageOpts" class=""></Dropdown>
+                            <div class="flex gap-3">
+                                <DataViewLayoutOptions v-model="resultsLayout" class="my-auto"></DataViewLayoutOptions>
+                                <Dropdown v-model="resultsPerPage" :options="resultsPerPageOpts"></Dropdown>
+                            </div>
                         </div>
                     </template>
                     <template #list="slotProps">
                         <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index" class="col-12">
                             <WorkListLayoutItem :item="item" :index="index" :detail_show="onDetailClick"></WorkListLayoutItem>
+                        </div>
+                    </template>
+                    <template #grid="slotProps">
+                        <div v-for="(item, index) in slotProps.items" :key="item.id" :data-index="index" class="col-4">
+                            <WorkGridLayoutItem :work="detail" :index="index" :detail_show="onDetailClick"></WorkGridLayoutItem>
                         </div>
                     </template>
                 </DataView>
