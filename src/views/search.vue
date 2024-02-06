@@ -202,7 +202,8 @@ const generatePostData = () => {
     // Adapt time zone
     releaseDate.value.forEach(item => {
         if (item) {
-            item = item.setHours(item.getHours() + 8);
+            const offset = item.getTimezoneOffset() / -60;
+            item = item.setHours(item.getHours() + offset);
         }
     });
     for (var i = 1; i < keyGroup.length; i++) {
@@ -321,6 +322,7 @@ const debug = (value) => {
                         :virtualScrollerOptions="tagsPanelOpts" @update:modelValue="">
                     </MultiSelect>
                 </div>
+
                 <div class="field col-12 md:col-6 xl:col-3">
                     <label>Age</label>
                         <span class="p-buttonset">
@@ -333,7 +335,7 @@ const debug = (value) => {
                     <div class="field col-12 md:col-5 xl:col-3">
                         <label for="rDate">Release Date</label>
                         <Calendar showIcon showButtonBar inputId="rDate" v-model="releaseDate" selectionMode="range"
-                            :manualInput="false" />
+                            :manualInput="false" dateFormat="yy-mm-dd" />
                     </div>
 
                     <div class="field col-12 md:col-7 xl:col-3">
