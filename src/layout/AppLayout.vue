@@ -4,12 +4,10 @@ import AppTopbar from './AppTopbar.vue';
 import AppFooter from './AppFooter.vue';
 import AppSidebar from './AppSidebar.vue';
 import { useLayout } from '@/layout/composables/layout';
-import { useOverlayScrollbars } from "overlayscrollbars-vue";
 
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 
 const outsideClickListener = ref(null);
-const bodyOverlayScrollbarsApplied = ref(true);
 
 watch(isSidebarActive, (newVal) => {
     if (newVal) {
@@ -19,12 +17,8 @@ watch(isSidebarActive, (newVal) => {
     }
 });
 
-onMounted(() => initBodyOverlayScrollbars(document.body));
-
 const containerClass = computed(() => {
     return {
-        // 'layout-theme-light': layoutConfig.darkTheme.value === 'light',
-        // 'layout-theme-dark': layoutConfig.darkTheme.value === 'dark',
         'layout-overlay': layoutConfig.menuMode.value === 'overlay',
         'layout-static': layoutConfig.menuMode.value === 'static',
         'layout-static-inactive': layoutState.staticMenuDesktopInactive.value && layoutConfig.menuMode.value === 'static',
@@ -58,24 +52,6 @@ const isOutsideClicked = (event) => {
 
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 };
-
-const [initBodyOverlayScrollbars, getBodyOverlayScrollbarsInstance] =
-    useOverlayScrollbars({
-        defer: true,
-        events: {
-        initialized: () => {
-            bodyOverlayScrollbarsApplied.value = true;
-        },
-        destroyed: () => {
-            bodyOverlayScrollbarsApplied.value = false;
-        },
-        },
-        options: {
-        scrollbars: {
-            theme: 'os-theme-light',
-        },
-        },
-    });
 </script>
 
 <template>

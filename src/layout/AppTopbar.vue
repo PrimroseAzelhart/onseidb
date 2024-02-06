@@ -1,10 +1,12 @@
 <script setup>
 
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, reactive } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 
 import Sidebar from 'primevue/sidebar';
 import { usePrimeVue } from 'primevue/config';
+
+import { useOverlayScrollbars } from "overlayscrollbars-vue";
 
 const PrimeVue = usePrimeVue();
 const { setScale, layoutConfig, onMenuToggle } = useLayout();
@@ -26,8 +28,15 @@ defineProps({
     }
 });
 
+const scrollbarOption = reactive({
+    scrollbars: {
+        theme: 'os-theme-dark'
+    }
+});
+
 onMounted(() => {
     bindOutsideClickListener();
+    initBodyOverlayScrollbars(document.body);
 
     const localTheme = localStorage.getItem('theme');
     if (localTheme) {
@@ -35,6 +44,7 @@ onMounted(() => {
         themeDark.value = themeSetting['dark'];
         themeColor.value = themeSetting['color'];
         const style = themeDark.value ? 'dark' : 'light';
+        scrollbarOption.scrollbars.theme = themeDark.value ? 'os-theme-light' : 'os-theme-dark';
         PrimeVue.changeTheme('aura-light-blue', `aura-${style}-${themeColor.value}`, 'theme-css', () => {});
     }
 });
@@ -108,6 +118,7 @@ const onChangeColor = (color) => {
 };
 
 const onDarkToggle = () => {
+    scrollbarOption.scrollbars.theme = themeDark.value ? 'os-theme-dark' : 'os-theme-light';
     const oldStyle = themeDark.value ? 'dark' : 'light';
     const newStyle = themeDark.value ? 'light' : 'dark';
     const oldTheme = `aura-${oldStyle}-${themeColor.value}`;
@@ -116,10 +127,11 @@ const onDarkToggle = () => {
     localStorage.setItem('theme', JSON.stringify({'color': themeColor.value, 'dark': !themeDark.value}));
 };
 
+const [initBodyOverlayScrollbars] = useOverlayScrollbars({defer: true, options: scrollbarOption});
+
 </script>
 
 <template>
-
     <div class="layout-topbar">
         <router-link to="/" class="layout-topbar-logo">
             <!-- <img :src="'onseidb-logo.svg'" alt="logo" class="logo"/> -->
@@ -192,7 +204,6 @@ const onDarkToggle = () => {
             </div>
         </div>
     </Sidebar>
-
 </template>
 
 <style lang="scss" scoped></style>
