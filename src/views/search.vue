@@ -72,11 +72,7 @@ onMounted(() => {
     }
 });
 
-const codeLabel = [
-    {label: 'RJ', command: () => {pre.value = 'RJ'}},
-    {label: 'BJ', command: () => {pre.value = 'BJ'}},
-    {label: 'VJ', command: () => {pre.value = 'VJ'}}
-];
+const idPre = ['RJ', 'BJ', 'VJ'];
 
 const ageOpts = ref([
     { option: 'A', value: 0 },
@@ -295,9 +291,8 @@ const debug = (value) => {
                 <div class="field col-12 md:col-4 xl:col-2">
                     <label for="wcode">ID</label>
                     <div class="p-inputgroup">
-                        <SplitButton :label="pre" :model="codeLabel"
-                            :pt="{button: {root: {class: 'id-button'}}, menuButton: {root: {class: 'id-drop-button'}}}" />
-                        <InputMask type="text" id="wcode" v-model="iD" mask="99999999"
+                        <Dropdown v-model="pre" :options="idPre" class="w-6rem"></Dropdown>
+                        <InputMask type="text" id="wcode" v-model="iD" mask="99999999" class="w-full"
                             slotChar="" placeholder="Number only" />
                     </div>
                 </div>
@@ -432,12 +427,4 @@ const debug = (value) => {
 
 </template>
 
-<style lang="scss">
-.id-button {
-    padding: 0.5rem 0.75rem 0.5rem 0.25rem;
-}
-
-.id-drop-button {
-    border-radius: 0;
-}
-</style>
+<style lang="scss"></style>
