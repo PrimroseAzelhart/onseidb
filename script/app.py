@@ -19,13 +19,15 @@ responseField = {'_id': False, 'circle_id': False, 'series': False, 'series_id':
                 'rank': False, 'author': False, 'scripter': False, 'music': False, 'size': False, 'wish': False,
                 'format': False, 'illustrator': False}
 
-postDataField = ['id', 'title', 'circle[id]', 'cv[]', 'age[]', 'rel_date', 'rel_after', 'rel_before',
+postDataField = ['id', 'title', 'circle[id]', 'cv[]', 'age[]', 'rel_date[]',
                 'genre[]', 'series[id]', 'scripter[name]', 'illustrator[name]']
+
+listFiled = ['cv[]', 'genre[]', 'age[]', 'rel_date[]']
 
 def postDataParser(data):
     postData = {}
     for i in postDataField:
-        if i == 'cv[]' or i == 'genre[]' or i == 'age[]':
+        if i in listFiled:
             d = data.getlist(i)
             if len(d) != 0:
                 postData[i] = d
@@ -88,18 +90,16 @@ def query():
         querySentence['age'] = {'$in': []}
         for i in data['age[]']:
             querySentence['age']['$in'].append(int(i))
-    if 'rel_date' in data.keys():
-        date = datetime.datetime.strptime(data['rel_date'][0:10], '%Y-%m-%d')
-        querySentence['release_date'] = date
-    if 'rel_after' in data.keys():
-        date = datetime.datetime.strptime(data['rel_after'][0:10], '%Y-%m-%d')
-        querySentence['release_date'] = {}
-        querySentence['release_date']['$gte'] = date
-    if 'rel_before' in data.keys():
-        date = datetime.datetime.strptime(data['rel_before'][0:10], '%Y-%m-%d')
-        if 'release_date' not in querySentence.keys():
+    if 'rel_date[]' in data.keys():
+        if len(data['rel_date[]']) == 1:
+            date = datetime.datetime.strptime(data['rel_date[]'][0][0:10], '%Y-%m-%d')
+            querySentence['release_date'] = date
+        else:
+            startDate = datetime.datetime.strptime(data['rel_date[]'][0][0:10], '%Y-%m-%d')
+            endDate = datetime.datetime.strptime(data['rel_date[]'][1][0:10], '%Y-%m-%d')
             querySentence['release_date'] = {}
-        querySentence['release_date']['$lte'] = date
+            querySentence['release_date']['$gte'] = startDate
+            querySentence['release_date']['$lte'] = endDate
     if 'genre[]' in data.keys():
         querySentence['genre_id'] = {'$in': []}
         for i in data['genre[]']:

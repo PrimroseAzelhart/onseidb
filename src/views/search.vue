@@ -23,11 +23,7 @@ const iCV = ref(null);
 const sCV = ref(null);
 const iAge = ref([]);
 
-const releaseDate = ref(null);
-const releaseAfter = ref(null);
-const releaseBefore = ref(null);
-const releaseDateDisable = ref(false);
-const releasePeriodDisable = ref(false);
+const releaseDate = ref([]);
 const iGenres = ref(null);
 const sGenres = ref(null);
 const iSeries = ref(null);
@@ -40,8 +36,8 @@ const iIllustrator = ref(null);
 const sIllustrator = ref(null);
 const aIllustrator = ref(null);
 
-const inputGroup = [iD, iTitle, iCircle, iCV, iAge, releaseDate, releaseAfter, releaseBefore, iGenres, iSeries, iScripter, iIllustrator];
-const keyGroup = ['id', 'title', 'circle', 'cv', 'age', 'rel_date', 'rel_after', 'rel_before', 'genre', 'series', 'scripter', 'illustrator'];
+const inputGroup = [iD, iTitle, iCircle, iCV, iAge, releaseDate, iGenres, iSeries, iScripter, iIllustrator];
+const keyGroup = ['id', 'title', 'circle', 'cv', 'age', 'rel_date', 'genre', 'series', 'scripter', 'illustrator'];
 const selectionGroup = [aCircle, sCV, sGenres, aSeries, aScripter, aIllustrator];
 const selectionKey = ['circle', 'cv', 'genre', 'series', 'scripter', 'illustrator'];
 const advOptions = ref(false);
@@ -173,6 +169,7 @@ const onClear = () => {
         item.value = null;
     });
     iAge.value = [];
+    releaseDate.value = [];
 };
 
 const responseError = (code, message) => {
@@ -202,6 +199,12 @@ const generatePostData = () => {
         data['id'] = pre.value + iD.value;
         return data;
     }
+    // Adapt time zone
+    releaseDate.value.forEach(item => {
+        if (item) {
+            item = item.setHours(item.getHours() + 8);
+        }
+    });
     for (var i = 1; i < keyGroup.length; i++) {
         if (Array.isArray(inputGroup[i].value)) {
             if (inputGroup[i].value !==0) {
@@ -242,14 +245,6 @@ const onSubmit = () => {
 // Toggle extra options
 const onAdvOpt = () => {
     advOptions.value = !advOptions.value;
-};
-
-const onReleaseDateInput = (value) => {
-    releasePeriodDisable.value = value === null ? false : true;
-};
-
-const onReleasePeriodInput = (value) => {
-    releaseDateDisable.value = value === null ? false : true;
 };
 
 const sortFunc = (a, b) => {
@@ -335,23 +330,13 @@ const debug = (value) => {
                 </div>
 
                 <template v-if="advOptions">
-                    <div class="field col-12 md:col-4 xl:col-2">
+                    <div class="field col-12 md:col-5 xl:col-3">
                         <label for="rDate">Release Date</label>
-                        <Calendar showIcon showButtonBar inputId="rDate" v-model="releaseDate"
-                            @update:modelValue="onReleaseDateInput" :disabled="releaseDateDisable" />
-                    </div>
-                    <div class="field col-12 md:col-4 xl:col-2">
-                        <label for="rAfter">Release After</label>
-                        <Calendar showIcon showButtonBar inputId="rAfter" v-model="releaseAfter"
-                            @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
-                    </div>
-                    <div class="field col-12 md:col-4 xl:col-2">
-                        <label for="rBefore">Release Before</label>
-                        <Calendar showIcon showButtonBar inputId="rBefore" v-model="releaseBefore"
-                            @update:modelValue="onReleasePeriodInput" :disabled="releasePeriodDisable" />
+                        <Calendar showIcon showButtonBar inputId="rDate" v-model="releaseDate" selectionMode="range"
+                            :manualInput="false" />
                     </div>
 
-                    <div class="field col-12 xl:col-6">
+                    <div class="field col-12 md:col-7 xl:col-3">
                         <label for="genres">Genres</label>
                         <MultiSelect inputId="genres" placeholder="Select genre" v-model="iGenres" showToggleAll
                             filter :options="sGenres" display="chip" optionLabel="value" optionValue="id"
@@ -359,19 +344,19 @@ const debug = (value) => {
                         </MultiSelect>
                     </div>
 
-                    <div class="field col-12 md:col-4">
+                    <div class="field col-12 md:col-4 xl:col-2">
                         <label for="series">Series</label>
                         <AutoComplete type="text" inputId="series" placeholder="Select series"
                             v-model="iSeries" :suggestions="sSeries" optionLabel="name" optionValue="id"
                             dropdown forceSelection @complete="searchSeries" />
                     </div>
-                    <div class="field col-12 md:col-4">
+                    <div class="field col-12 md:col-4 xl:col-2">
                         <label for="scripter">Scripter</label>
                         <AutoComplete type="text" inputId="scripter" placeholder="Select scripter"
                             v-model="iScripter" :suggestions="sScripter" optionLabel="name"
                             dropdown forceSelection @complete="searchScripter" />
                     </div>
-                    <div class="field col-12 md:col-4">
+                    <div class="field col-12 md:col-4 xl:col-2">
                         <label for="illustrator">Illustrator</label>
                         <AutoComplete type="text" inputId="illustrator" placeholder="Select illustrator"
                             v-model="iIllustrator" :suggestions="sIllustrator" optionLabel="name"
