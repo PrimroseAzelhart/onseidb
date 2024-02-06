@@ -45,7 +45,7 @@ const getSeverity = (value) => {
                 <div class="white-space-nowrap text-lg my-auto">{{ item.circle + ' /' }}</div>
                 <div v-for="(cv, idx) in item.cv" class="my-auto">
                     <Chip v-if="idx<1" :label="cv" class="h-full"></Chip>
-                    <div v-if="idx==1">and other</div>
+                    <div v-if="idx==1">other</div>
                 </div>
             </div>
             <div class="flex justify-content-between inline">

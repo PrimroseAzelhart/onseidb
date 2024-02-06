@@ -25,6 +25,7 @@ import PrimeVue from 'primevue/config'
 import VueCookies from "vue-cookies";
 import router from '@/router'
 import '@/assets/styles.scss'
+// import '../main.css'
 import 'overlayscrollbars/styles/overlayscrollbars.css';
 
 const app = createApp(App)

@@ -86,9 +86,9 @@ const getSeverity = (value) => {
                 </div>
                 <div class="flex gap-2 h-2rem">
                     <div class="white-space-nowrap text-lg my-auto">{{ item.circle + ' /' }}</div>
-                    <div v-for="(cv, idx) in item.cv">
+                    <div v-for="(cv, idx) in item.cv" class="my-auto">
                         <Chip v-if="idx<5" :label="cv" class="h-full"></Chip>
-                        <Chip v-if="idx==5" label="..." class="h-full"></Chip>
+                        <div v-if="idx==5">other</div>
                     </div>
                 </div>
                 <div class="h-2rem">
