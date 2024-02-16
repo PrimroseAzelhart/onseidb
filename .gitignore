@@ -28,3 +28,4 @@ package-lock.json
 stats.html
 *.map
 main.css
+*.pyc

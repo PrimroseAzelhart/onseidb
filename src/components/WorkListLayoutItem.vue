@@ -1,5 +1,6 @@
 <script setup>
 
+import { computed } from 'vue';
 import Fieldset from 'primevue/fieldset';
 
 const props = defineProps({
@@ -51,14 +52,49 @@ const getSeverity = (value) => {
     }
 };
 
+const getAge = (value) => {
+    switch (value) {
+        case 0:
+            return '全年齢';
+        case 1:
+            return 'R-15';
+        case 2:
+            return 'R-18';
+    }
+};
+
+const getCoverUrl = (id) => {
+    const category = id.substring(0, 2);
+    var categoryPath = '';
+    switch (category) {
+        case 'RJ':
+            categoryPath = 'doujin';
+            break;
+        case 'BJ':
+            categoryPath = 'books';
+            break;
+        case 'VJ':
+            categoryPath = 'professional';
+            break;
+    }
+    const idStr = id.substring(2);
+    const idLen = idStr.length;
+    const idNumber = parseInt(idStr);
+    const coverPathNumber = (parseInt(idNumber / 1000) + 1) * 1000;
+    const coverPathStr = `${category}${String(coverPathNumber).padStart(idLen, '0')}`;
+    console.log(coverPathStr);
+    const coverUrl = `https://img.dlsite.jp/modpub/images2/work/${categoryPath}/${coverPathStr}/${id}_img_main.webp`
+    return coverUrl;
+};
+
 </script>
 
 <template>
     <Fieldset :legend="item.id">
         <div class="flex flex-row align-items-center justify-content-between p-2 gap-3 w-full h-13rem">
             <div class="flex flex-column h-full w-12rem justify-content-between">
-                <Image src="onseidb-logo.svg" preview alt="Cover" class="flex h-9rem w-full"/>
-                <Tag :value="item.age" :severity="getSeverity(item.age)" class="absolute mt-2 ml-2 opacity-50 text-lg"></Tag>
+                <Image :src="getCoverUrl(item.id)" :alt="item.id" imageClass="flex h-9rem" preview />
+                <Tag :value="getAge(item.age)" :severity="getSeverity(item.age)" class="absolute mt-2 ml-2 opacity-80"></Tag>
                 <div class="flex flex-row w-full justify-content-evenly">
                     <div class="border-round-3xl border-2 border-primary px-2 py-1 text-xs flex flex-row gap-2 align-items-center">
                         <i class="fa-solid fa-star text-yellow-400"></i>

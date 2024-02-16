@@ -32,12 +32,24 @@ const getSeverity = (value) => {
     }
 };
 
+const getCoverUrl = (id) => {
+    const category = id.substring(0, 2);
+    const idStr = id.substring(2);
+    const idLen = idStr.length;
+    const idNumber = parseInt(idStr);
+    const coverPathNumber = (parseInt(idNumber / 1000) + 1) * 1000;
+    const coverPathStr = `${category}${String(coverPathNumber).padStart(idLen, '0')}`;
+    console.log(coverPathStr);
+    const coverUrl = `https://img.dlsite.jp/modpub/images2/work/doujin/${coverPathStr}/${id}_img_main.webp`
+    return coverUrl;
+};
+
 </script>
 
 <template>
     <div class="card">
         <div class="flex flex-column gap-2">
-            <img :src="'onseidb-logo.svg'" preview alt="Cover" class="flex h-9rem"/>
+            <Image :src="getCoverUrl(item.id)" :alt="item.id" imageClass="flex w-full" preview />
             <div :title="item.title" class="text-xl font-bold text-900 grid-title">
                 {{ item.title }}
             </div>

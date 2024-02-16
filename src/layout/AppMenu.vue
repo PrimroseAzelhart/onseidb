@@ -9,16 +9,16 @@ const model = ref([
         items: [
             { label: 'Home', icon: 'fa-solid fa-house fa-fw', to: '/' },
             { label: 'Search', icon: 'fa-solid fa-magnifying-glass fa-fw', to: '/search' },
-            { label: 'CV', icon: 'fa-solid fa-user fa-fw', to: '/cv' },
-            { label: 'Circle', icon: 'fa-solid fa-users fa-fw', to: '/circle' },
-            { label: 'Release', icon: 'fa-solid fa-calendar-days fa-fw', to: '/release' },
-            { label: 'Genre', icon: 'fa-solid fa-tag fa-fw', to: '/genre' }
+            // { label: 'CV', icon: 'fa-solid fa-user fa-fw', to: '/cv' },
+            // { label: 'Circle', icon: 'fa-solid fa-users fa-fw', to: '/circle' },
+            // { label: 'Release', icon: 'fa-solid fa-calendar-days fa-fw', to: '/release' },
+            // { label: 'Genre', icon: 'fa-solid fa-tag fa-fw', to: '/genre' }
         ]
     },
     {
         label: 'User',
         items: [
-            {label: 'Library', icon: 'fa-solid fa-headphones fa-fw', to: '/library'},
+            // {label: 'Library', icon: 'fa-solid fa-headphones fa-fw', to: '/library'},
             {label: 'Logout', icon: 'fa-solid fa-right-from-bracket fa-fw', to: '/logout'}
         ]
     },
