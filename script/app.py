@@ -115,11 +115,6 @@ def query():
     results = list(client['onseidb']['meta'].find(querySentence, responseField))
     return jsonify(results)
 
-# @application.route('/search', methods=['POST'])
-# def search():
-#     results = list(client['onseidb']['meta'].find({}, responseField))
-#     return jsonify(results)
-
 @application.route('/list/<key>')
 def get_list(key):
     try:
@@ -134,6 +129,14 @@ def get_detail(id):
     if not result:
         abort(404)
     return jsonify(result)
+
+@application.route('/database')
+def get_database():
+    results = list(client['onseidb']['field'].find({}, {'_id': False}))
+    update = {}
+    for i in results:
+        update[i['index']] = i['last_update']
+    return jsonify(update)
 
 if __name__ == '__main__':
     application.run()

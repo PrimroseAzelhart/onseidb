@@ -11,7 +11,7 @@ class databaseService {
     }
 
     checkUpdate() {
-        return axios.get('https://api.onsei.fans/list/update')
+        return axios.get('https://api.onsei.fans/database')
                     .then((resp) => resp.data);
     }
 }

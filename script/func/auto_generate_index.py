@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 
+import json
 from db_config import db_client
+from datetime import datetime
 
+circleDB = []
+cvDB = []
+seriesDB = []
+authorDB = []
+scripterDB = []
+illustratorDB = []
+genreDB = []
 
-idx = ['circle', 'cv', 'series', 'author', 'scripter', 'illustrator', 'genre']
+idx = {'circle': circleDB, 'cv': cvDB, 'series': seriesDB, 'author': authorDB, 'scripter': scripterDB, 'illustrator': illustratorDB, 'genre': genreDB}
 
 client = db_client()
 db = client['onseidb']
-
-def update(index, count):
-    existCount = db['update'].find_one({'doc': index})['count']
-    if count != existCount:
-        db['update'].update_one({'doc': index}, {'$set': {'update': True, 'count': count}})
-
 
 def main():
     circle = {}
@@ -23,15 +26,7 @@ def main():
     illustrator = {}
     genre = {}
 
-    circleDB = []
-    cvDB = []
-    seriesDB = []
-    authorDB = []
-    scripterDB = []
-    illustratorDB = []
-    genreDB = []
-
-    for work in db['meta'].find():
+    for work in db['meta'].find({}, {'_id': False}):
         i = work['circle_id']
         if i in circle.keys():
             circle[i][1].append(work['id'])
@@ -100,26 +95,15 @@ def main():
 
     for key, value in genre.items():
         genreDB.append({'id': key, 'value': value[0], 'work': value[1], 'count': len(value[1])})
-        # db['genre'].update_one({'value': key}, {'$set': {'work': value, 'count': len(value)}})
 
-    for i in idx:
+    for i,v in idx.items():
         db[i].drop()
-
-    db['circle'].insert_many(circleDB)
-    db['cv'].insert_many(cvDB)
-    db['series'].insert_many(seriesDB)
-    db['author'].insert_many(authorDB)
-    db['scripter'].insert_many(scripterDB)
-    db['illustrator'].insert_many(illustratorDB)
-    db['genre'].insert_many(genreDB)
-
-    update('circle', len(circleDB))
-    update('cv', len(cvDB))
-    update('series', len(seriesDB))
-    update('author', len(authorDB))
-    update('scripter', len(scripterDB))
-    update('illustrator', len(illustratorDB))
-    update('genre', len(genreDB))
+        db[i].insert_many(v)
+        db['field'].update_one({'index': i}, {'$set': {'last_update': datetime.now().timestamp()}}, True)
+        with open(f'/opt/app/json/{i}.json', 'w', encoding='utf-8') as fp:
+            results = db[i].find({}, {'_id': False, 'work': False})
+            results = sorted(results, key=lambda e:e.__getitem__('count'), reverse=True)
+            json.dump(results, fp)
 
 if __name__ == '__main__':
     main()
