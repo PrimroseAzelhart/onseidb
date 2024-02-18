@@ -34,13 +34,25 @@ const getSeverity = (value) => {
 
 const getCoverUrl = (id) => {
     const category = id.substring(0, 2);
+    var categoryPath = '';
+    switch (category) {
+        case 'RJ':
+            categoryPath = 'doujin';
+            break;
+        case 'BJ':
+            categoryPath = 'books';
+            break;
+        case 'VJ':
+            categoryPath = 'professional';
+            break;
+    }
     const idStr = id.substring(2);
     const idLen = idStr.length;
     const idNumber = parseInt(idStr);
     const coverPathNumber = (parseInt(idNumber / 1000) + 1) * 1000;
     const coverPathStr = `${category}${String(coverPathNumber).padStart(idLen, '0')}`;
     console.log(coverPathStr);
-    const coverUrl = `https://img.dlsite.jp/modpub/images2/work/doujin/${coverPathStr}/${id}_img_main.webp`
+    const coverUrl = `https://img.dlsite.jp/modpub/images2/work/${categoryPath}/${coverPathStr}/${id}_img_main.webp`
     return coverUrl;
 };
 

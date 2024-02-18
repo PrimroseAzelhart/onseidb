@@ -66,8 +66,8 @@ async def fetch(session: aiohttp.ClientSession, fp, page):
 
 async def main():
     async with aiohttp.ClientSession() as session:
-        with open('/opt/app/log/results.txt', 'w') as res:
-            tasks = [asyncio.ensure_future(fetch(session, res, page)) for page in range(1,400)]
+        with open('/opt/app/log/scraper_id_log.txt', 'w') as res:
+            tasks = [asyncio.ensure_future(fetch(session, res, page)) for page in range(1,500)]
             await asyncio.gather(*tasks)
             await session.close()
 

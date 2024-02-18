@@ -19,6 +19,8 @@ responseField = {'_id': False, 'circle_id': False, 'series': False, 'series_id':
                 'rank': False, 'author': False, 'scripter': False, 'music': False, 'size': False, 'wish': False,
                 'format': False, 'illustrator': False}
 
+detailField = {'_id': False}
+
 postDataField = ['id', 'title', 'circle[id]', 'cv[]', 'age[]', 'rel_date[]',
                 'genre[]', 'series[id]', 'scripter[name]', 'illustrator[name]']
 
@@ -113,11 +115,10 @@ def query():
     results = list(client['onseidb']['meta'].find(querySentence, responseField))
     return jsonify(results)
 
-
-@application.route('/search', methods=['POST'])
-def search():
-    results = list(client['onseidb']['meta'].find({}, responseField))
-    return jsonify(results)
+# @application.route('/search', methods=['POST'])
+# def search():
+#     results = list(client['onseidb']['meta'].find({}, responseField))
+#     return jsonify(results)
 
 @application.route('/list/<key>')
 def get_list(key):
@@ -126,6 +127,13 @@ def get_list(key):
             return jsonify(json.load(fp))
     except:
         abort(404)
+
+@application.route('/detail/<id>')
+def get_detail(id):
+    result = client['onseidb']['meta'].find_one({'id': id}, detailField)
+    if not result:
+        abort(404)
+    return jsonify(result)
 
 if __name__ == '__main__':
     application.run()

@@ -157,5 +157,4 @@ const getCoverUrl = (id) => {
             </div>
         </div>
     </Fieldset>
-
 </template>

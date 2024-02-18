@@ -41,7 +41,10 @@ def html_parser(html):
             continue
         if row.th.text == 'シリーズ名':
             doc['series'] = row.td.text.strip()
-            doc['series_id'] = re.search(r'SRI[0-9]+', row.a['href']).group()
+            try:
+                doc['series_id'] = re.search(r'SRI[0-9]+', row.a['href']).group()
+            except:
+                pass
             continue
         if row.th.text == '作者':
             doc['author'] = []
@@ -91,10 +94,13 @@ def html_parser(html):
             doc['genre'] = []
             doc['genre_id'] = []
             for tag in row.td.find_all('a'):
-                gid = re.search(r'[0-9]+', tag['href']).group()
-                genre = tag.text.strip()
-                doc['genre'].append(genre)
-                doc['genre_id'].append(gid)
+                try:
+                    gid = re.search(r'[0-9]+', tag['href']).group()
+                    doc['genre_id'].append(gid)
+                    genre = tag.text.strip()
+                    doc['genre'].append(genre)
+                except:
+                    print(doc['id'])
             continue
         if row.th.text == 'ファイル容量':
             doc['size'] = re.search(r'([0-9].+B)', row.td.text.strip()).group()
@@ -104,16 +110,22 @@ def html_parser(html):
 async def fetch(session, id, log):
     async with sema:
         url = f'https://www.dlsite.com/maniax/work/=/product_id/{id}.html'
-        async with session.get(url) as resp:
-            if resp.status == 200:
-                html = await resp.text()
-                doc = html_parser(html)
-                db['meta'].insert_one(doc)
-                log.write(f'[{datetime.now()}][success] {id}\n')
-                await asyncio.sleep(1)
-            else:
-                failed.append({'id': id, 'status': 'failed'})
-                log.write(f'[{datetime.now()}][fail:{resp.status}] {id}\n')
+        try:
+            async with session.get(url) as resp:
+                if resp.status == 200:
+                    html = await resp.text()
+                    try:
+                        doc = html_parser(html)
+                        log.write(f'[{datetime.now()}][success] {id}')
+                        db['meta'].update_one({'id': doc['id']}, {'$set': doc}, True)
+                    except:
+                        log.write(f'[{datetime.now()}][fail: parser] {id}')
+                    await asyncio.sleep(1)
+                else:
+                    failed.append({'id': id, 'status': 'failed'})
+                    log.write(f'[{datetime.now()}][fail:{resp.status}] {id}\n')
+        except:
+            log.write(f'[{datetime.now()}][fail] {id}\n')
 
 def get_id_list():
     idList = []
@@ -123,7 +135,8 @@ def get_id_list():
     return idList
 
 async def main(idList):
-    with open('/opt/app/log/work.txt', 'a') as log:
+    with open('/opt/app/log/scraper_work_log.txt', 'a') as log:
+        log.write(f'\n[{datetime.now()}] Scraper start\n')
         async with aiohttp.ClientSession() as session:
             tasks = [asyncio.ensure_future(fetch(session, id, log)) for id in idList]
             await asyncio.gather(*tasks)
@@ -131,6 +144,7 @@ async def main(idList):
             db['id'].drop()
             if len(failed) != 0:
                 db['id'].insert_many(failed)
+            log.write(f'[{datetime.now()}] Scraper finish\n')
 
 if __name__ == '__main__':
     idList = get_id_list()
