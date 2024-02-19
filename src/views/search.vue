@@ -311,9 +311,9 @@ const debug = (value) => {
 
                 <div class="field col-12 md:col-6 xl:col-3">
                     <label for="cv">CV</label>
-                    <MultiSelect inputId="cv" v-model="iCV" showToggleAll
-                        :options="sCV" display="chip" filter :selectionLimit="3"
-                        optionLabel="name" optionValue="name"
+                    <MultiSelect inputId="cv" v-model="iCV" :showToggleAll="false"
+                        :options="sCV" filter :selectionLimit="3"
+                        optionLabel="name" optionValue="name" display="chip"
                         :virtualScrollerOptions="tagsPanelOpts" @update:modelValue="">
                     </MultiSelect>
                 </div>
@@ -335,7 +335,7 @@ const debug = (value) => {
 
                     <div class="field col-12 md:col-7 xl:col-3">
                         <label for="genres">Genres</label>
-                        <MultiSelect inputId="genres" v-model="iGenres" showToggleAll
+                        <MultiSelect inputId="genres" v-model="iGenres" :showToggleAll="false"
                             filter :options="sGenres" display="chip" optionLabel="value" optionValue="id"
                             :virtualScrollerOptions="tagsPanelOpts" :selectionLimit="5">
                         </MultiSelect>

@@ -1,9 +1,13 @@
+@font-face {
+    font-family: 'Sarasa';
+    src: url(../../font/Sarasa-Gothic-J-Regular.woff2) format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
-  font-family: "Inter var", sans-serif;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  font-variation-settings: normal;
-  --font-family:"Inter var", sans-serif;
-  --font-feature-settings: "cv02","cv03","cv04","cv11";
+  --font-family: 'Sarasa';
   --text-color:#ffffff;
   --text-color-secondary:#a1a1aa;
   --primary-color:#2dd4bf;
