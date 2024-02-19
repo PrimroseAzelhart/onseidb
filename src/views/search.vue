@@ -306,19 +306,19 @@ const debug = (value) => {
                     <AutoComplete type="text" inputId="circle"
                         v-model="iCircle" :suggestions="sCircle" optionLabel="name" modelValue="id"
                         forceSelection @complete="searchCircle" @update:modelValue="" autoOptionFocus
-                        :virtualScrollerOptions="{itemSize: 34, autoSize: true}" />
+                        :virtualScrollerOptions="{itemSize: 34}" />
                 </div>
 
-                <div class="field col-12 md:col-6 xl:col-3">
+                <div class="field col-12 md:col-6 xl:col-4">
                     <label for="cv">CV</label>
                     <MultiSelect inputId="cv" v-model="iCV" :showToggleAll="false"
                         :options="sCV" filter :selectionLimit="3"
                         optionLabel="name" optionValue="name" display="chip"
-                        :virtualScrollerOptions="tagsPanelOpts" @update:modelValue="">
+                        :virtualScrollerOptions="{itemSize: 34}" @update:modelValue="">
                     </MultiSelect>
                 </div>
 
-                <div class="field col-12 md:col-6 xl:col-3">
+                <div class="field col-12 md:col-6 xl:col-2">
                     <label>Age</label>
                         <span class="p-buttonset">
                             <Button v-for="item in ageOpts" :label="item.option" @click="ageButtonToggle(item.value)"
@@ -337,7 +337,7 @@ const debug = (value) => {
                         <label for="genres">Genres</label>
                         <MultiSelect inputId="genres" v-model="iGenres" :showToggleAll="false"
                             filter :options="sGenres" display="chip" optionLabel="value" optionValue="id"
-                            :virtualScrollerOptions="tagsPanelOpts" :selectionLimit="5">
+                            :virtualScrollerOptions="{itemSize: 34}" :selectionLimit="5">
                         </MultiSelect>
                     </div>
 
@@ -345,19 +345,19 @@ const debug = (value) => {
                         <label for="series">Series</label>
                         <AutoComplete type="text" inputId="series"
                             v-model="iSeries" :suggestions="sSeries" optionLabel="name" optionValue="id"
-                            forceSelection @complete="searchSeries" />
+                            forceSelection @complete="searchSeries" :virtualScrollerOptions="{itemSize: 34}" />
                     </div>
                     <div class="field col-12 md:col-4 xl:col-2">
                         <label for="scripter">Scripter</label>
                         <AutoComplete type="text" inputId="scripter"
                             v-model="iScripter" :suggestions="sScripter" optionLabel="name"
-                            forceSelection @complete="searchScripter" />
+                            forceSelection @complete="searchScripter" :virtualScrollerOptions="{itemSize: 34}" />
                     </div>
                     <div class="field col-12 md:col-4 xl:col-2">
                         <label for="illustrator">Illustrator</label>
                         <AutoComplete type="text" inputId="illustrator"
                             v-model="iIllustrator" :suggestions="sIllustrator" optionLabel="name"
-                            forceSelection @complete="searchIllustrator" />
+                            forceSelection @complete="searchIllustrator" :virtualScrollerOptions="{itemSize: 34}" />
                     </div>
                 </template>
 

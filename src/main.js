@@ -20,6 +20,7 @@ import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 import Toolbar from 'primevue/toolbar';
 import Tag from 'primevue/tag';
+// import VirtualScroller from 'primevue/virtualscroller';
 import PrimeVue from 'primevue/config'
 
 import VueCookies from "vue-cookies";
@@ -30,7 +31,16 @@ import 'overlayscrollbars/styles/overlayscrollbars.css';
 
 const app = createApp(App)
 
-app.use(PrimeVue, {ripple: true});
+app.use(PrimeVue, {
+    pt: {
+        autocomplete: {
+            list: {class: 'w-full'},
+            item: {class: 'text-overflow-ellipsis'},
+            virtualScroller: {class: 'h-auto'}
+        }
+    },
+    ripple: true
+});
 app.use(ToastService);
 
 app.use(VueCookies);
@@ -53,5 +63,6 @@ app.component('SelectButton', SelectButton);
 app.component('Tag', Tag);
 app.component('Toast', Toast);
 app.component('Toolbar', Toolbar);
+// app.component('VirtualScroller', VirtualScroller);
 
 app.mount('#app')
