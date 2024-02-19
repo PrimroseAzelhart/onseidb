@@ -23,6 +23,7 @@ def html_parser(html):
     soup = BeautifulSoup(html, 'lxml')
 
     doc = {}
+    doc['last_scrape'] = datetime.now()
     doc['id'] = soup.find(id='work_buy_box_wrapper')['data-product-id']
     doc['title'] = soup.find(id='work_name').text.strip()
     doc['circle'] = soup.find(class_='add_follow')['data-follow-name']
