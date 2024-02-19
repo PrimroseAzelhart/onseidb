@@ -9,6 +9,7 @@ import AutoComplete from 'primevue/autocomplete';
 import Calendar from 'primevue/calendar';
 import DataView from 'primevue/dataview';
 import DataViewLayoutOptions  from 'primevue/dataviewlayoutoptions'
+import SelectButton from 'primevue/selectbutton';
 
 import WorkListLayoutItem from '@/components/WorkListLayoutItem.vue'
 import WorkGridLayoutItem from '@/components/WorkGridLayoutItem.vue'
@@ -86,19 +87,11 @@ const sortOptions = ref([
     {label: 'Sales', value: 'dl'}
 ]);
 
-const tagsPanelOpts = {
-    itemSize: 40
-};
-
 const resultsPerPageOpts = [10, 20, 50];
 
 const sortOrderIcon = computed(() => {
     return sortAscend.value ? 'fa-solid fa-arrow-up-wide-short' : 'fa-solid fa-arrow-down-wide-short';
 });
-
-const ageIcon = (value) => {
-    return ageChecked(value) ? 'fa-regular fa-square-check fa-lg' : 'fa-regular fa-square fa-lg';
-};
 
 const searchCircle = (event) => {
     setTimeout(() => {
@@ -146,18 +139,6 @@ const searchIllustrator = (event) => {
             })
         }
     }, 250);
-};
-
-const ageButtonToggle = (value) => {
-    if (iAge.value.includes(value)) {
-        iAge.value.splice(iAge.value.indexOf(value), 1);
-    } else {
-        iAge.value.push(value);
-    }
-};
-
-const ageChecked = (value) => {
-    return iAge.value.includes(value);
 };
 
 const onClear = () => {
@@ -320,10 +301,7 @@ const debug = (value) => {
 
                 <div class="field col-12 md:col-6 xl:col-2">
                     <label>Age</label>
-                        <span class="p-buttonset">
-                            <Button v-for="item in ageOpts" :label="item.option" @click="ageButtonToggle(item.value)"
-                                :text="!ageChecked(item.value)" :icon="ageIcon(item.value)" />
-                        </span>
+                    <SelectButton v-model="iAge" :options="ageOpts" optionLabel="option" optionValue="value" multiple @update:modelValue="debug" />
                 </div>
 
                 <template v-if="advOptions">
