@@ -292,26 +292,26 @@ const debug = (value) => {
                     <label for="wcode">ID</label>
                     <div class="p-inputgroup">
                         <Dropdown v-model="pre" :options="idPre" class="w-6rem"></Dropdown>
-                        <InputMask type="text" id="wcode" v-model="iD" mask="99999999" class="w-full"
-                            slotChar="" placeholder="Number only" />
+                        <InputMask type="text" id="wcode" v-model="iD" mask="99999999" class="w-full" slotChar="" />
                     </div>
                 </div>
 
                 <div class="field col-12 md:col-4 xl:col-2">
                     <label for="title">Title</label>
-                    <InputText type="text" id="title" v-model="iTitle" placeholder="Input title"/>
+                    <InputText type="text" id="title" v-model="iTitle" />
                 </div>
 
                 <div class="field col-12 md:col-4 xl:col-2">
                     <label for="circle">Circle</label>
-                    <AutoComplete type="text" inputId="circle" placeholder="Select circle"
+                    <AutoComplete type="text" inputId="circle"
                         v-model="iCircle" :suggestions="sCircle" optionLabel="name" modelValue="id"
-                        dropdown forceSelection @complete="searchCircle" @update:modelValue="debug" />
+                        forceSelection @complete="searchCircle" @update:modelValue="" autoOptionFocus
+                        :virtualScrollerOptions="{itemSize: 34, autoSize: true}" />
                 </div>
 
                 <div class="field col-12 md:col-6 xl:col-3">
                     <label for="cv">CV</label>
-                    <MultiSelect inputId="cv" placeholder="Select CV" v-model="iCV" showToggleAll
+                    <MultiSelect inputId="cv" v-model="iCV" showToggleAll
                         :options="sCV" display="chip" filter :selectionLimit="3"
                         optionLabel="name" optionValue="name"
                         :virtualScrollerOptions="tagsPanelOpts" @update:modelValue="">
@@ -335,7 +335,7 @@ const debug = (value) => {
 
                     <div class="field col-12 md:col-7 xl:col-3">
                         <label for="genres">Genres</label>
-                        <MultiSelect inputId="genres" placeholder="Select genre" v-model="iGenres" showToggleAll
+                        <MultiSelect inputId="genres" v-model="iGenres" showToggleAll
                             filter :options="sGenres" display="chip" optionLabel="value" optionValue="id"
                             :virtualScrollerOptions="tagsPanelOpts" :selectionLimit="5">
                         </MultiSelect>
@@ -343,21 +343,21 @@ const debug = (value) => {
 
                     <div class="field col-12 md:col-4 xl:col-2">
                         <label for="series">Series</label>
-                        <AutoComplete type="text" inputId="series" placeholder="Select series"
+                        <AutoComplete type="text" inputId="series"
                             v-model="iSeries" :suggestions="sSeries" optionLabel="name" optionValue="id"
-                            dropdown forceSelection @complete="searchSeries" />
+                            forceSelection @complete="searchSeries" />
                     </div>
                     <div class="field col-12 md:col-4 xl:col-2">
                         <label for="scripter">Scripter</label>
-                        <AutoComplete type="text" inputId="scripter" placeholder="Select scripter"
+                        <AutoComplete type="text" inputId="scripter"
                             v-model="iScripter" :suggestions="sScripter" optionLabel="name"
-                            dropdown forceSelection @complete="searchScripter" />
+                            forceSelection @complete="searchScripter" />
                     </div>
                     <div class="field col-12 md:col-4 xl:col-2">
                         <label for="illustrator">Illustrator</label>
-                        <AutoComplete type="text" inputId="illustrator" placeholder="Select illustrator"
+                        <AutoComplete type="text" inputId="illustrator"
                             v-model="iIllustrator" :suggestions="sIllustrator" optionLabel="name"
-                            dropdown forceSelection @complete="searchIllustrator" />
+                            forceSelection @complete="searchIllustrator" />
                     </div>
                 </template>
 

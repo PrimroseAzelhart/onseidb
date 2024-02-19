@@ -36,7 +36,7 @@ const scrollbarOption = reactive({
 
 onMounted(() => {
     bindOutsideClickListener();
-    initBodyOverlayScrollbars(document.body);
+    initOverlayScrollbars(document.body);
 
     const localTheme = localStorage.getItem('theme');
     if (localTheme) {
@@ -127,7 +127,7 @@ const onDarkToggle = () => {
     localStorage.setItem('theme', JSON.stringify({'color': themeColor.value, 'dark': !themeDark.value}));
 };
 
-const [initBodyOverlayScrollbars] = useOverlayScrollbars({defer: true, options: scrollbarOption});
+const [initOverlayScrollbars] = useOverlayScrollbars({defer: true, options: scrollbarOption});
 
 </script>
 
