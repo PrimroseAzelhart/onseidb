@@ -75,17 +75,24 @@ onMounted(() => {
 
 const idPre = ['RJ', 'BJ', 'VJ'];
 
-const ageOpts = ref([
+const ageOpts = [
     { option: 'A', value: 0 },
     { option: 'B', value: 1 },
     { option: 'C', value: 2 }
-]);
+];
 
-const sortOptions = ref([
+const sortOptions = [
     {label: 'Release date', value: 'date'},
     {label: 'Price', value: 'price_current'},
     {label: 'Sales', value: 'dl'}
-]);
+];
+
+const autoCompleteItems = {
+    circle: {filtered: sCircle, all: aCircle},
+    series: {filtered: sSeries, all: aSeries},
+    scripter: {filtered: sScripter, all: aScripter},
+    illustrator: {filtered: sIllustrator, all: aIllustrator},
+}
 
 const resultsPerPageOpts = [10, 20, 50];
 
@@ -93,48 +100,12 @@ const sortOrderIcon = computed(() => {
     return sortAscend.value ? 'fa-solid fa-arrow-up-wide-short' : 'fa-solid fa-arrow-down-wide-short';
 });
 
-const searchCircle = (event) => {
+const autoSearch = (event, category) => {
     setTimeout(() => {
         if(!event.query.trim().length) {
-            sCircle.value = [...aCircle.value];
+            autoCompleteItems[category].filtered.value = [...autoCompleteItems[category].all.value];
         } else {
-            sCircle.value = aCircle.value.filter((name) => {
-                return name.name.toLowerCase().includes(event.query.toLowerCase());
-            })
-        }
-    }, 250);
-};
-
-const searchSeries = (event) => {
-    setTimeout(() => {
-        if(!event.query.trim().length) {
-            sSeries.value = [...aSeries.value];
-        } else {
-            sSeries.value = aSeries.value.filter((name) => {
-                return name.name.toLowerCase().includes(event.query.toLowerCase());
-            })
-        }
-    }, 250);
-};
-
-const searchScripter = (event) => {
-    setTimeout(() => {
-        if(!event.query.trim().length) {
-            sScripter.value = [...aScripter.value];
-        } else {
-            sScripter.value = aScripter.value.filter((name) => {
-                return name.name.toLowerCase().includes(event.query.toLowerCase());
-            })
-        }
-    }, 250);
-};
-
-const searchIllustrator = (event) => {
-    setTimeout(() => {
-        if(!event.query.trim().length) {
-            sIllustrator.value = [...aIllustrator.value];
-        } else {
-            sIllustrator.value = aIllustrator.value.filter((name) => {
+            autoCompleteItems[category].filtered.value = autoCompleteItems[category].all.value.filter((name) => {
                 return name.name.toLowerCase().includes(event.query.toLowerCase());
             })
         }
@@ -286,7 +257,7 @@ const debug = (value) => {
                     <label for="circle">Circle</label>
                     <AutoComplete type="text" inputId="circle"
                         v-model="iCircle" :suggestions="sCircle" optionLabel="name" modelValue="id"
-                        forceSelection @complete="searchCircle" @update:modelValue="" autoOptionFocus
+                        forceSelection @complete="autoSearch($event, 'circle')" @update:modelValue="" autoOptionFocus
                         :virtualScrollerOptions="{itemSize: 34}" />
                 </div>
 
@@ -301,7 +272,7 @@ const debug = (value) => {
 
                 <div class="field col-12 md:col-6 xl:col-2">
                     <label>Age</label>
-                    <SelectButton v-model="iAge" :options="ageOpts" optionLabel="option" optionValue="value" multiple @update:modelValue="debug" />
+                    <SelectButton v-model="iAge" :options="ageOpts" optionLabel="option" optionValue="value" multiple />
                 </div>
 
                 <template v-if="advOptions">
@@ -323,19 +294,19 @@ const debug = (value) => {
                         <label for="series">Series</label>
                         <AutoComplete type="text" inputId="series"
                             v-model="iSeries" :suggestions="sSeries" optionLabel="name" optionValue="id"
-                            forceSelection @complete="searchSeries" :virtualScrollerOptions="{itemSize: 34}" />
+                            forceSelection @complete="autoSearch($event, 'series')" :virtualScrollerOptions="{itemSize: 34}" />
                     </div>
                     <div class="field col-12 md:col-4 xl:col-2">
                         <label for="scripter">Scripter</label>
                         <AutoComplete type="text" inputId="scripter"
                             v-model="iScripter" :suggestions="sScripter" optionLabel="name"
-                            forceSelection @complete="searchScripter" :virtualScrollerOptions="{itemSize: 34}" />
+                            forceSelection @complete="autoSearch($event, 'scripter')" :virtualScrollerOptions="{itemSize: 34}" />
                     </div>
                     <div class="field col-12 md:col-4 xl:col-2">
                         <label for="illustrator">Illustrator</label>
                         <AutoComplete type="text" inputId="illustrator"
                             v-model="iIllustrator" :suggestions="sIllustrator" optionLabel="name"
-                            forceSelection @complete="searchIllustrator" :virtualScrollerOptions="{itemSize: 34}" />
+                            forceSelection @complete="autoSearch($event, 'illustrator')" :virtualScrollerOptions="{itemSize: 34}" />
                     </div>
                 </template>
 
