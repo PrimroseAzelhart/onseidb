@@ -2,7 +2,6 @@
 
 import { ref, onMounted, computed } from 'vue';
 import { useToast } from 'primevue/usetoast';
-import axios from 'axios'
 import { databaseService } from '@/service/api.js'
 
 import AutoComplete from 'primevue/autocomplete';
@@ -58,15 +57,9 @@ const db = new databaseService();
 
 const toast = useToast();
 
-const axiosInstance = axios.create({
-    headers: {
-        "Content-Type": 'application/x-www-form-urlencoded',
-    }
-});
-
 onMounted(() => {
     for (var i = 0; i < selectionKey.length; i++) {
-        const res = db.retrieve(selectionKey[i]);
+        const res = db.retrieveList(selectionKey[i]);
         if (res) {
             selectionGroup[i].value = JSON.parse(res);
         }
@@ -175,10 +168,9 @@ const onSubmit = () => {
         return;
     }
     submitLoading.value = true;
-    axiosInstance.post('https://api.onsei.fans/query', generatePostData())
+    db.query(generatePostData())
         .then((response) => {
-            results.value = response.data;
-            // const count = response.data.list.length
+            results.value = response;
             postProcess();
             submitLoading.value = false;
             console.log(results.value);

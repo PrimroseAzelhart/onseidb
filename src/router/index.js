@@ -56,14 +56,15 @@ const routes = [
                 path: '/database',
                 name: 'Database',
                 component: database
+            },
+            {
+                path: '/login',
+                name: 'Login',
+                component: login
             }
         ]
     },
-    {
-        path: '/login',
-        name: 'Login',
-        component: login
-    },
+
     {
         path: '/logout',
         name: 'Logout',

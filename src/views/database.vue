@@ -63,7 +63,7 @@ const updateDB = () => {
     updateButtonDisabled.value = true;
     addMessage('updating');
     for (var key of needUpdate.value) {
-        db.get(key)
+        db.getList(key)
         .then((resp) => {
             if (++updated === needUpdate.value.length) {
                 needUpdate.value = [];

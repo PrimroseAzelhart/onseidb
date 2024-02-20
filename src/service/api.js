@@ -1,17 +1,35 @@
 import axios from 'axios'
+import config from './config.json'
+
+const axiosInstance = axios.create({
+    baseURL: config.api,
+    headers: {
+        "Content-Type": 'application/x-www-form-urlencoded',
+    }
+});
 
 class databaseService {
-    get(item) {
-        return axios.get('https://api.onsei.fans/list/' + item)
+    getList(item) {
+        return axiosInstance.get('/list/' + item)
                     .then((resp) => localStorage.setItem(item, JSON.stringify(resp.data)));
     }
 
-    retrieve(item) {
+    retrieveList(item) {
         return localStorage.getItem(item);
     }
 
+    query(data) {
+        return axiosInstance.post('/query', data)
+                    .then((resp) => resp.data);
+    }
+
+    login(auth) {
+        return axiosInstance.post('/login', auth)
+                    .then((resp) => resp.data);
+    }
+
     checkUpdate() {
-        return axios.get('https://api.onsei.fans/database')
+        return axiosInstance.get('/database')
                     .then((resp) => resp.data);
     }
 }

@@ -1,7 +1,7 @@
 <script setup>
 import router from '@/router';
 import { ref, inject, onMounted } from 'vue';
-import axios from 'axios';
+import { databaseService } from '@/service/api.js'
 
 import Password from 'primevue/password';
 
@@ -12,14 +12,14 @@ const loginLoading = ref(false);
 
 const $cookies = inject('$cookies');
 
+const db = new databaseService();
+
 const msgText = {
     'failed': 'Authorization failed!',
     'empty': 'Username and password cannot be empty!',
     'error': 'Server has encountered an internal error!',
     'success': 'Login successfully, redirecting to homepage...'
 };
-
-axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 onMounted(() => {
     $cookies.remove('token');
@@ -36,17 +36,17 @@ const onLoginButtonClick = () => {
     }
     message.value = [];
     loginLoading.value = true;
-    axios.post('https://api.onsei.fans/login', {
+    db.login({
         username: auth.value,
         password: password.value
     })
     .then(function (response) {
-        const res = response.data;
-        if (res.code !== 0) {
+        // const res = response;
+        if (response.code !== 0) {
             addMessage('failed', 'error');
         } else {
             addMessage('success', 'success');
-            $cookies.set('auth', {'user': res.user, 'token': res.token});
+            $cookies.set('auth', {'user': response.user, 'token': response.token});
             setTimeout(() => {
                 router.push('/');
             }, 1000);
@@ -61,21 +61,19 @@ const onLoginButtonClick = () => {
 </script>
 
 <template>
-    <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
-        <div class="flex flex-column align-items-center justify-content-center">
-            <img :src="'onseidb-logo.svg'" alt="OnseiDB logo" class="mb-5 w-8rem flex-shrink-0" />
-            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius: 53px">
+    <div class="flex align-items-center justify-content-center">
+        <div class="card flex flex-column align-items-center justify-content-center" style="max-width: 30rem;">
+            <div class="w-full p-5">
                 <div class="text-center mb-5">
-                    <!-- <img src="/demo/images/login/avatar.png" alt="Image" height="50" class="mb-3" /> -->
                     <div class="text-900 text-3xl font-medium mb-3">Welcome to OnseiDB!</div>
                     <span class="text-600 font-medium">Sign in to continue</span>
                 </div>
 
                 <div>
-                    <label for="auth" class="block text-900 text-xl font-medium mb-2">Email or username</label>
-                    <InputText id="auth" type="text" class="w-full md:w-30rem mb-5" style="padding: 1rem" v-model="auth" />
+                    <label for="auth" class="text-900 text-xl font-medium mb-2">Email or username</label>
+                    <InputText id="auth" type="text" class="w-full mb-5" style="padding: 1rem" v-model="auth" />
 
-                    <label for="password" class="block text-900 font-medium text-xl mb-2">Password</label>
+                    <label for="password" class="text-900 font-medium text-xl mb-2">Password</label>
                     <Password inputId="password" v-model="password" :toggleMask="true" class="w-full mb-3" inputClass="w-full" :inputStyle="{ padding: '1rem' }" :feedback="false"></Password>
 
                     <Button label="Sign In" class="w-full p-3 text-xl" @click="onLoginButtonClick()" :loading="loginLoading" />
@@ -86,7 +84,6 @@ const onLoginButtonClick = () => {
             </div>
         </div>
     </div>
-
 </template>
 
 <style scoped></style>
