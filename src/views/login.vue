@@ -41,7 +41,6 @@ const onLoginButtonClick = () => {
         password: password.value
     })
     .then(function (response) {
-        // const res = response;
         if (response.code !== 0) {
             addMessage('failed', 'error');
         } else {
@@ -71,10 +70,10 @@ const onLoginButtonClick = () => {
 
                 <div>
                     <label for="auth" class="text-900 text-xl font-medium mb-2">Email or username</label>
-                    <InputText id="auth" type="text" class="w-full mb-5" style="padding: 1rem" v-model="auth" />
+                    <InputText id="auth" type="text" class="w-full my-3" v-model="auth" />
 
                     <label for="password" class="text-900 font-medium text-xl mb-2">Password</label>
-                    <Password inputId="password" v-model="password" :toggleMask="true" class="w-full mb-3" inputClass="w-full" :inputStyle="{ padding: '1rem' }" :feedback="false"></Password>
+                    <Password inputId="password" v-model="password" :toggleMask="true" class="w-full my-3" inputClass="w-full" :feedback="false"></Password>
 
                     <Button label="Sign In" class="w-full p-3 text-xl" @click="onLoginButtonClick()" :loading="loginLoading" />
                     <transition-group name="p-message" tag="div">

@@ -8,6 +8,8 @@ import { usePrimeVue } from 'primevue/config';
 
 import { useOverlayScrollbars } from "overlayscrollbars-vue";
 
+import router from '@/router';
+
 const PrimeVue = usePrimeVue();
 const { setScale, layoutConfig, onMenuToggle } = useLayout();
 
@@ -52,6 +54,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
     unbindOutsideClickListener();
 });
+
+const onLogoutButtonClick = () => {
+    router.push('/logout');
+}
 
 const onConfigButtonClick = () => {
     visible.value = !visible.value;
@@ -154,9 +160,13 @@ const [initOverlayScrollbars] = useOverlayScrollbars({defer: true, options: scro
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
+            <button @click="onLogoutButtonClick()" class="p-link layout-topbar-button">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
             <button @click="onConfigButtonClick()" class="p-link layout-topbar-button">
                 <i class="fa-solid fa-gear"></i>
-                <span>Theme</span>
+                <span>Settings</span>
             </button>
         </div>
     </div>

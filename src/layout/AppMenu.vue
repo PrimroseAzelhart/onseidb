@@ -15,13 +15,12 @@ const model = ref([
             // { label: 'Genre', icon: 'fa-solid fa-tag fa-fw', to: '/genre' }
         ]
     },
-    {
-        label: 'User',
-        items: [
-            // {label: 'Library', icon: 'fa-solid fa-headphones fa-fw', to: '/library'},
-            {label: 'Logout', icon: 'fa-solid fa-right-from-bracket fa-fw', to: '/logout'}
-        ]
-    },
+    // {
+    //     label: 'User',
+    //     items: [
+    //         {label: 'Library', icon: 'fa-solid fa-headphones fa-fw', to: '/library'},
+    //     ]
+    // },
     {
         label: 'Site',
         items: [
