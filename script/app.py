@@ -85,9 +85,9 @@ def query():
     if 'circle[id]' in data.keys():
         querySentence['circle_id'] = data['circle[id]']
     if 'cv[]' in data.keys():
-        querySentence['cv'] = {'$in': []}
+        querySentence['cv'] = {'$all': []}
         for i in data['cv[]']:
-            querySentence['cv']['$in'].append(i)
+            querySentence['cv']['$all'].append(i)
     if 'age[]' in data.keys():
         querySentence['age'] = {'$in': []}
         for i in data['age[]']:
@@ -103,9 +103,9 @@ def query():
             querySentence['release_date']['$gte'] = startDate
             querySentence['release_date']['$lte'] = endDate
     if 'genre[]' in data.keys():
-        querySentence['genre_id'] = {'$in': []}
+        querySentence['genre_id'] = {'$all': []}
         for i in data['genre[]']:
-            querySentence['genre_id']['$in'].append(i)
+            querySentence['genre_id']['$all'].append(i)
     if 'series[id]' in data.keys():
         querySentence['series_id'] = data['series[id]']
     if 'scripter[name]' in data.keys():
