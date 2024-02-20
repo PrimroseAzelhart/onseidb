@@ -13,6 +13,8 @@ import SelectButton from 'primevue/selectbutton';
 import WorkListLayoutItem from '@/components/WorkListLayoutItem.vue'
 import WorkGridLayoutItem from '@/components/WorkGridLayoutItem.vue'
 
+const windowWidth = ref(window.innerWidth);
+
 const pre = ref('RJ');
 const iD = ref(null);
 const iTitle = ref(null);
@@ -64,6 +66,12 @@ onMounted(() => {
             selectionGroup[i].value = JSON.parse(res);
         }
     }
+
+    // windowWidth.value = window.innerWidth;
+    if (window.innerWidth < 500) {
+        resultsLayout.value = 'grid';
+    }
+    window.addEventListener('resize', onResizeWindow)
 });
 
 const idPre = ['RJ', 'BJ', 'VJ'];
@@ -85,13 +93,29 @@ const autoCompleteItems = {
     series: {filtered: sSeries, all: aSeries},
     scripter: {filtered: sScripter, all: aScripter},
     illustrator: {filtered: sIllustrator, all: aIllustrator},
-}
+};
+
+const layoutOptions = [
+    {icon: 'fa-solid fa-list', value: 'list'},
+    {icon: 'fa-solid fa-grip', value: 'grid'}
+];
 
 const resultsPerPageOpts = [10, 20, 50];
 
 const sortOrderIcon = computed(() => {
     return sortAscend.value ? 'fa-solid fa-arrow-up-wide-short' : 'fa-solid fa-arrow-down-wide-short';
 });
+
+const isMobile = computed(() => {
+    return (windowWidth.value < 500);
+});
+
+const onResizeWindow = () => {
+    windowWidth.value = window.innerWidth;
+    if (window.innerWidth < 500) {
+        resultsLayout.value = 'grid';
+    }
+};
 
 const autoSearch = (event, category) => {
     setTimeout(() => {
@@ -334,7 +358,11 @@ const debug = (value) => {
                                 <Button @click="sortResults(true)" rounded :icon="sortOrderIcon" />
                             </div>
                             <div class="col-12 sm:col-6 flex sm:gap-3 justify-content-between sm:justify-content-end">
-                                <DataViewLayoutOptions v-model="resultsLayout" class="my-auto"></DataViewLayoutOptions>
+                                <SelectButton :options="layoutOptions" v-model="resultsLayout" dataKey="value" optionValue="value" class="my-auto" :disabled="isMobile">
+                                    <template #option="slotProps">
+                                        <i :class="slotProps.option.icon" class="z-1"></i>
+                                    </template>
+                                </SelectButton>
                                 <Dropdown v-model="resultsPerPage" :options="resultsPerPageOpts"></Dropdown>
                             </div>
                         </div>
