@@ -68,12 +68,12 @@ const getCoverUrl = (id) => {
             <div class="flex gap-2 h-2rem">
                 <div class="white-space-nowrap text-lg my-auto">{{ item.circle + ' /' }}</div>
                 <div v-for="(cv, idx) in item.cv" class="my-auto">
-                    <Chip v-if="idx<1" :label="cv" class="h-full"></Chip>
+                    <Chip v-if="idx<1" :label="cv" class="h-full white-space-nowrap"></Chip>
                     <div v-if="idx==1">other</div>
                 </div>
             </div>
             <div class="flex justify-content-between inline">
-                <div class="my-auto">{{ isoTimeToString(item.release_date) }}</div>
+                <div class="my-auto white-space-nowrap">{{ isoTimeToString(item.release_date) }}</div>
                 <div class="text-2xl font-semibold">￥{{ item.price_current }}</div>
             </div>
             <Button label="Detail" @click="detail_show(item.id)"></Button>

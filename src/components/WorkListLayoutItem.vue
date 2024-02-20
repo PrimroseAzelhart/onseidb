@@ -91,8 +91,8 @@ const getCoverUrl = (id) => {
 
 <template>
     <Fieldset :legend="item.id">
-        <div class="flex flex-row align-items-center justify-content-between p-2 gap-3 w-full h-13rem">
-            <div class="flex flex-column h-full w-12rem justify-content-between">
+        <div class="flex flex-row align-items-center p-2 gap-3 w-full" style="min-height: 13rem;">
+            <div class="flex flex-column w-12rem justify-content-between align-self-stretch">
                 <Image :src="getCoverUrl(item.id)" :alt="item.id" imageClass="flex h-9rem" preview />
                 <Tag :value="getAge(item.age)" :severity="getSeverity(item.age)" class="absolute mt-2 ml-2 opacity-80"></Tag>
                 <div class="flex flex-row w-full justify-content-evenly">
@@ -108,7 +108,7 @@ const getCoverUrl = (id) => {
                     </div>
                 </div>
             </div>
-            <div class="flex flex-column justify-content-between h-full flex-grow-1 w-1rem">
+            <div class="flex flex-column gap-4 flex-grow-1 w-1rem">
                 <div :title="item.title" class="text-2xl font-bold text-900 text-overflow-ellipsis overflow-hidden white-space-nowrap">
                     {{ item.title }}
                 </div>
@@ -122,20 +122,20 @@ const getCoverUrl = (id) => {
                 </div>
                 <div class="flex gap-2 h-2rem">
                     <div class="white-space-nowrap text-lg my-auto">{{ item.circle + ' /' }}</div>
-                    <div v-for="(cv, idx) in item.cv" class="my-auto">
-                        <Chip v-if="idx<5" :label="cv" class="h-full"></Chip>
+                    <div v-for="(cv, idx) in item.cv" class="my-auto flex-wrap">
+                        <Chip v-if="idx<5" :label="cv" class="white-space-nowrap"></Chip>
                         <div v-if="idx==5">other</div>
                     </div>
                 </div>
-                <div class="h-2rem">
-                    <div v-if="item.genre" class="flex gap-2">
+                <div>
+                    <div v-if="item.genre" class="flex gap-2 flex-wrap">
                         <div v-for="genre in item.genre" >
-                            <Tag :value="genre" class="text-sm" rounded />
+                            <Tag :value="genre" class="text-sm white-space-nowrap" rounded />
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex flex-column justify-content-between align-items-end h-full min-w-max">
+            <div class="flex flex-column justify-content-between align-items-end align-self-stretch">
                 <div v-if="item.rank_first" class="flex flex-column gap-1">
                     <div class="flex gap-2 h-2rem justify-content-end">
                         <div v-for="i in item.rank_first.voice">
