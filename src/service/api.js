@@ -1,6 +1,8 @@
 import axios from 'axios'
 import config from './config.json'
 
+const authCookies = $cookies.get('auth');
+
 const axiosInstance = axios.create({
     baseURL: config.api,
     headers: {
@@ -10,7 +12,8 @@ const axiosInstance = axios.create({
 
 class databaseService {
     getList(item) {
-        return axiosInstance.get('/list/' + item)
+        const data = {'token': authCookies.token};
+        return axiosInstance.post('/list/' + item, data)
                     .then((resp) => localStorage.setItem(item, JSON.stringify(resp.data)));
     }
 
@@ -19,6 +22,7 @@ class databaseService {
     }
 
     query(data) {
+        data.token = authCookies.token;
         return axiosInstance.post('/query', data)
                     .then((resp) => resp.data);
     }
@@ -29,7 +33,8 @@ class databaseService {
     }
 
     checkUpdate() {
-        return axiosInstance.get('/database')
+        const data = {'token': authCookies.token};
+        return axiosInstance.post('/database', data)
                     .then((resp) => resp.data);
     }
 }

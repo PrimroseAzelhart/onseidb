@@ -61,7 +61,7 @@ def login():
                 code = 0
                 token = secrets.token_hex(32)
                 expiration = datetime.datetime.now() + datetime.timedelta(days=1)
-                result['token'].append({token: expiration})
+                result['token'][token] = expiration
                 client['onseidb']['user'].replace_one({'username': user}, result)
 
     if code != 0:
@@ -115,7 +115,7 @@ def query():
     results = list(client['onseidb']['meta'].find(querySentence, responseField))
     return jsonify(results)
 
-@application.route('/list/<key>')
+@application.route('/list/<key>', methods=['POST'])
 def get_list(key):
     try:
         with open(f'/opt/app/json/{key}.json', 'r') as fp:
@@ -123,20 +123,33 @@ def get_list(key):
     except:
         abort(404)
 
-@application.route('/detail/<id>')
+@application.route('/detail/<id>', methods=['POST'])
 def get_detail(id):
     result = client['onseidb']['meta'].find_one({'id': id}, detailField)
     if not result:
         abort(404)
     return jsonify(result)
 
-@application.route('/database')
+@application.route('/database', methods=['POST'])
 def get_database():
     results = list(client['onseidb']['field'].find({}, {'_id': False}))
     update = {}
     for i in results:
         update[i['index']] = i['last_update']
     return jsonify(update)
+
+@application.before_request
+def before():
+    url = request.path
+    if url == '/login' or url == '/':
+        pass
+    else:
+        token = request.values.get('token')
+        result = client['onseidb']['user'].find_one({f'token.{token}': {'$exists': True}})
+        if not result:
+            abort(403)
+        else:
+            pass
 
 if __name__ == '__main__':
     application.run()
