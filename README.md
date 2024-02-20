@@ -1,7 +1,7 @@
 # OnseiDB
 
-## Repo of OnseiDB
+Repo of OnseiDB<br><br>
 
-Front end: Vue.js + PrimeVue
-Back end: Flask + Python
+Front end: Vue.js + PrimeVue<br>
+Back end: Flask + Python<br>
 Scraper: Python

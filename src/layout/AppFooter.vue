@@ -12,7 +12,7 @@
                 <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3s7 1.343 7 3"/>
             </g>
         </svg>
-        by miku39 using primevue
+        by miku39
     </div>
 </template>
 

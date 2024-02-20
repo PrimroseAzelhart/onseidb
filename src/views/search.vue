@@ -335,13 +335,13 @@ const debug = (value) => {
             <Panel header="Search Results">
                 <DataView :value="results" :layout="resultsLayout" paginator paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown" :rows="resultsPerPage">
                     <template #header>
-                        <div class="flex justify-content-between">
-                            <div class="flex gap-3">
+                        <div class="grid">
+                            <div class="col-12 sm:col-6 flex sm:gap-3 justify-content-between sm:justify-content-start">
                                 <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" optionValue="value"
                                     @change="sortResults(false)" placeholder="Sort by..." class="w-12rem" />
                                 <Button @click="sortResults(true)" rounded :icon="sortOrderIcon" />
                             </div>
-                            <div class="flex gap-3">
+                            <div class="col-12 sm:col-6 flex sm:gap-3 justify-content-between sm:justify-content-end">
                                 <DataViewLayoutOptions v-model="resultsLayout" class="my-auto"></DataViewLayoutOptions>
                                 <Dropdown v-model="resultsPerPage" :options="resultsPerPageOpts"></Dropdown>
                             </div>
