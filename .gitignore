@@ -29,3 +29,4 @@ stats.html
 *.map
 main.css
 *.pyc
+dist.zip
