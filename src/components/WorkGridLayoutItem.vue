@@ -65,8 +65,8 @@ const getCoverUrl = (id) => {
             <div :title="item.title" class="text-xl font-bold text-900 grid-title">
                 {{ item.title }}
             </div>
-            <div class="flex gap-2 h-2rem">
-                <div class="white-space-nowrap text-lg my-auto">{{ item.circle + ' /' }}</div>
+            <div class="flex gap-2 h-2rem flex-wrap">
+                <div class="white-space-nowrap text-lg my-auto text-overflow-ellipsis">{{ item.circle + ' /' }}</div>
                 <div v-for="(cv, idx) in item.cv" class="my-auto">
                     <Chip v-if="idx<1" :label="cv" class="h-full white-space-nowrap"></Chip>
                     <div v-if="idx==1">other</div>

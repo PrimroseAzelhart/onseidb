@@ -152,7 +152,7 @@ const getCoverUrl = (id) => {
                 <div class="flex align-items-end flex-column">
                     <div v-if="isDiscount(item)" class="text-sm line-through">￥{{ item.price }}</div>
                     <div class="text-2xl font-semibold">￥{{ item.price_current }}</div>
-                    <Button label="Detail" class="" @click="detail_show(item.id)"></Button>
+                    <Button label="Detail" class="mt-1" @click="detail_show(item.id)"></Button>
                 </div>
             </div>
         </div>

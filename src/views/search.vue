@@ -7,7 +7,6 @@ import { databaseService } from '@/service/api.js'
 import AutoComplete from 'primevue/autocomplete';
 import Calendar from 'primevue/calendar';
 import DataView from 'primevue/dataview';
-import DataViewLayoutOptions  from 'primevue/dataviewlayoutoptions'
 import SelectButton from 'primevue/selectbutton';
 
 import WorkListLayoutItem from '@/components/WorkListLayoutItem.vue'
@@ -195,6 +194,8 @@ const onSubmit = () => {
     db.query(generatePostData())
         .then((response) => {
             results.value = response;
+            const count = response.length;
+            toast.add({ severity:'success', summary:'Search complete', detail: `Find ${count} result(s).`, life: 5000});
             postProcess();
             submitLoading.value = false;
             console.log(results.value);
@@ -328,17 +329,14 @@ const debug = (value) => {
 
                 <div class="field col-12 md:col-6">
                     <div class="flex md:justify-content-start">
-                        <Button label="Advanced Options" @click="onAdvOpt" class="md:w-max" iconPos="right"
-                            :icon="advOptions?'fa-solid fa-angles-up fa-lg':'fa-solid fa-angles-down fa-lg'" />
+                        <Button label="More Options" @click="onAdvOpt" class="md:w-max" iconPos="right"
+                            :icon="advOptions?'fa-solid fa-angles-up':'fa-solid fa-angles-down'" />
                     </div>
                 </div>
                 <div class="field col-12 md:col-6">
-                    <Toast />
                     <div class="flex justify-content-between md:justify-content-end gap-3">
-                        <Button label="Clear" icon="fa-regular fa-circle-xmark fa-lg" iconPos="right"
-                            @click="onClear" class="w-max" />
-                        <Button label="Submit" icon="fa-regular fa-circle-check fa-lg" iconPos="right"
-                            @click="onSubmit" class="w-max" :loading="submitLoading" />
+                        <Button label="Clear" @click="onClear" class="w-max" />
+                        <Button label="Submit" @click="onSubmit" class="w-max" :loading="submitLoading" />
                     </div>
                 </div>
 
@@ -349,7 +347,8 @@ const debug = (value) => {
     <Transition name="slide-left">
         <div class="card" v-show="resultsShow">
             <Panel header="Search Results">
-                <DataView :value="results" :layout="resultsLayout" paginator paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown" :rows="resultsPerPage">
+                <DataView :value="results" :layout="resultsLayout" paginator :alwaysShowPaginator="false" :rows="resultsPerPage"
+                    paginatorTemplate="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink JumpToPageDropdown">
                     <template #header>
                         <div class="grid">
                             <div class="col-12 sm:col-6 flex sm:gap-3 justify-content-between sm:justify-content-start">
@@ -388,7 +387,7 @@ const debug = (value) => {
         <div class="card" v-show="detailShow">
             <Panel :header="detailID">
                 <template #icons>
-                    <Button label="Back" @click="toggleDetail(false)" icon="fa-solid fa-circle-chevron-left fa-lg"></Button>
+                    <Button @click="toggleDetail(false)" icon="fa-solid fa-angle-left" />
                 </template>
             </Panel>
         </div>

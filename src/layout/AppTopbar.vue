@@ -138,6 +138,7 @@ const [initOverlayScrollbars] = useOverlayScrollbars({defer: true, options: scro
 </script>
 
 <template>
+    <Toast />
     <div class="layout-topbar">
         <router-link to="/" class="layout-topbar-logo">
             <!-- <img :src="'onseidb-logo.svg'" alt="logo" class="logo"/> -->
