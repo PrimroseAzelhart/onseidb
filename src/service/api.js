@@ -32,6 +32,11 @@ class databaseService {
                     .then((resp) => resp.data);
     }
 
+    register(auth) {
+        return axiosInstance.post('/register', auth)
+                    .then((resp) => resp.data);
+    }
+
     checkUpdate() {
         const data = {'token': authCookies.token};
         return axiosInstance.post('/database', data)

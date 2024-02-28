@@ -26,6 +26,8 @@ postDataField = ['id', 'title', 'circle[id]', 'cv[]', 'age[]', 'rel_date[]',
 
 listFiled = ['cv[]', 'genre[]', 'age[]', 'rel_date[]']
 
+noAuthPath = ['/login', '/', '/register']
+
 def postDataParser(data):
     postData = {}
     for i in postDataField:
@@ -48,28 +50,50 @@ def login():
     user = request.values.get('username')
     pwd = request.values.get('password').encode(encoding='utf-8')
     if ((user == None) or (pwd == None)):
-        code = 1
+        errCode = 1
     else:
         result = client['onseidb']['user'].find_one({"username": user})
         if result == None:
-            code = 2
+            errCode = 2
         else:
             hashed = result['password'].encode(encoding='utf-8')
             if not bcrypt.checkpw(pwd, hashed):
-                code = 3
+                errCode = 3
             else:
-                code = 0
+                errCode = 0
                 token = secrets.token_hex(32)
                 expiration = datetime.datetime.now() + datetime.timedelta(days=1)
                 result['token'][token] = expiration
                 client['onseidb']['user'].replace_one({'username': user}, result)
 
-    if code != 0:
-        response = {'code': code}
+    if errCode != 0:
+        response = {'err_code': errCode}
     else:
-        response = {'code': code, 'user': user, 'token': token}
+        response = {'err_code': errCode, 'user': user, 'token': token}
 
     return jsonify(response)
+
+@application.route('/register', methods=['POST'])
+def register():
+    user = request.values.get('username')
+    pwd = request.values.get('password').encode(encoding='utf-8')
+    code = request.values.get('invitation_code')
+    if len(code) != 32:
+        abort(403)
+    result = client['onseidb']['invitation_code'].find_one_and_delete({'code': code})
+    if not result:
+        errCode = 1
+    else:
+        userExist = client['onseidb']['user'].find_one({'username': user})
+        if userExist:
+            errCode = 2
+        else:
+            salt = bcrypt.gensalt()
+            encryptedPwd = bcrypt.hashpw(pwd, salt).decode(encoding='utf-8')
+            userInfo = {'username': user, 'password': encryptedPwd, 'token': {}, 'register_time': datetime.datetime.now()}
+            client['onseidb']['user'].insert_one(userInfo)
+            errCode = 0
+    return jsonify({'err_code': errCode})
 
 @application.route('/query', methods=['POST'])
 def query():
@@ -141,10 +165,12 @@ def get_database():
 @application.before_request
 def before():
     url = request.path
-    if url == '/login' or url == '/':
+    if url in noAuthPath:
         pass
     else:
         token = request.values.get('token')
+        if not token:
+            abort(403)
         result = client['onseidb']['user'].find_one({f'token.{token}': {'$exists': True}})
         if not result:
             abort(403)
