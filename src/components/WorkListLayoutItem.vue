@@ -139,7 +139,7 @@ const getCoverUrl = (id) => {
                 <div v-if="item.rank_first" class="flex flex-column gap-1">
                     <div class="flex gap-2 h-2rem justify-content-end">
                         <div v-for="i in item.rank_first.voice">
-                            <i class="fa-solid fa-medal fa-fw" :class="getTrophyStyle(i)"></i>
+                            <i v-if="i != 'total'" class="fa-solid fa-medal fa-fw" :class="getTrophyStyle(i)"></i>
                         </div>
                     </div>
                     <div class="flex gap-2 h-2rem justify-content-end">

@@ -76,9 +76,9 @@ onMounted(() => {
 const idPre = ['RJ', 'BJ', 'VJ'];
 
 const ageOpts = [
-    { option: 'A', value: 0 },
-    { option: 'B', value: 1 },
-    { option: 'C', value: 2 }
+    { option: '全年齢', value: 0 },
+    { option: 'R-15', value: 1 },
+    { option: 'R-18', value: 2 }
 ];
 
 const sortOptions = [
@@ -261,7 +261,7 @@ const debug = (value) => {
                     <label for="wcode">ID</label>
                     <div class="p-inputgroup">
                         <Dropdown v-model="pre" :options="idPre" class="w-6rem"></Dropdown>
-                        <InputMask type="text" id="wcode" v-model="iD" mask="99999999" class="w-full" slotChar="" />
+                        <InputMask type="text" id="wcode" v-model="iD" mask="99999999" class="w-full" slotChar="" :autoClear="false" />
                     </div>
                 </div>
 
@@ -278,7 +278,7 @@ const debug = (value) => {
                         :virtualScrollerOptions="{itemSize: 34}" />
                 </div>
 
-                <div class="field col-12 md:col-6 xl:col-4">
+                <div class="field col-12 md:col-6 xl:col-3">
                     <label for="cv">CV</label>
                     <MultiSelect inputId="cv" v-model="iCV" :showToggleAll="false"
                         :options="sCV" filter :selectionLimit="3"
@@ -287,7 +287,7 @@ const debug = (value) => {
                     </MultiSelect>
                 </div>
 
-                <div class="field col-12 md:col-6 xl:col-2">
+                <div class="field col-12 md:col-6 xl:col-3">
                     <label>Age</label>
                     <SelectButton v-model="iAge" :options="ageOpts" optionLabel="option" optionValue="value" multiple />
                 </div>

@@ -16,7 +16,7 @@ const msg = {
     'none': {'severity': 'info', 'text': 'No local database found'},
     'outdated': {'severity': 'warn', 'text': 'Local database is outdated, update available'},
     'error': {'severity': 'error', 'text': 'Unable to check for updates from server'},
-    'updated': {'severity': 'success', 'text': 'Local database is updated'},
+    'updated': {'severity': 'success', 'text': 'Local database is up-to-date'},
     'updating': {'severity': 'info', 'text': 'Updating...'},
     'checking': {'severity': 'info', 'text': 'Checking for update...'}
 };
