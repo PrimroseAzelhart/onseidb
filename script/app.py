@@ -109,9 +109,9 @@ def query():
     if 'circle[id]' in data.keys():
         querySentence['circle_id'] = data['circle[id]']
     if 'cv[]' in data.keys():
-        querySentence['cv'] = {'$all': []}
+        querySentence['cv_alias'] = {'$all': []}
         for i in data['cv[]']:
-            querySentence['cv']['$all'].append(i)
+            querySentence['cv_alias']['$all'].append(i)
     if 'age[]' in data.keys():
         querySentence['age'] = {'$in': []}
         for i in data['age[]']:

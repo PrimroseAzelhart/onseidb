@@ -33,8 +33,8 @@ def main():
         else:
             circle[i] = [work['circle'], [work['id']]]
 
-        if 'cv' in work.keys():
-            for i in work['cv']:
+        if 'cv_alias' in work.keys():
+            for i in work['cv_alias']:
                 if i in cv.keys():
                     cv[i].append(work['id'])
                 else:
@@ -79,6 +79,7 @@ def main():
         circleDB.append({'id': key, 'name': value[0], 'work': value[1], 'count': len(value[1])})
 
     for key, value in cv.items():
+        value = list(set(value))
         cvDB.append({'name': key, 'work': value, 'count': len(value)})
 
     for key, value in series.items():
