@@ -51,7 +51,6 @@ const getCoverUrl = (id) => {
     const idNumber = parseInt(idStr);
     const coverPathNumber = (parseInt(idNumber / 1000) + 1) * 1000;
     const coverPathStr = `${category}${String(coverPathNumber).padStart(idLen, '0')}`;
-    console.log(coverPathStr);
     const coverUrl = `https://img.dlsite.jp/modpub/images2/work/${categoryPath}/${coverPathStr}/${id}_img_main.webp`
     return coverUrl;
 };

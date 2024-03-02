@@ -82,7 +82,6 @@ const getCoverUrl = (id) => {
     const idNumber = parseInt(idStr);
     const coverPathNumber = (parseInt(idNumber / 1000) + 1) * 1000;
     const coverPathStr = `${category}${String(coverPathNumber).padStart(idLen, '0')}`;
-    console.log(coverPathStr);
     const coverUrl = `https://img.dlsite.jp/modpub/images2/work/${categoryPath}/${coverPathStr}/${id}_img_main.webp`
     return coverUrl;
 };
@@ -93,7 +92,7 @@ const getCoverUrl = (id) => {
     <Fieldset :legend="item.id">
         <div class="flex flex-row align-items-center p-2 gap-3 w-full" style="min-height: 13rem;">
             <div class="flex flex-column w-12rem justify-content-between align-self-stretch">
-                <Image :src="getCoverUrl(item.id)" :alt="item.id" imageClass="flex h-9rem" preview />
+                <Image :src="getCoverUrl(item.id)" :alt="item.id" imageClass="h-9rem w-12rem" imageStyle="object-fit: contain;" preview />
                 <Tag :value="getAge(item.age)" :severity="getSeverity(item.age)" class="absolute mt-2 ml-2 opacity-80"></Tag>
                 <div class="flex flex-row w-full justify-content-evenly">
                     <div class="border-round-3xl border-2 border-primary px-2 py-1 text-xs flex flex-row gap-2 align-items-center">
