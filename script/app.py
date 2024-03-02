@@ -8,10 +8,18 @@ import datetime
 import secrets
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
+from flask_caching import Cache
 
 from func.db_config import db_client
 
+config = {
+    "CACHE_TYPE": "SimpleCache",
+    "CACHE_DEFAULT_TIMEOUT": 300
+}
+
 application = Flask(__name__)
+application.config.from_mapping(config)
+cache = Cache(application)
 CORS(application)
 
 client = db_client()

@@ -25,5 +25,10 @@ export default defineConfig({
             plugins: [visualizer({ open: true })],
         },
     },
+    server: {
+        fs: {
+            cachedChecks: false
+        }
+    },
     plugins: [vue()]
 })
